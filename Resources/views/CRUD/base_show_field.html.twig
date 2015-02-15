@@ -1,0 +1,27 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% if mode is not defined or mode == 'label' %}
+    {% if mode is not defined %}<th{% if(is_diff|default(false)) %} class="diff"{% endif %}>{% endif %}{% block name %}{{ admin.trans(field_description.label, {}, field_description.translationDomain) }}{% endblock %}{% if mode is not defined %}</th>{% endif %}
+{% endif %}
+
+{% if mode is not defined or mode == 'value' %}
+    {% if mode is not defined %}<td>{% endif %}{% block field %}{% if field_description.options.safe %}{{ value|raw }}{% else %}{{ value|nl2br }}{% endif %}{% endblock %}{% if mode is not defined %}</td>{% endif %}
+{% endif %}
+
+{% block field_compare %}
+    {% if(value_compare is defined) %}
+        <td>
+            {% set value = value_compare %}
+            {{ block('field') }}
+        </td>
+    {% endif %}
+{% endblock %}

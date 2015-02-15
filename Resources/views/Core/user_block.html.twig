@@ -1,0 +1,36 @@
+{% block user_block %}
+    {% if app.user %}
+
+        {% set _bg_class    = "bg-light-blue" %}
+        {% set _logout_uri  = url('fos_user_security_logout') %}
+        {% set _logout_text = 'user_block_logout'|trans %}
+        {% set _user_image  = asset('images/default_avatar.png') %}
+        {# Customize this with your profile picture implementation, see below for example #}
+        {#{% set _user_image  = app.user.profilePicture|default(asset(sonata_user.defaultAvatar)) %}#}
+
+        <li class="user-header {{ _bg_class }}">
+            {% if _user_image %}
+                <img src="{{ _user_image }}" class="img-circle" alt="Avatar" />
+            {% endif %}
+            <p>{{ app.user }}</p>
+        </li>
+
+{#
+    Uncomment to add some information
+        <li class="user-body">
+
+        </li>
+#}
+
+        <li class="user-footer">
+            <div class="pull-left">
+                <a href="{{ path('fos_user_profile_show') }}" class="btn btn-default btn-flat"><i class="glyphicon glyphicon-share-alt"></i> {% trans %}user_block.profile_link{% endtrans %}</a>
+
+            </div>
+
+            <div class="pull-right">
+                <a href="{{ _logout_uri }}" class="btn btn-default btn-flat"><i class="fa fa-sign-out fa-fw"></i> {{ _logout_text }}</a>
+            </div>
+        </li>
+    {% endif %}
+{% endblock %}
