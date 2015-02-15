@@ -1,0 +1,168 @@
+{% extends 'SonataAdminBundle::standard_layout.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .skin-black .navbar-static-top {
+            background-color: #00a65a;
+            border-bottom: 0px;
+            color: #fff;
+        }
+
+        .skin-black .navbar-static-top .navbar-left .breadcrumb a {
+            color: #fff;
+        }
+
+        .skin-black .navbar-static-top .navbar-left .breadcrumb span {
+            color: #fff;
+        }
+
+        .right-side {
+            margin-left: 0px;
+            width: 1200px;
+            margin: 0 auto;
+        }
+
+        .right-side > .content-header {
+            padding: 15px 15px 10px 15px;
+        }
+
+        .loading {
+            opacity: 0.3;
+        }
+
+        .alert {
+            margin-left: 0;
+        }
+
+        table.table-bordered {
+            border-width: 0px !important;
+        }
+
+        table.table-bordered thead tr, table.table-bordered tbody tr {
+            border-width: 0px !important;
+            border-bottom-width: 1px !important;
+            border-bottom-style: solid;
+        }
+
+        table.table-bordered th, table.table-bordered td {
+            border-width: 0px !important;
+        }
+
+
+        .sonata-bc .right-side > .content-header .breadcrumb {
+            position: relative;
+            float: none;
+            top: 0;
+            right: 0;
+            padding-bottom: 10px;
+        }
+
+        .content-header .breadcrumb a {
+            color: #000;
+            font-size: 12px;
+            padding: 3px 6px;
+            min-height: 20px;
+        }
+
+        .skin-black .navbar .breadcrumb > li  > a:hover {
+            color: #444;
+            background: #fff;
+        }
+
+        .content-header .breadcrumb span {
+            color: #000;
+        }
+
+        .navbar-top-links {
+            padding: 0;
+            font-size: 15px;
+        }
+
+        .navbar-top-links a {
+            color: #fff;
+            min-height: 50px;
+            display: block;
+            padding: 14px 10px;
+        }
+
+        .navbar-top-links a:hover {
+            color: #444;
+            background: #f5f5f5;
+        }
+
+        .right-side .content {
+            padding-top: 5px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script src="/bundles/sonatacore/vendor/moment/locale/ru.js"></script>
+{% endblock %}
+
+{% block sonata_nav %}
+    {% if admin_pool is defined %}
+        <nav class="navbar navbar-static-top" role="navigation">
+            <div class="navbar-left">
+                <div class="navbar-top-links">
+                    {{ knp_menu_render('glavweb_admin_top_menu') }}
+                </div>
+            </div>
+
+            {% block sonata_top_nav_menu %}
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        {% if is_granted('ROLE_SONATA_ADMIN') %}
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <i class="fa fa-plus-square fa-fw"></i> <i class="fa fa-caret-down"></i>
+                                </a>
+                                {% include admin_pool.getTemplate('add_block') %}
+                            </li>
+                        {% endif %}
+
+                        <li class="dropdown user-menu">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                {% include admin_pool.getTemplate('user_block') %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            {% endblock %}
+        </nav>
+    {% endif %}
+{% endblock %}
+
+{% block sonata_left_side %}{% endblock %}
+
+{% block sonata_page_content_header %}
+    {{ block('sonata_breadcrumb') }}
+    {{ block('sonata_page_content_nav') }}
+{% endblock %}
+
+{% block notice %}
+    {{ parent() }}
+
+    {% for flashMessage in app.session.flashbag.get('action_success') %}
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ flashMessage|trans }}
+        </div>
+    {% endfor %}
+
+    {% for flashMessage in app.session.flashbag.get('action_false') %}
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{ flashMessage|trans }}
+        </div>
+    {% endfor %}
+
+{% endblock notice %}

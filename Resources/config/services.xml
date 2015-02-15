@@ -24,6 +24,7 @@
 
 
         <service id="glavweb_admin.menu.top_menu_builder" class="%glavweb_admin.menu.top_menu_builder.class%">
+            <argument>%glavweb_admin.config%</argument>
             <argument type="service" id="knp_menu.factory" />
             <argument type="service" id="translator" />
         </service>
