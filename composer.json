@@ -17,7 +17,7 @@
         "symfony/form": "~2.3",
         "symfony/security": "~2.3",
         "symfony/console": "~2.3",
-		"sonata-project/admin-bundle": "dev-master"
+        "sonata-project/admin-bundle": "dev-master"
     },
     "autoload": {
         "psr-4": { "Glavweb\\AdminBundle\\": "" }
