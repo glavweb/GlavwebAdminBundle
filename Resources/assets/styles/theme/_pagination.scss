@@ -1,0 +1,78 @@
+// Bootstrap 3 pagination. Active hover matches .btn-success (Save).
+
+@use 'sass:color';
+@use '../tokens' as t;
+
+$pagination-active-hover: color.adjust(t.$crm-color-primary, $lightness: -6%);
+
+.pagination,
+ul.pagination {
+  margin: 0;
+  font-family: t.$crm-font-family;
+
+  > li {
+    display: inline-flex;
+    float: none;
+    vertical-align: middle;
+  }
+
+  > li > a,
+  > li > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    float: none;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    margin-left: t.$crm-space-1;
+    font-size: t.$crm-font-size-sm;
+    font-weight: t.$crm-font-weight-medium;
+    line-height: 1;
+    color: t.$crm-color-text !important;
+    background: t.$crm-color-white !important;
+    border: 1px solid t.$crm-color-border !important;
+    border-radius: t.$crm-radius-md !important;
+    text-decoration: none !important;
+  }
+
+  > li > a:visited {
+    color: t.$crm-color-text !important;
+  }
+
+  > li > a:hover,
+  > li > a:focus {
+    color: t.$crm-color-text !important;
+    background: t.$crm-color-primary-soft !important;
+    border-color: t.$crm-color-primary !important;
+  }
+
+  > li.active > a,
+  > li.active > span,
+  > li.active > a:visited {
+    color: t.$crm-color-white !important;
+    background: t.$crm-color-primary !important;
+    border-color: t.$crm-color-primary !important;
+  }
+
+  > li.active > a:hover,
+  > li.active > a:focus,
+  > li.active > span:hover,
+  > li.active > span:focus {
+    color: t.$crm-color-white !important;
+    background: $pagination-active-hover !important;
+    border-color: $pagination-active-hover !important;
+  }
+
+  > li.disabled > a,
+  > li.disabled > span,
+  > li.disabled > a:hover,
+  > li.disabled > a:focus,
+  > li.disabled > span:hover,
+  > li.disabled > span:focus {
+    color: t.$crm-color-text-muted !important;
+    background: t.$crm-color-surface-2 !important;
+    border-color: t.$crm-color-border !important;
+  }
+}

@@ -1,0 +1,43 @@
+{% if admin.datagrid.filters %}
+    <div class="box box-primary">
+        <div class="box-header">
+            <h4 class="box-title">{{ 'label_filters'|trans({}, 'SonataAdminBundle') }}</h4>
+        </div>
+
+        <div class="box-body">
+            <div class="filter_container {{ admin.datagrid.hasActiveFilters ? 'active' : 'inactive' }}">
+                {% for filter in admin.datagrid.filters %}
+                    {% if filter.name not in advanced_filter_names
+                        and filter.option('show_filter') is not same as(false)
+                        and filter_form.children[filter.formName] is defined
+                    %}
+                        <div class="form-group">
+                            {% if filter.label is not same as(false) %}
+                                <label for="{{ filter_form.children[filter.formName].children['value'].vars.id }}">
+                                    {% if filter.translationDomain is same as(false) %}
+                                        {{ filter.label }}
+                                    {% else %}
+                                        {{ filter.label|trans({}, filter.translationDomain ?? admin.translationDomain) }}
+                                    {% endif %}
+                                </label>
+                            {% endif %}
+
+                            {% set type_field = filter_form.children[filter.formName].children['type']|default(null) %}
+                            {% if type_field %}
+                                {% set attr = type_field.vars.attr|default({}) %}
+                                {% set attr = attr|merge({'class': (attr.class|default('') ~ ' sonata-filter-option')|trim}) %}
+                                <div style="display: none">
+                                    {{ form_widget(type_field, {'attr': attr}) }}
+                                </div>
+                            {% endif %}
+
+                            <div>
+                                {{ form_widget(filter_form.children[filter.formName].children['value']) }}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}

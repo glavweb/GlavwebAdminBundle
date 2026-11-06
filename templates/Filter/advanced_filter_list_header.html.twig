@@ -1,0 +1,14 @@
+{% set advanced_labels = admin.activeAdvancedFilterLabels %}
+{% if advanced_labels is not empty %}
+    <div class="list-header-data">
+        <span class="list-header-attention">{{ 'advanced_filter.active_prefix'|trans({}, 'GlavwebAdminBundle') }}</span>
+        {{ advanced_labels|join(', ') }}.
+        <a href="{{ admin.generateUrl('list', {filter: admin.filterParametersWithoutAdvanced}) }}">
+            {{ 'advanced_filter.reset'|trans({}, 'GlavwebAdminBundle') }}
+        </a>
+        |
+        <a href="{{ admin.generateUrl('advanced_filter', {filter: admin.filterParameters}) }}">
+            {{ 'advanced_filter.edit'|trans({}, 'GlavwebAdminBundle') }}
+        </a>
+    </div>
+{% endif %}

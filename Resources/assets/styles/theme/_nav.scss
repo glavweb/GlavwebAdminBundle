@@ -1,0 +1,100 @@
+// Bootstrap nav-tabs + AdminLTE .nav-tabs-custom.
+
+@use '../tokens' as t;
+
+.nav-tabs {
+  border-bottom: 1px solid t.$crm-color-border;
+  font-family: t.$crm-font-family;
+
+  > li {
+    margin-bottom: 0;
+    // AdminLTE: 3px colored border-top on the active tab
+    border: 0 !important;
+    border-top: 0 !important;
+
+    > a {
+      position: relative;
+      margin: 0;
+      padding: 14px 16px;
+      font-size: 13px;
+      font-weight: t.$crm-font-weight-regular;
+      line-height: 1.2;
+      color: t.$crm-color-text-muted !important;
+      background: transparent !important;
+      border: 0 !important;
+      border-radius: 0;
+
+      &:hover,
+      &:focus {
+        color: t.$crm-color-text !important;
+        background: transparent !important;
+        border: 0 !important;
+      }
+    }
+
+    &.active > a,
+    &.active > a:hover,
+    &.active > a:focus {
+      color: t.$crm-color-text !important;
+      font-weight: t.$crm-font-weight-semibold;
+      background: transparent !important;
+      border: 0 !important;
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 16px;
+        right: 16px;
+        bottom: 7px;
+        height: 2px;
+        background: t.$crm-color-primary;
+      }
+    }
+  }
+}
+
+.nav-tabs-custom {
+  margin-bottom: t.$crm-space-3;
+  border: 1px solid t.$crm-color-border;
+  border-radius: t.$crm-radius-lg;
+  background: t.$crm-color-white;
+  box-shadow: t.$crm-shadow-sm;
+  overflow: hidden;
+
+  > .nav-tabs {
+    margin: 0;
+    padding: 0 12px;
+    border-bottom: 1px solid t.$crm-color-border;
+    background: t.$crm-color-white;
+    border-radius: t.$crm-radius-lg t.$crm-radius-lg 0 0;
+
+    > li {
+      margin: 0;
+      border: 0 !important;
+      border-top: 0 !important;
+    }
+  }
+
+  > .tab-content {
+    padding: 0;
+    background: t.$crm-color-white;
+  }
+}
+
+.nav-pills > li > a {
+  font-family: t.$crm-font-family;
+  color: t.$crm-color-text-muted;
+  border-radius: t.$crm-radius-md;
+
+  &:hover {
+    background: t.$crm-color-primary-soft;
+    color: t.$crm-color-text;
+  }
+}
+
+.nav-pills > li.active > a,
+.nav-pills > li.active > a:hover,
+.nav-pills > li.active > a:focus {
+  background: t.$crm-color-primary;
+  color: t.$crm-color-white;
+}

@@ -1,0 +1,49 @@
+// Exposes tokens as CSS custom properties on :root so the AdminLTE theme
+// and Angular domain widgets share one token surface without .crm-root.
+
+@use 'colors' as c;
+@use 'typography' as t;
+@use 'spacing' as s;
+@use 'radius' as r;
+@use 'shadows' as sh;
+
+:root {
+  --crm-color-primary: #{c.$crm-color-primary};
+  --crm-color-primary-soft: #{c.$crm-color-primary-soft};
+  --crm-color-text: #{c.$crm-color-text};
+  --crm-color-text-muted: #{c.$crm-color-text-muted};
+  --crm-color-white: #{c.$crm-color-white};
+  --crm-color-surface: #{c.$crm-color-surface};
+  --crm-color-surface-2: #{c.$crm-color-surface-2};
+  --crm-color-border: #{c.$crm-color-border};
+  --crm-color-danger: #{c.$crm-color-danger};
+  --crm-color-danger-soft: #{c.$crm-color-danger-soft};
+  --crm-color-success: #{c.$crm-color-success};
+  --crm-color-warning: #{c.$crm-color-warning};
+  --crm-color-warning-soft: #{c.$crm-color-warning-soft};
+  --crm-color-warning-text: #{c.$crm-color-warning-text};
+  --crm-color-info: #{c.$crm-color-info};
+  --crm-color-info-soft: #{c.$crm-color-info-soft};
+  --crm-color-ai: #{c.$crm-color-ai};
+  --crm-color-ai-bg: #{c.$crm-color-ai-bg};
+  --crm-color-channel-telegram: #{c.$crm-color-channel-telegram};
+  --crm-color-channel-telegram-bot: #{c.$crm-color-channel-telegram-bot};
+  --crm-color-channel-whatsapp: #{c.$crm-color-channel-whatsapp};
+  --crm-color-channel-viber: #{c.$crm-color-channel-viber};
+  --crm-color-channel-email: #{c.$crm-color-channel-email};
+
+  --crm-font-family: #{t.$crm-font-family};
+
+  --crm-space-1: #{s.$crm-space-1};
+  --crm-space-2: #{s.$crm-space-2};
+  --crm-space-3: #{s.$crm-space-3};
+  --crm-space-4: #{s.$crm-space-4};
+  --crm-space-6: #{s.$crm-space-6};
+
+  --crm-radius-sm: #{r.$crm-radius-sm};
+  --crm-radius-md: #{r.$crm-radius-md};
+  --crm-radius-lg: #{r.$crm-radius-lg};
+
+  --crm-shadow-sm: #{sh.$crm-shadow-sm};
+  --crm-shadow-md: #{sh.$crm-shadow-md};
+}

@@ -1,0 +1,6 @@
+// Tempus Dominus (Sonata Form / DatePickerType) — sit above Bootstrap 3 .modal (1050).
+// sonataform/app.css already sets z-index: 9999; keep it if our dropdown theme wins.
+
+.tempus-dominus-widget {
+  z-index: 9999;
+}

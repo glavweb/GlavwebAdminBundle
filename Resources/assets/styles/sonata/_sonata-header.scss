@@ -1,0 +1,90 @@
+// OVERRIDE: main-header breadcrumbs stay on one line; long labels ellipsize.
+// Scope: .main-header > .navbar.navbar-static-top (Sonata standard_layout).
+
+@use '../mixins' as m;
+@use '../tokens' as t;
+
+.main-header > .navbar.navbar-static-top {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+
+  > .sidebar-toggle {
+    flex: 0 0 auto;
+  }
+
+  > .navbar-left {
+    float: none;
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+
+    > .hidden-xs {
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: stretch;
+    }
+  }
+
+  > .navbar-custom-menu {
+    float: none;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+}
+
+.main-header .nav.navbar-top-links.breadcrumb {
+  float: none;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: transparent;
+
+  > li {
+    float: none;
+    display: flex;
+    align-items: center;
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+
+    > a,
+    > span {
+      display: block;
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: 100%;
+
+      @include m.crm-truncate;
+    }
+
+    // Dashboard / home crumb (often icon-only)
+    &:first-child {
+      flex: 0 0 auto;
+    }
+
+    // Current page takes remaining width and truncates first
+    &.active {
+      flex: 1 1 0%;
+      min-width: 0;
+    }
+  }
+}
+
+@media (max-width: (t.$crm-bp-md - 1px)) {
+  // AdminLTE puts the logo and top navbar on separate 50px rows on mobile.
+  // Sonata's fixed 50px header height otherwise lets page actions overlap row two.
+  .main-header {
+    height: 100px;
+  }
+}

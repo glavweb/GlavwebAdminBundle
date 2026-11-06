@@ -1,0 +1,111 @@
+<script>
+    (function ($) {
+        if (window.sonataInlineCollectionDeleteBound) {
+            return;
+        }
+        window.sonataInlineCollectionDeleteBound = true;
+
+        var pendingClass = 'sonata-collection-item--pending-delete';
+
+        function collectionItem($el) {
+            var $row = $el.closest('[data-sonata-collection-item]');
+            if (!$row.length) {
+                $row = $el.closest('.sonata-collection-row');
+            }
+
+            return $row;
+        }
+
+        function deleteCheckbox($row) {
+            return $row.find('input.sonata-collection-delete-checkbox, input[name$="[_delete]"]');
+        }
+
+        function deleteFlag($row) {
+            return $row.find('input.sonata-collection-delete-flag');
+        }
+
+        function disableRequired($row) {
+            $row.find('[required]').each(function () {
+                $(this).attr('data-sonata-was-required', '1').removeAttr('required');
+            });
+        }
+
+        function restoreRequired($row) {
+            $row.find('[data-sonata-was-required]').each(function () {
+                $(this).attr('required', 'required').removeAttr('data-sonata-was-required');
+            });
+        }
+
+        function setDeleteChecked($row, checked) {
+            var $checkbox = deleteCheckbox($row);
+            var $flag = deleteFlag($row);
+
+            if ($checkbox.length && $.fn.iCheck && ($checkbox.data('iCheck') || $checkbox.data('icheck'))) {
+                $checkbox.iCheck('destroy');
+            }
+
+            $checkbox.prop('disabled', false).prop('checked', checked);
+            if (checked) {
+                $checkbox.attr('checked', 'checked');
+                $flag.prop('disabled', false);
+            } else {
+                $checkbox.removeAttr('checked');
+                $flag.prop('disabled', true);
+            }
+        }
+
+        function syncPendingDeletes($form) {
+            $form.find('[data-sonata-collection-item].' + pendingClass).each(function () {
+                setDeleteChecked($(this), true);
+            });
+        }
+
+        $(document).on('click', '.sonata-collection-delete[data-sonata-inline-delete]', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            var $row = collectionItem($(this));
+
+            // Unsaved rows must leave the DOM: hidden inputs still POST, and
+            // append-form-field-element then adds another instance on top.
+            if ($row.attr('data-sonata-collection-persisted') !== '1') {
+                $row.remove();
+                return;
+            }
+
+            setDeleteChecked($row, true);
+            disableRequired($row);
+            $row.addClass(pendingClass);
+        });
+
+        $(document).on('click', '[data-sonata-inline-restore]', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            var $row = collectionItem($(this));
+            setDeleteChecked($row, false);
+            restoreRequired($row);
+            $row.removeClass(pendingClass);
+        });
+
+        function wrapAjaxSubmit() {
+            if ($.fn.ajaxSubmit && !$.fn.ajaxSubmit.sonataPendingDeleteWrapped) {
+                var originalAjaxSubmit = $.fn.ajaxSubmit;
+                $.fn.ajaxSubmit = function () {
+                    syncPendingDeletes(this);
+                    return originalAjaxSubmit.apply(this, arguments);
+                };
+                $.fn.ajaxSubmit.sonataPendingDeleteWrapped = true;
+            }
+        }
+
+        wrapAjaxSubmit();
+        $(function () {
+            $('[data-sonata-collection-item].' + pendingClass).each(function () {
+                disableRequired($(this));
+                setDeleteChecked($(this), true);
+            });
+            wrapAjaxSubmit();
+        });
+    }(jQuery));
+</script>

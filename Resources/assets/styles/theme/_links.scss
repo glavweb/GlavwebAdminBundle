@@ -1,0 +1,7 @@
+// Named utility for content links (also applied globally in _typography.scss).
+
+@use '../mixins' as m;
+
+.crm-link {
+  @include m.crm-link;
+}

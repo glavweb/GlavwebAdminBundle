@@ -1,0 +1,862 @@
+// OVERRIDE: Sonata show theme (AdminLTE content area) aligned with CRM tokens / Figma Sonata Show.
+// CSS-first: mirrors list/edit chrome. Does not restyle main-sidebar.
+// Scope: .sonata-ba-show (+ archive notice in .content when present).
+// content-header title/actions: shared with edit via _sonata-form.scss (:has(.navbar-brand)).
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+// ---------------------------------------------------------------------------
+// Shell
+// ---------------------------------------------------------------------------
+
+.sonata-ba-show {
+  font-family: t.$crm-font-family;
+  color: t.$crm-color-text;
+
+  // Info / nested tables on show are not interactive lists — no row hover fill.
+  table.table > tbody > tr:hover > td {
+    background: transparent !important;
+  }
+}
+
+// Alerts: theme/_alerts.scss — archive banner spacing only
+.content:has(.sonata-ba-show) > .alert,
+.content-wrapper .content > .alert:has(+ .sonata-ba-show) {
+  margin: 0 0 t.$crm-space-3;
+}
+
+// ---------------------------------------------------------------------------
+// Boxes — Sonata nesting (chrome: theme/_box.scss)
+// ---------------------------------------------------------------------------
+
+.sonata-ba-show {
+  .box.box-primary {
+    margin-bottom: t.$crm-space-3;
+
+    // Sonata uses table-responsive no-padding — restore card body padding
+    > .box-body {
+      padding: t.$crm-space-4 !important;
+    }
+
+    > .box-body.table-responsive {
+      overflow-x: visible;
+    }
+  }
+
+  .header-hidden.box.box-primary,
+  .header-hidden > .box.box-primary,
+  .box.box-primary.header-hidden {
+    > .box-header {
+      display: none !important;
+    }
+  }
+
+  // Outside tabs: header-hidden groups still a single card (lottery-ticket)
+  .sonata-ba-view:not(:has(.nav-tabs-custom)) {
+    .header-hidden > .box.box-primary,
+    [class*='col-'].header-hidden > .box.box-primary,
+    [class*='col-'].header-hidden > .box {
+      border: 1px solid t.$crm-color-border !important;
+      border-radius: t.$crm-radius-lg;
+      box-shadow: t.$crm-shadow-sm !important;
+      background: t.$crm-color-white;
+
+      // OVERRIDE: theme/_box.scss only rounds box-body bottom; header is hidden
+      > .box-body {
+        border-radius: t.$crm-radius-lg;
+      }
+    }
+  }
+
+  // Inside tabs: outer .nav-tabs-custom is the card; header-hidden columns stay flat
+  .nav-tabs-custom {
+    .header-hidden > .box.box-primary,
+    [class*='col-'].header-hidden > .box.box-primary,
+    [class*='col-'].header-hidden > .box {
+      margin-bottom: 0;
+      border: 0 !important;
+      border-radius: 0;
+      box-shadow: none !important;
+      background: transparent;
+
+      > .box-body {
+        padding: 0 !important;
+      }
+    }
+
+    [class*='col-']:not(.header-hidden) > .box.box-primary {
+      border: 1px solid t.$crm-color-border !important;
+      border-radius: t.$crm-radius-lg;
+      box-shadow: t.$crm-shadow-sm !important;
+      background: t.$crm-color-white;
+    }
+  }
+}
+
+// Tabs chrome: theme/_nav.scss
+.sonata-ba-show {
+  .nav-tabs-custom > .tab-content > .tab-pane > .box-body.container-fluid {
+    padding: t.$crm-space-4;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Fields — stacked label above value (edit without inputs)
+// DOM: tr.sonata-ba-view-container > th + td
+// ---------------------------------------------------------------------------
+
+.sonata-ba-show {
+  .box-body > table.table,
+  .box-body.table-responsive > table.table {
+    margin: 0;
+    border: 0;
+    background: transparent;
+
+    > thead,
+    > tbody,
+    > tfoot {
+      border: 0;
+    }
+
+    > tbody > tr.sonata-ba-view-container {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: t.$crm-space-1;
+      margin: 0 0 14px;
+      padding: 0;
+      border: 0 !important;
+      background: transparent !important;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      > th,
+      > td {
+        display: block;
+        width: 100% !important;
+        max-width: 100%;
+        float: none !important;
+        padding: 0 !important;
+        border: 0 !important;
+        background: transparent !important;
+        vertical-align: top;
+        line-height: 1.4;
+      }
+
+      > th {
+        font-family: t.$crm-font-family;
+        font-size: t.$crm-font-size-sm; // 12
+        font-weight: t.$crm-font-weight-medium;
+        color: t.$crm-color-text-muted;
+        text-align: left !important;
+
+        &:empty {
+          display: none;
+        }
+      }
+
+      > td {
+        font-family: t.$crm-font-family;
+        font-size: t.$crm-font-size-md; // 14
+        font-weight: t.$crm-font-weight-regular;
+        color: t.$crm-color-text;
+        word-break: break-word;
+
+        a {
+          @include m.crm-link;
+        }
+      }
+    }
+  }
+
+  // Soft empty-ish values Sonata often renders as dash / nbsp
+  .sonata-ba-view-container > td {
+    &:has(> :only-child:empty),
+    &:has(> br:only-child) {
+      color: t.$crm-color-text-muted;
+    }
+  }
+}
+
+// Labels: theme/_labels.scss
+
+// ---------------------------------------------------------------------------
+// Row / column rhythm
+// ---------------------------------------------------------------------------
+
+.sonata-ba-show {
+  .sonata-ba-view > .row,
+  .tab-pane .sonata-ba-collapsed-fields > .row,
+  .sonata-ba-collapsed-fields > .row {
+    margin-left: -8px;
+    margin-right: -8px;
+
+    > [class*='col-'] {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Legacy custom show markup (invoice/payment form-group) → stacked fields
+// ---------------------------------------------------------------------------
+
+.sonata-ba-show {
+  .box-body > .form-group,
+  .sonata-show-section__body > .form-group {
+    margin-bottom: 14px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    > label,
+    > .control-label,
+    label.control-label {
+      display: block;
+      float: none;
+      width: auto !important;
+      margin-bottom: t.$crm-space-1;
+      padding: 0;
+      font-size: t.$crm-font-size-sm;
+      font-weight: t.$crm-font-weight-medium !important;
+      line-height: 1.3;
+      text-align: left !important;
+      color: t.$crm-color-text-muted;
+    }
+
+    .sonata-ba-field,
+    .form-control-static {
+      min-height: 0;
+      padding: 0;
+      font-family: t.$crm-font-family;
+      font-size: t.$crm-font-size-md;
+      font-weight: t.$crm-font-weight-regular;
+      line-height: 1.4;
+      color: t.$crm-color-text;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+
+      a {
+        @include m.crm-link;
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Shared primitives for custom show Twigs (admin/crud/show/_*.html.twig)
+// Also used on edit (invoice info sidebar renders the same partials).
+// ---------------------------------------------------------------------------
+
+.sonata-ba-show,
+.sonata-ba-form {
+  // Field
+  .sonata-show-field {
+    margin-bottom: 14px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .sonata-show-field__label {
+    margin-bottom: t.$crm-space-1;
+    font-size: t.$crm-font-size-sm;
+    font-weight: t.$crm-font-weight-medium;
+    line-height: 1.3;
+    color: t.$crm-color-text-muted;
+  }
+
+  .sonata-show-field__value {
+    font-size: t.$crm-font-size-md;
+    font-weight: t.$crm-font-weight-regular;
+    line-height: 1.4;
+    color: t.$crm-color-text;
+    word-break: break-word;
+
+    a {
+      @include m.crm-link;
+    }
+  }
+
+  .sonata-show-field__value-empty {
+    color: t.$crm-color-text-muted;
+  }
+
+  // Section card
+  .sonata-show-section {
+    margin-bottom: t.$crm-space-3;
+    border: 1px solid t.$crm-color-border;
+    border-radius: t.$crm-radius-lg;
+    background: t.$crm-color-white;
+    box-shadow: t.$crm-shadow-sm;
+    overflow: hidden;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .sonata-show-section__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: t.$crm-space-2;
+    padding: 12px 16px;
+    border-bottom: 1px solid t.$crm-color-border;
+    background: t.$crm-color-white;
+  }
+
+  .sonata-show-section__title {
+    margin: 0;
+    font-size: t.$crm-font-size-xs;
+    font-weight: t.$crm-font-weight-semibold;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: t.$crm-color-text-muted;
+    line-height: 1.2;
+  }
+
+  .sonata-show-section__actions {
+    display: flex;
+    align-items: center;
+    gap: t.$crm-space-2;
+    flex-shrink: 0;
+  }
+
+  .sonata-show-section__body {
+    padding: t.$crm-space-4;
+  }
+
+  .sonata-show-section-flush {
+    .sonata-show-section__body {
+      padding: 0;
+    }
+
+    .sonata-show-section__header {
+      border-bottom: 1px solid t.$crm-color-border;
+    }
+  }
+
+  // Borderless group with primary accent rule (alternative to card chrome)
+  .sonata-show-section--ruled {
+    margin-top: t.$crm-space-2;
+    margin-bottom: 0;
+    padding-top: t.$crm-space-4;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 48px;
+      height: 3px;
+      border-radius: 2px;
+      background: t.$crm-color-primary;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 1px;
+      left: 48px;
+      right: 0;
+      height: 1px;
+      background: t.$crm-color-border;
+    }
+
+    > .sonata-show-section__header {
+      padding: 0 0 t.$crm-space-3;
+      border-bottom: 0;
+    }
+
+    > .sonata-show-section__body {
+      padding: 0;
+    }
+  }
+
+  // Hero
+  .sonata-show-hero {
+    display: flex;
+    align-items: center;
+    gap: t.$crm-space-4;
+    margin-bottom: t.$crm-space-4;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .sonata-show-hero__media {
+    flex: 0 0 80px;
+    width: 80px;
+    height: 80px;
+    border-radius: t.$crm-radius-lg;
+    border: 1px solid t.$crm-color-border;
+    background: t.$crm-color-primary-soft;
+    overflow: hidden;
+
+    > img,
+    .sonata-show-hero__img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  .sonata-show-hero__info {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .sonata-show-hero__name {
+    margin: 0 0 t.$crm-space-1;
+    font-size: t.$crm-font-size-lg;
+    font-weight: t.$crm-font-weight-semibold;
+    line-height: 1.3;
+    color: t.$crm-color-text;
+  }
+
+  .sonata-show-hero__meta {
+    font-size: t.$crm-font-size-sm;
+    font-weight: t.$crm-font-weight-regular;
+    line-height: 1.4;
+    color: t.$crm-color-text-muted;
+  }
+
+  .sonata-show-hero__chip {
+    margin-top: t.$crm-space-2;
+  }
+
+  // Sidebar column
+  .sonata-show-sidebar {
+    // bootstrap col-* already sets width; keep stacking gap for nested sections
+    .sonata-show-section {
+      margin-bottom: t.$crm-space-3;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  // Related table / list
+  .sonata-show-related {
+    border: 1px solid t.$crm-color-border;
+    border-radius: t.$crm-radius-lg;
+    background: t.$crm-color-white;
+    box-shadow: t.$crm-shadow-sm;
+    overflow: hidden;
+    margin-bottom: t.$crm-space-3;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .sonata-show-section--ruled + .sonata-show-related {
+    margin-top: t.$crm-space-5;
+  }
+
+  .sonata-show-related__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: t.$crm-space-2;
+    padding: 12px 16px;
+    border-bottom: 1px solid t.$crm-color-border;
+  }
+
+  .sonata-show-related__title {
+    margin: 0;
+    font-size: t.$crm-font-size-xs;
+    font-weight: t.$crm-font-weight-semibold;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: t.$crm-color-text-muted;
+    line-height: 1.2;
+  }
+
+  .sonata-show-related__actions {
+    display: flex;
+    align-items: center;
+    gap: t.$crm-space-2;
+    flex-shrink: 0;
+  }
+
+  .sonata-show-related__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sonata-show-related__row {
+    display: flex;
+    align-items: center;
+    gap: t.$crm-space-3;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-top: 1px solid t.$crm-color-border;
+    background: t.$crm-color-white;
+
+    &:first-child {
+      border-top: 0;
+    }
+  }
+
+  .sonata-show-related__name {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: t.$crm-font-size-md;
+    color: t.$crm-color-text;
+
+    // name_url wraps index + title; keep the same flex layout inside the link
+    > a {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      min-width: 0;
+    }
+  }
+
+  .sonata-show-related__index {
+    flex: 0 0 35px;
+    width: 35px;
+    min-width: 35px;
+    font-weight: t.$crm-font-weight-semibold;
+    color: t.$crm-color-text-muted;
+    white-space: nowrap;
+    line-height: inherit;
+  }
+
+  .sonata-show-related__prefix {
+    display: inline;
+    margin-right: 0;
+    font-weight: inherit;
+    color: inherit;
+  }
+
+  .sonata-show-related__prefix + .sonata-show-related__prefix {
+    margin-left: 4px;
+  }
+
+  .sonata-show-related__title-text {
+    min-width: 0;
+  }
+
+  .sonata-show-related__meta {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    flex: 0 1 auto;
+    max-width: 48%;
+    font-size: t.$crm-font-size-sm;
+    color: t.$crm-color-text-muted;
+    text-align: right;
+
+    .label {
+      margin: 0;
+    }
+  }
+
+  .sonata-show-related__meta-date,
+  .sonata-show-related__meta-tag {
+    color: t.$crm-color-text-muted;
+    white-space: nowrap;
+  }
+
+  .sonata-show-related__meta-tag {
+    font-weight: t.$crm-font-weight-semibold;
+  }
+
+  .sonata-show-related__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 32px;
+    width: 32px;
+    height: 32px;
+    color: t.$crm-color-text-muted !important;
+    background: t.$crm-color-white;
+    border: 1px solid t.$crm-color-border;
+    border-radius: t.$crm-radius-md;
+    text-decoration: none !important;
+
+    &:hover,
+    &:focus {
+      color: t.$crm-color-text !important;
+      background: t.$crm-color-primary-soft;
+      border-color: t.$crm-color-primary;
+      text-decoration: none !important;
+    }
+
+    .fa {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1;
+    }
+  }
+
+  .sonata-show-related__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: t.$crm-space-3;
+    padding: t.$crm-space-6 t.$crm-space-4;
+    text-align: center;
+  }
+
+  .sonata-show-related__empty-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid t.$crm-color-primary;
+    border-radius: t.$crm-radius-lg;
+    background: t.$crm-color-white;
+    color: t.$crm-color-primary;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .sonata-show-related__empty-text {
+    font-size: t.$crm-font-size-md;
+    font-weight: t.$crm-font-weight-medium;
+    color: t.$crm-color-text-muted;
+  }
+
+  // Header CTAs: theme .btn-sm.btn-success
+
+  // Mailing message preview tabs inside a show field
+  .sonata-show-preview {
+    margin-top: t.$crm-space-1;
+
+    > .nav-tabs {
+      margin: 0;
+      border-bottom: 1px solid t.$crm-color-border;
+
+      > li > a {
+        padding: 8px 12px;
+        font-family: t.$crm-font-family;
+        font-size: t.$crm-font-size-sm;
+        color: t.$crm-color-text-muted;
+        background: transparent;
+        border: 0 !important;
+        border-radius: 0;
+
+        &:hover,
+        &:focus {
+          color: t.$crm-color-text;
+          background: transparent;
+        }
+      }
+
+      > li.active > a {
+        color: t.$crm-color-text;
+        font-weight: t.$crm-font-weight-semibold;
+        background: transparent !important;
+        border: 0 !important;
+        border-bottom: 2px solid t.$crm-color-primary !important;
+      }
+    }
+  }
+
+  .sonata-show-preview__content {
+    margin-top: 0;
+    padding: t.$crm-space-3;
+    border: 1px solid t.$crm-color-border;
+    border-top: 0;
+    border-radius: 0 0 t.$crm-radius-md t.$crm-radius-md;
+    background: t.$crm-color-white;
+    font-size: t.$crm-font-size-md;
+    color: t.$crm-color-text;
+  }
+
+  .sonata-show-page-title {
+    margin: 0 0 t.$crm-space-4;
+    font-size: t.$crm-font-size-lg;
+    font-weight: t.$crm-font-weight-semibold;
+    line-height: 1.3;
+    color: t.$crm-color-text;
+  }
+
+  .sonata-show-muted {
+    margin: t.$crm-space-3 0 0;
+    font-size: t.$crm-font-size-sm;
+    color: t.$crm-color-text-muted;
+  }
+
+  .sonata-show-prose {
+    font-size: t.$crm-font-size-md;
+    line-height: 1.5;
+    color: t.$crm-color-text;
+
+    > *:first-child {
+      margin-top: 0;
+    }
+
+    > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  // Buttons: theme/_buttons.scss (.btn / .btn-sm soft variants)
+  .sonata-show-inline-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: t.$crm-space-2;
+    margin: 0;
+    align-items: center;
+  }
+
+  // Controls/buttons: theme/_forms.scss + theme/_buttons.scss
+  .sonata-show-export-form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: t.$crm-space-3;
+    margin: t.$crm-space-4 0 t.$crm-space-2;
+
+    .form-group {
+      margin: 0;
+      min-width: 180px;
+    }
+
+    .form-control,
+    input.form-control {
+      min-width: 180px;
+    }
+  }
+
+  .sonata-show-export-form__hint {
+    margin: t.$crm-space-2 0 0;
+    font-size: t.$crm-font-size-sm;
+    color: t.$crm-color-text-muted;
+  }
+
+  // telegram-token-generate buttons: use .btn.btn-sm.btn-primary (theme)
+
+  // Nested month/period tabs — underline only, no second card chrome
+  .sonata-show-subtabs {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    overflow: visible;
+
+    > .nav-tabs {
+      margin: 0 0 t.$crm-space-3;
+      padding: 0;
+      border: 0;
+      border-bottom: 1px solid t.$crm-color-border;
+      background: transparent;
+      border-radius: 0;
+
+      > li {
+        margin: 0;
+        border: 0;
+
+        > a {
+          position: relative;
+          margin: 0;
+          padding: 10px 12px;
+          font-family: t.$crm-font-family;
+          font-size: t.$crm-font-size-sm;
+          font-weight: t.$crm-font-weight-regular;
+          line-height: 1.2;
+          color: t.$crm-color-text-muted;
+          background: transparent !important;
+          border: 0 !important;
+          border-radius: 0;
+          text-decoration: none !important;
+
+          &:hover,
+          &:focus {
+            color: t.$crm-color-text;
+            background: transparent !important;
+            text-decoration: none !important;
+          }
+        }
+
+        &.active > a,
+        &.active > a:hover,
+        &.active > a:focus {
+          color: t.$crm-color-text;
+          font-weight: t.$crm-font-weight-semibold;
+          background: transparent !important;
+          border: 0 !important;
+
+          &::after {
+            content: '';
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            bottom: -1px;
+            height: 2px;
+            background: t.$crm-color-primary;
+          }
+        }
+      }
+    }
+
+    > .tab-content {
+      padding: 0;
+      background: transparent;
+    }
+  }
+
+  // Data table wrap — cell chrome: theme/_tables.scss (.table)
+  .sonata-show-data-table-wrap {
+    border: 1px solid t.$crm-color-border;
+    border-radius: t.$crm-radius-lg;
+    background: t.$crm-color-white;
+    box-shadow: t.$crm-shadow-sm;
+    overflow: hidden;
+  }
+
+  .sonata-show-data-table {
+    margin: 0 !important;
+
+    a {
+      color: t.$crm-color-info;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+
+      &:hover,
+      &:focus {
+        opacity: 0.85;
+      }
+    }
+  }
+
+  .sonata-show-data-table__footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: t.$crm-space-4;
+    padding: 12px 16px;
+    border-top: 1px solid t.$crm-color-border;
+    background: t.$crm-color-surface;
+    font-size: t.$crm-font-size-sm;
+    font-weight: t.$crm-font-weight-medium;
+    color: t.$crm-color-text;
+  }
+}

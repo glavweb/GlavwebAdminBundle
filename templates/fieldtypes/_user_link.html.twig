@@ -1,0 +1,8 @@
+{% if value %}
+    {% set userUrl = admin.userAdminUrl(value) %}
+    {% if userUrl %}
+        <a href="{{ userUrl }}">{{ value }}</a>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endif %}

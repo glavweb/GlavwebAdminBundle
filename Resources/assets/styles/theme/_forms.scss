@@ -1,0 +1,293 @@
+// Bootstrap 3 form controls — CRM look.
+
+@use '../tokens' as t;
+
+.form-control,
+select.form-control,
+input.form-control,
+textarea.form-control {
+  height: 37px;
+  padding: 8px 12px;
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-md;
+  line-height: t.$crm-line-height-normal;
+  color: t.$crm-color-text;
+  background: t.$crm-color-white;
+  border: 1px solid t.$crm-color-border;
+  border-radius: t.$crm-radius-md;
+  box-shadow: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &::placeholder {
+    color: t.$crm-color-text-muted;
+  }
+
+  &:focus {
+    border-color: t.$crm-color-primary;
+    box-shadow: 0 0 0 3px t.$crm-color-primary-soft;
+    outline: none;
+  }
+
+  &[disabled],
+  &[readonly] {
+    background: t.$crm-color-surface-2 !important;
+    color: t.$crm-color-text-muted !important;
+    border-color: t.$crm-color-border !important;
+    opacity: 1;
+    cursor: not-allowed;
+    box-shadow: none !important;
+  }
+}
+
+textarea.form-control {
+  height: auto;
+  min-height: 80px;
+}
+
+.control-label {
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-sm;
+  font-weight: t.$crm-font-weight-regular !important;
+  line-height: 1.3;
+  color: t.$crm-color-text-muted;
+}
+
+.form-group {
+  margin-bottom: 14px;
+
+  > label,
+  > .control-label,
+  label.control-label {
+    display: block;
+    float: none;
+    width: auto !important;
+    margin-bottom: t.$crm-space-1;
+    padding: 0;
+    font-family: t.$crm-font-family;
+    font-size: t.$crm-font-size-sm;
+    font-weight: t.$crm-font-weight-medium !important;
+    line-height: 1.3;
+    text-align: left !important;
+    color: t.$crm-color-text-muted;
+  }
+
+  .required:after,
+  label.required:after {
+    color: t.$crm-color-danger;
+  }
+}
+
+.form-horizontal .form-group {
+  margin-left: 0;
+  margin-right: 0;
+
+  > label,
+  > .control-label {
+    padding-top: 0;
+  }
+}
+
+.form-control-static {
+  min-height: 0;
+  padding: 8px 0;
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-md;
+  font-weight: t.$crm-font-weight-regular;
+  line-height: 1.4;
+  color: t.$crm-color-text;
+  background: transparent;
+  border: 0;
+}
+
+.help-block {
+  margin-top: t.$crm-space-1;
+  margin-bottom: 0;
+  font-size: t.$crm-font-size-xs;
+  color: t.$crm-color-text-muted;
+}
+
+.form-group.has-error {
+  > label,
+  > .control-label,
+  label.control-label {
+    color: t.$crm-color-danger;
+  }
+
+  .form-control,
+  select.form-control,
+  input.form-control,
+  textarea.form-control {
+    border-color: t.$crm-color-danger;
+    background-color: t.$crm-color-danger-soft;
+  }
+
+  .help-block {
+    color: t.$crm-color-danger;
+  }
+}
+
+.checkbox,
+.radio,
+label.checkbox,
+label.radio {
+  margin-top: 0;
+  margin-bottom: t.$crm-space-2;
+  padding-left: 0 !important;
+
+  // Nested label (div.checkbox > label) — Sonata batch footer uses label.checkbox itself
+  label {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    padding-left: 0 !important;
+    font-family: t.$crm-font-family;
+    font-weight: t.$crm-font-weight-regular !important;
+    font-size: t.$crm-font-size-md;
+    color: t.$crm-color-text;
+    cursor: pointer;
+
+    > .icheckbox_square-red,
+    > .icheckbox_square-blue,
+    > .iradio_square-red,
+    > .iradio_square-blue {
+      flex: 0 0 auto;
+      margin: 0 !important;
+    }
+  }
+
+  > .icheckbox_square-red,
+  > .icheckbox_square-blue,
+  > .iradio_square-red,
+  > .iradio_square-blue {
+    flex: 0 0 auto;
+    margin: 0 !important;
+  }
+}
+
+label.checkbox,
+label.radio {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  font-family: t.$crm-font-family;
+  font-weight: t.$crm-font-weight-regular !important;
+  font-size: t.$crm-font-size-md;
+  color: t.$crm-color-text;
+  cursor: pointer;
+}
+
+// Native input (Angular / login / markup without iCheck).
+// AdminLTE: position:absolute; margin-left:-20px. Theme zeros label padding for iCheck —
+// without a static reset the caption sits on the box.
+.checkbox label > input[type='checkbox'],
+.checkbox label > input[type='radio'],
+.radio label > input[type='checkbox'],
+.radio label > input[type='radio'],
+label.checkbox > input[type='checkbox'],
+label.radio > input[type='radio'] {
+  appearance: none;
+  -webkit-appearance: none;
+  position: static;
+  flex: 0 0 auto;
+  float: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+  background: t.$crm-color-white;
+  border: 1px solid t.$crm-color-border;
+  cursor: pointer;
+
+  &:hover {
+    border-color: t.$crm-color-primary;
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: default;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px t.$crm-color-primary-soft;
+  }
+}
+
+.checkbox label > input[type='checkbox'],
+label.checkbox > input[type='checkbox'] {
+  border-radius: t.$crm-radius-sm;
+
+  &:checked {
+    background: t.$crm-color-primary;
+    border-color: t.$crm-color-primary;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' d='M4 8l3 3 5-6'/%3E%3C/svg%3E");
+    background-size: 14px 14px;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+}
+
+.radio label > input[type='radio'],
+label.radio > input[type='radio'] {
+  border-radius: 50%;
+
+  &:checked {
+    background: t.$crm-color-white;
+    border-color: t.$crm-color-primary;
+    background-image: radial-gradient(circle, t.$crm-color-primary 5px, transparent 6px);
+  }
+}
+
+.input-group {
+  .form-control {
+    z-index: 0;
+  }
+
+  .input-group-addon,
+  .input-group-btn > .btn {
+    border-color: t.$crm-color-border;
+    background: t.$crm-color-surface-2;
+    color: t.$crm-color-text-muted;
+    font-family: t.$crm-font-family;
+  }
+
+  // Input then addon (DatePicker calendar). Square the joining edge, overlap the 1px border.
+  .form-control:has(+ .input-group-addon),
+  .form-control:has(+ .input-group-btn) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .form-control + .input-group-addon,
+  .form-control + .input-group-btn > .btn {
+    margin-left: -1px;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: t.$crm-radius-md;
+    border-bottom-right-radius: t.$crm-radius-md;
+  }
+
+  // Addon then input (currency prefix)
+  .input-group-addon:has(+ .form-control),
+  .input-group-btn:has(+ .form-control) > .btn {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: t.$crm-radius-md;
+    border-bottom-left-radius: t.$crm-radius-md;
+  }
+
+  .input-group-addon + .form-control,
+  .input-group-btn + .form-control {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+// Sonata DatePicker: wrap_fields_with_addons + inner .input-group.date
+.input-group > .input-group.date {
+  width: 100%;
+}

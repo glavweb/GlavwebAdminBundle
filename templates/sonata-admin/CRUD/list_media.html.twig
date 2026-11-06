@@ -1,0 +1,13 @@
+{% extends get_admin_template('base_list_field', admin.code) %}
+
+{% block field %}
+    {%- include '@GlavwebAdmin/sonata-admin/CRUD/display_media.html.twig' with {
+        value: value,
+        provider_options: field_description.option('provider_options', {
+            'image_attributes': {'style': 'max-height:80px;max-width:150px;'},
+            'link_attributes': {'target': '_blank'}
+        }),
+        class: field_description.option('class', null),
+        style: field_description.option('style', null)
+    } only -%}
+{% endblock %}

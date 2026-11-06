@@ -1,0 +1,32 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Glavweb\AdminBundle\:
+        resource: '../src/'
+        exclude:
+            - '../src/GlavwebAdminBundle.php'
+            - '../src/Maker/'
+            - '../src/SonataAdmin/AbstractAdmin.php'
+            - '../src/SonataAdmin/AdvancedFilter/AbstractAdvancedFilter.php'
+            - '../src/SonataAdmin/AdvancedFilter/AdvancedDatagridMapper.php'
+            - '../src/SonataAdmin/AdvancedFilter/AdvancedFilterBag.php'
+            - '../src/SonataAdmin/AdvancedFilter/AdvancedFilterField.php'
+            - '../src/SonataAdmin/AdvancedFilter/AdvancedFilterContext.php'
+
+    Glavweb\AdminBundle\SonataAdmin\Filter\CaseInsensitiveStringFilterFactory:
+        decorates: sonata.admin.builder.filter.factory
+        arguments:
+            $inner: '@Glavweb\AdminBundle\SonataAdmin\Filter\CaseInsensitiveStringFilterFactory.inner'
+
+    Glavweb\AdminBundle\Sortable\PositionOrmHandler:
+        calls:
+            - [setPositionField, ['%glavweb_admin.sortable.position_field%']]
+            - [setSortableGroups, ['%glavweb_admin.sortable.groups%']]
+
+    Glavweb\AdminBundle\Sortable\PositionHandler:
+        alias: Glavweb\AdminBundle\Sortable\PositionOrmHandler
+
+    Sonata\AdminBundle\Model\ModelManagerInterface:
+        alias: sonata.admin.manager.orm

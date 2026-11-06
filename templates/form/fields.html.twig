@@ -1,0 +1,8 @@
+{% use "form_div_layout.html.twig" %}
+
+{% use "@GlavwebAdmin/form/type/choice_field_modify.html.twig" %}
+
+{% block bs_static_raw_widget %}
+    {% set attr = attr|merge({ 'class': (attr.class|default('') ~ ' form-control-static')|trim }) %}
+    <div id="{{ id }}" {%- for attrname, attrvalue in attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ value|raw }}</div>
+{% endblock %}

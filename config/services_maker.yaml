@@ -1,0 +1,13 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        bind:
+            $entityNamespace: '%glavweb_admin.maker.entity_namespace%'
+            $adminServicesFile: '%glavweb_admin.maker.admin_services_file%'
+
+    Glavweb\AdminBundle\Maker\MakeAdmin:
+        tags: ['maker.command']
+
+    Glavweb\AdminBundle\Maker\Helper\Helper:
+        autowire: true

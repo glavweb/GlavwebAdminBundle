@@ -1,0 +1,25 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% if admin.hasAccess('delete', object) and admin.hasRoute('delete') %}
+    {% set labelName = admin.labelTranslatorStrategy.getLabel(admin.classnameLabel ~ '_action_delete', 'button', 'link') %}
+    {% set labelNameTranslated = labelName|trans({}, admin.translationDomain) %}
+    <li>
+        <a class="sonata-action-element" href="{{ admin.generateObjectUrl('delete', object) }}">
+            <i class="fa fa-times" aria-hidden="true"></i>
+            {% if labelName == labelNameTranslated %}
+                {{ 'link_action_delete'|trans({}, 'SonataAdminBundle') }}
+            {% else %}
+                {{ labelNameTranslated }}
+            {% endif %}
+        </a>
+    </li>
+{% endif %}

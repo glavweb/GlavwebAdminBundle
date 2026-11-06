@@ -1,0 +1,41 @@
+{#
+  Related entities list card (lessons, members, courses…).
+
+  Prefer {% embed %} + {% block rows %}.
+  Or include with `rows` HTML string / `empty=true`.
+
+  Params:
+    title   — optional list title
+    actions — optional HTML header actions (e.g. «Добавить»), raw
+    empty   — bool: show empty state instead of rows
+    empty_message — empty state text
+    class   — extra CSS class
+    rows    — optional HTML when not using embed block
+#}
+<div class="sonata-show-related{{ class is defined and class ? ' ' ~ class : '' }}">
+    {% if (title is defined and title) or (actions is defined and actions) %}
+        <div class="sonata-show-related__header">
+            {% if title is defined and title %}
+                <h4 class="sonata-show-related__title">{{ title }}</h4>
+            {% else %}
+                <span class="sonata-show-related__title"></span>
+            {% endif %}
+            {% if actions is defined and actions %}
+                <div class="sonata-show-related__actions">{{ actions|raw }}</div>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if empty|default(false) %}
+        <div class="sonata-show-related__empty">
+            <div class="sonata-show-related__empty-icon" aria-hidden="true">∅</div>
+            <div class="sonata-show-related__empty-text">{{ empty_message|default('Нет данных') }}</div>
+        </div>
+    {% else %}
+        <div class="sonata-show-related__list">
+            {% block rows %}
+                {{ rows|default('')|raw }}
+            {% endblock %}
+        </div>
+    {% endif %}
+</div>

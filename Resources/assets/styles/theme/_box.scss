@@ -1,0 +1,95 @@
+// AdminLTE .box* — CRM card chrome (no colored top border).
+
+@use '../tokens' as t;
+
+.box {
+  margin-bottom: t.$crm-space-3;
+  border: 1px solid t.$crm-color-border !important;
+  border-radius: t.$crm-radius-lg;
+  border-top: 1px solid t.$crm-color-border !important;
+  background: t.$crm-color-white;
+  box-shadow: t.$crm-shadow-sm !important;
+
+  &.box-primary,
+  &.box-info,
+  &.box-success,
+  &.box-warning,
+  &.box-danger,
+  &.box-default {
+    border-top-color: t.$crm-color-border !important;
+  }
+}
+
+.box-header {
+  display: flex;
+  align-items: center;
+  padding: t.$crm-space-3 t.$crm-space-4;
+  border-bottom: 1px solid t.$crm-color-border;
+  border-radius: t.$crm-radius-lg t.$crm-radius-lg 0 0;
+  background: t.$crm-color-white;
+  color: t.$crm-color-text;
+
+  &::before,
+  &::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  > .box-title,
+  > h3.box-title,
+  > h4.box-title {
+    float: none !important;
+    margin: 0 !important;
+    padding: 0;
+    font-family: t.$crm-font-family;
+    font-size: t.$crm-font-size-sm;
+    font-weight: t.$crm-font-weight-semibold;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: t.$crm-color-text-muted;
+    line-height: 1.2;
+  }
+}
+
+.box-tools {
+  display: inline-flex;
+  align-items: center;
+  gap: t.$crm-space-1;
+  margin-left: auto;
+
+  &.pull-right {
+    float: none !important;
+  }
+}
+
+.box-body {
+  padding: t.$crm-space-4;
+  border-radius: 0;
+  background: t.$crm-color-white;
+
+  // Без header (custom_layout, help, empty states) — скругляем верх,
+  // иначе белый фон перекрывает border-radius у .box.
+  &:first-child {
+    border-top-left-radius: t.$crm-radius-lg;
+    border-top-right-radius: t.$crm-radius-lg;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: t.$crm-radius-lg;
+    border-bottom-right-radius: t.$crm-radius-lg;
+  }
+}
+
+.box-footer {
+  padding: t.$crm-space-3 t.$crm-space-4;
+  border-top: 1px solid t.$crm-color-border;
+  border-radius: 0 0 t.$crm-radius-lg t.$crm-radius-lg;
+  background: t.$crm-color-white;
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-sm;
+  color: t.$crm-color-text-muted;
+}
+
+.box.collapsed-box .box-body {
+  display: none;
+}

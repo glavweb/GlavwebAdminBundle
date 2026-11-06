@@ -1,0 +1,51 @@
+// AdminLTE .info-box (empty states, KPI widgets).
+
+@use '../tokens' as t;
+
+.info-box {
+  display: flex;
+  align-items: center;
+  min-height: 72px;
+  margin-bottom: t.$crm-space-3;
+  padding: t.$crm-space-3 t.$crm-space-4;
+  border: 1px solid t.$crm-color-border;
+  border-radius: t.$crm-radius-lg;
+  background: t.$crm-color-white;
+  box-shadow: t.$crm-shadow-sm;
+  font-family: t.$crm-font-family;
+  color: t.$crm-color-text;
+}
+
+.info-box-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-right: t.$crm-space-3;
+  border-radius: t.$crm-radius-md;
+  background: t.$crm-color-primary-soft !important;
+  color: t.$crm-color-text !important;
+  font-size: 24px;
+}
+
+.info-box-content {
+  flex: 1 1 auto;
+  padding: 0;
+  margin-left: 0;
+}
+
+.info-box-text {
+  display: block;
+  font-size: t.$crm-font-size-sm;
+  font-weight: t.$crm-font-weight-medium;
+  color: t.$crm-color-text-muted;
+  text-transform: none;
+}
+
+.info-box-number {
+  display: block;
+  font-size: t.$crm-font-size-lg;
+  font-weight: t.$crm-font-weight-semibold;
+  color: t.$crm-color-text;
+}

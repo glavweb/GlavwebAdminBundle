@@ -1,0 +1,6 @@
+sonata_admin:
+    templates:
+        list: '@GlavwebAdmin/CRUD/list.html.twig'
+        edit: '@GlavwebAdmin/CRUD/edit.html.twig'
+        show: '@GlavwebAdmin/CRUD/show.html.twig'
+        knp_menu_template: '@GlavwebAdmin/Menu/sonata_menu.html.twig'

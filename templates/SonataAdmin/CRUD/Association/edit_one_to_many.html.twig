@@ -1,0 +1,105 @@
+{#
+  CRM override of Sonata one-to-many association widget.
+  inline table = real table; inline rows = labeled collection cards; else stacked tabs.
+#}
+{% if not sonata_admin.field_description.hasassociationadmin %}
+    {% for element in value %}
+        {{ element|render_relation_element(sonata_admin.field_description) }}
+    {% endfor %}
+{% else %}
+
+    <div id="field_container_{{ id }}" class="field-container">
+        <span id="field_widget_{{ id }}" >
+            {% if sonata_admin.edit == 'inline' %}
+                {% if sonata_admin.inline == 'table' %}
+                    {% if form.children|length > 0 %}
+                        {% include '@SonataAdmin/CRUD/Association/edit_one_to_many_inline_table.html.twig' %}
+                    {% endif %}
+                {% elseif sonata_admin.inline == 'rows' %}
+                    {% if form.children|length > 0 %}
+                        {% include '@SonataAdmin/CRUD/Association/edit_one_to_many_inline_rows.html.twig' %}
+                    {% endif %}
+                {% elseif form.children|length > 0 %}
+                    {% set associationAdmin = sonata_admin.field_description.associationadmin %}
+                    {% include '@SonataAdmin/CRUD/Association/edit_one_to_many_inline_tabs.html.twig' %}
+
+                {% endif %}
+            {% else %}
+                {{ form_widget(form) }}
+            {% endif %}
+
+        </span>
+
+        {% set display_create_button = sonata_admin.field_description.associationadmin.hasRoute('create')
+            and sonata_admin.field_description.associationadmin.hasAccess('create')
+            and btn_add
+            and (
+                sonata_admin.field_description.option('limit') is null or
+                form.children|length < sonata_admin.field_description.option('limit')
+            ) %}
+
+        {% if sonata_admin.edit == 'inline' %}
+
+            {% if display_create_button %}
+                {% set btn_add_label = btn_translation_domain|default(null) is same as(false)
+                    ? btn_add
+                    : btn_add|trans({}, btn_translation_domain|default(btn_catalogue))
+                %}
+                <span id="field_actions_{{ id }}" class="sonata-collection-actions">
+                    <a
+                        href="{{ sonata_admin.field_description.associationadmin.generateUrl(
+                            'create',
+                            sonata_admin.field_description.getOption('link_parameters', {})
+                        ) }}"
+                        onclick="return start_field_retrieve_{{ id }}(this);"
+                        class="btn btn-sm btn-soft-success sonata-collection-add sonata-ba-action"
+                        title="{{ btn_add_label }}"
+                    >
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                        <span class="sonata-collection-add__label">{{ btn_add_label }}</span>
+                    </a>
+                </span>
+            {% endif %}
+
+            {# add code for the sortable options #}
+            {% if sonata_admin.field_description.option('sortable', false) %}
+                {% if sonata_admin.inline == 'table' %}
+                    {% include '@SonataAdmin/CRUD/Association/edit_one_to_many_sortable_script_table.html.twig' %}
+                {% elseif sonata_admin.inline == 'rows' %}
+                    {% include '@SonataAdmin/CRUD/Association/edit_one_to_many_sortable_script_rows.html.twig' %}
+                {% else %}
+                    {% include '@SonataAdmin/CRUD/Association/edit_one_to_many_sortable_script_tabs.html.twig' %}
+                {% endif %}
+            {% endif %}
+
+            {% include '@SonataAdmin/CRUD/Association/_inline_collection_delete_script.html.twig' %}
+
+            {# include association code #}
+            {% include '@SonataAdmin/CRUD/Association/edit_one_script.html.twig' %}
+
+        {% else %}
+            <span id="field_actions_{{ id }}" >
+                {% if display_create_button %}
+                    {% set btn_add_label = btn_translation_domain|default(null) is same as(false)
+                        ? btn_add
+                        : btn_add|trans({}, btn_translation_domain|default(btn_catalogue))
+                    %}
+                    <a
+                        href="{{ sonata_admin.field_description.associationadmin.generateUrl(
+                            'create',
+                            sonata_admin.field_description.getOption('link_parameters', {})
+                        ) }}"
+                        onclick="return start_field_dialog_form_add_{{ id }}(this);"
+                        class="btn btn-success btn-sm sonata-ba-action"
+                        title="{{ btn_add_label }}"
+                    >
+                        <i class="fas fa-plus-circle"></i>
+                        {{ btn_add_label }}
+                    </a>
+                    {% include '@SonataAdmin/CRUD/Association/edit_modal.html.twig' %}
+                    {% include '@SonataAdmin/CRUD/Association/edit_many_script.html.twig' %}
+                {% endif %}
+            </span>
+        {% endif %}
+    </div>
+{% endif %}

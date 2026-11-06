@@ -1,0 +1,12 @@
+{# templates/fieldtypes/show_dump.html.twig #}
+
+{% extends '@SonataAdmin/CRUD/base_list_field.html.twig' %}
+
+{% block field %}
+    {% if value %}
+        {% set url = admin.container.get('Glavweb\\UploaderBundle\\Helper\\MediaHelper').getContentPath(value, true) %}
+        <a href="{{ url }}" target="_blank">{{ value.contentPath }}</a>
+    {% else %}
+        Не загружено
+    {% endif %}
+{% endblock %}

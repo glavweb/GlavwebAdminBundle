@@ -1,0 +1,30 @@
+// Default theme colors. Consumers can configure every token through Sass @use.
+
+// Brand / semantic
+$crm-color-primary:      #adc331 !default; // Jetcode green
+$crm-color-primary-soft: #f3f6e3 !default;
+$crm-color-text:         #364558 !default;
+$crm-color-text-muted:   #71829c !default;
+$crm-color-white:        #ffffff !default;
+$crm-color-surface:      #f5f5f5 !default;
+$crm-color-surface-2:    #f2f2f2 !default;
+$crm-color-border:       #dddddd !default;
+$crm-color-danger:       #c93333 !default;
+$crm-color-danger-soft:  #fbeaea !default;
+$crm-color-success:      #009e49 !default;
+$crm-color-warning:      #f39c12 !default;
+$crm-color-warning-soft: #fef3e2 !default;
+$crm-color-warning-text: #b36b00 !default;
+$crm-color-info:         #3c8dbc !default;
+$crm-color-info-soft:    #e8f4fc !default;
+
+// AI
+$crm-color-ai:    #6c5ce7 !default;
+$crm-color-ai-bg: #f5f4fd !default;
+
+// Messenger sources (badges)
+$crm-color-channel-telegram: #2aabee !default;
+$crm-color-channel-telegram-bot: #1e96d1 !default;
+$crm-color-channel-whatsapp: #25d366 !default;
+$crm-color-channel-viber:    #7360f2 !default;
+$crm-color-channel-email:    #71829c !default;

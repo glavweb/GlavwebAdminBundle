@@ -1,0 +1,16 @@
+{#
+  Meta sidebar column for MainSidebar / ProfileHero layouts.
+
+  Prefer {% embed %} + {% block body %}.
+  Typically wraps one or more sonata-show-section cards.
+
+  Params:
+    cols  — bootstrap column size, default 4
+    class — extra CSS class on aside
+    body  — optional HTML when not using embed block
+#}
+<aside class="sonata-show-sidebar col-md-{{ cols|default(4) }}{{ class is defined and class ? ' ' ~ class : '' }}">
+    {% block body %}
+        {{ body|default('')|raw }}
+    {% endblock %}
+</aside>

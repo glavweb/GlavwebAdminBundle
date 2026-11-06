@@ -1,0 +1,153 @@
+{% extends '@SonataAdmin/CRUD/base_list.html.twig' %}
+
+{% block tab_menu_navbar_header %}{% endblock %}
+
+{% block navbar_title %}
+    {% if admin.isChild and admin.parent.subject %}
+        {{ "title_edit"|trans({'%name%': admin.parent.toString(admin.parent.subject)|u.truncate(30) }, 'SonataAdminBundle') }}
+    {% else %}
+        {% set label = admin.labelTranslatorStrategy.getLabel(admin.classnameLabel ~ '_list', 'breadcrumb', 'link') %}
+        {{ label|trans({}, admin.translationDomain) }}
+    {% endif %}
+{% endblock %}
+
+{% block table_header %}
+    {% if admin.getListMode() != 'mosaic' %}
+        <thead>
+            <tr class="sonata-ba-list-field-header">
+                {% for field_description in admin.list.getElements() %}
+                    {% if admin.hasRoute('batch') and field_description.name == constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_BATCH') and batchactions|length > 0 %}
+                        <th class="sonata-ba-list-field-header sonata-ba-list-field-header-batch">
+                            <input type="checkbox" id="list_batch_checkbox">
+                        </th>
+                    {% elseif field_description.name == constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_SELECT') %}
+                        <th class="sonata-ba-list-field-header sonata-ba-list-field-header-select"></th>
+                    {% elseif field_description.name == constant('Sonata\\AdminBundle\\Datagrid\\ListMapper::NAME_ACTIONS') and app.request.isXmlHttpRequest %}
+                        {# Action buttons disabled in ajax view! #}
+                    {% elseif field_description.getOption('ajax_hidden') == true and app.request.isXmlHttpRequest %}
+                        {# Disable fields with 'ajax_hidden' option set to true #}
+                    {% else %}
+                        {% set sortable = false %}
+                        {% set sort_title = 'Сортировка невозможна' %}
+                        {% if field_description.option('sortable', false) %}
+                            {% set sortable = true %}
+                            {% set sort_parameters = admin.datagrid.sortparameters(field_description) %}
+                            {% set current = admin.datagrid.values[constant('Sonata\\AdminBundle\\Datagrid\\DatagridInterface::SORT_BY')] is defined
+                                and (admin.datagrid.values[constant('Sonata\\AdminBundle\\Datagrid\\DatagridInterface::SORT_BY')] == field_description
+                                    or admin.datagrid.values[constant('Sonata\\AdminBundle\\Datagrid\\DatagridInterface::SORT_BY')].name == sort_parameters.filter[constant('Sonata\\AdminBundle\\Datagrid\\DatagridInterface::SORT_BY')]) %}
+                            {% set sort_active_class = current ? 'sonata-ba-list-field-order-active' : '' %}
+                            {% set sort_by = current ? admin.datagrid.values[constant('Sonata\\AdminBundle\\Datagrid\\DatagridInterface::SORT_ORDER')] : field_description.option(constant('Sonata\\AdminBundle\\Datagrid\\DatagridInterface::SORT_ORDER'), sort_parameters.filter[constant('Sonata\\AdminBundle\\Datagrid\\DatagridInterface::SORT_ORDER')]) %}
+                            {% set next_order = sort_parameters.filter[constant('Sonata\\AdminBundle\\Datagrid\\DatagridInterface::SORT_ORDER')]|upper %}
+                            {% set sort_title = next_order == 'ASC' ? 'Сортировать от А до Я' : 'Сортировать от Я до А' %}
+                        {% endif %}
+
+                        <th class="sonata-ba-list-field-header-{{ field_description.type }}{% if sortable %} sonata-ba-list-field-header-order-{{ sort_by|lower }} {{ sort_active_class }}{% endif %}{% if field_description.option('header_class') %} {{ field_description.option('header_class') }}{% endif %}"{% if field_description.option('header_style') %} style="{{ field_description.option('header_style') }}"{% endif %} title="{{ sort_title }}">
+                            {% if sortable %}
+                                <a href="{{ admin.generateUrl(action|default('list'), sort_parameters|merge({_list_mode: admin.getListMode()})) }}" title="{{ sort_title }}">
+                            {% endif %}
+                            {% if field_description.getOption('label_icon') %}
+                                <span class="sonata-ba-list-field-header-label-icon">
+                                    {{ field_description.getOption('label_icon')|parse_icon }}
+                                </span>
+                            {% endif %}
+                            {% if field_description.label is not same as(false) %}
+                                {% if field_description.translationDomain is same as(false) %}
+                                    {{ field_description.label }}
+                                {% else %}
+                                    {{ field_description.label|trans({}, field_description.translationDomain) }}
+                                {% endif %}
+                            {% endif %}
+                            {% if sortable %}</a>{% endif %}
+                        </th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+    {% endif %}
+{% endblock %}
+
+{% block list_header %}
+    {% set advanced_labels = admin.activeAdvancedFilterLabels|default([]) %}
+    {% include '@GlavwebAdmin/Filter/advanced_filter_list_header.html.twig' %}
+    {% if admin.hasDisplayableFilters and advanced_labels is empty %}
+        <div class="list-header-data">
+            <span class="list-header-attention">Данные фильтрованы! </span>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block list_table %}
+    <div class="list-mode-{{  admin.getListMode() }}">
+        {{ parent() }}
+    </div>
+{% endblock %}
+
+{% block list_filters %}
+    {% if admin.datagrid.filters %}
+        {% form_theme form admin.templateRegistry.getTemplate('filter') %}
+        <div class="box box-primary">
+            <div class="box-header">
+                <h4 class="box-title">{{ 'label_filters'|trans({}, 'SonataAdminBundle') }}</h4>
+
+                <div class="filter-reset pull-right">
+                    <a href="{{ admin.generateUrl('list', {filters: 'reset'}) }}" title="{{ 'link_reset_filter'|trans({}, 'SonataAdminBundle') }}">
+                        <span class="glyphicon glyphicon-erase" aria-hidden="true"></span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="box-body">
+                <form class="sonata-filter-form {{ admin.isChild and 1 == admin.datagrid.filters|length ? 'hide' : '' }}" action="{{ admin.generateUrl('list') }}" method="GET" role="form">
+                    {{ form_errors(form) }}
+                    <div class="filter_container {{ admin.datagrid.hasActiveFilters ? 'active' : 'inactive' }}">
+                        {% for filter in admin.datagrid.filters %}
+                            {% if filter.option('show_filter') is not same as(false) %}
+                            <div class="form-group">
+                                {% if filter.label is not same as(false) %}
+                                    <label for="{{ form.children[filter.formName].children['value'].vars.id }}">
+                                        {% if filter.translationDomain is same as(false) %}
+                                            {{ filter.label }}
+                                        {% else %}
+                                            {{ filter.label|trans({}, filter.translationDomain ?? admin.translationDomain) }}
+                                        {% endif %}
+                                    </label>
+                                {% endif %}
+                                {% set attr = form.children[filter.formName].children['type'].vars.attr|default({}) %}
+                                {% set attr = attr|merge({'class': (attr.class|default('') ~ ' sonata-filter-option')|trim}) %}
+
+                                <div style="display: none">
+                                    {{ form_widget(form.children[filter.formName].children['type'], {'attr':  attr}) }}
+                                </div>
+
+                                <div>
+                                    {{ form_widget(form.children[filter.formName].children['value']) }}
+                                </div>
+                            </div>
+                            {% endif %}
+                        {% endfor %}
+
+                        <input type="hidden" name="filter[_page]" id="filter__page" value="1">
+
+                        {% set foo = form.children['_page'].setRendered() %}
+
+                        <button type="submit" class="btn btn-default pull-right">Применить</button>
+                        <div style="display: none" class="sonata-filter-floating-panel">
+                            <div class="sonata-filter-submit-panel">
+                                <button type="submit" class="btn btn-primary">Применить</button>
+                            </div>
+                        </div>
+
+                        {{ form_rest(form) }}
+                    </div>
+
+                    {% for paramKey, paramValue in admin.persistentParameters %}
+                        <input type="hidden" name="{{ paramKey }}" value="{{ paramValue }}">
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+
+    {% endif %}
+{% endblock %}
+
+{% block list_filters_actions %}{% endblock %}

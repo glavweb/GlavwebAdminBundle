@@ -1,0 +1,105 @@
+{#
+  CRM override of Sonata inline (non-table) collection: stacked cards.
+  Header: child-admin label + small "Удалить" button. Inner Sonata tabs only if 2+ groups have labels.
+#}
+{% set associationAdmin = associationAdmin|default(sonata_admin.field_description.associationadmin) %}
+{% set sortable_field = sonata_admin.field_description.option('sortable', false) %}
+{% set card_title = associationAdmin.label
+    ? associationAdmin.label|trans({}, associationAdmin.translationDomain)
+    : null
+%}
+{% set show_inner_tabs = associationAdmin.formgroups|filter(
+    g => g.label is not same as(false) and g.label is not empty
+)|length > 1 %}
+
+<div class="sonata-ba-tabs">
+    {% for nested_group_field in form.children %}
+        {% set collection_item = nested_group_field.vars.data ?? null %}
+        {% set collection_persisted = collection_item is not null and collection_item.id %}
+        {% set collection_deleted = nested_group_field['_delete'] is defined and nested_group_field['_delete'].vars.checked %}
+        <div class="sonata-collection-row sonata-collection-row--stacked{% if collection_deleted %} sonata-collection-item--pending-delete{% endif %}" data-sonata-collection-item data-sonata-collection-persisted="{{ collection_persisted ? '1' : '0' }}">
+            <div class="sonata-collection-item__pending">
+                {% include '@SonataAdmin/CRUD/Association/_inline_collection_pending_delete.html.twig' %}
+            </div>
+
+            <div class="sonata-collection-row__header">
+                {% if sortable_field %}
+                    <span class="sonata-ba-sortable-handler">
+                        <i class="fa fa-arrows" aria-hidden="true"></i>
+                    </span>
+                {% endif %}
+                {% if card_title %}
+                    <span class="sonata-collection-row__title">{{ card_title }}</span>
+                {% endif %}
+                {% include '@SonataAdmin/CRUD/Association/_inline_collection_delete.html.twig' with {
+                    delete_button_labeled: true,
+                } %}
+            </div>
+
+            <div class="sonata-collection-row__body">
+                {% if show_inner_tabs %}
+                    <div class="nav-tabs-custom">
+                        <ul class="nav nav-tabs">
+                            {% for form_group in associationAdmin.formgroups %}
+                                <li class="{% if loop.first %}active{% endif %}">
+                                    <a
+                                        href="#{{ id }}_{{ loop.parent.loop.index }}_{{ loop.index }}"
+                                        data-toggle="tab"
+                                    >
+                                        <i class="icon-exclamation-sign has-errors hide"></i>
+                                        {% if form_group.translation_domain is defined and form_group.translation_domain is same as(false) %}
+                                            {{ form_group.label }}
+                                        {% else %}
+                                            {{ form_group.label|trans({}, form_group.translation_domain ?? associationAdmin.translationDomain) }}
+                                        {% endif %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+
+                        <div class="tab-content">
+                            {% for name, form_group in associationAdmin.formgroups %}
+                                <div
+                                    class="tab-pane{% if loop.first %} active{% endif %}"
+                                    id="{{ id }}_{{ loop.parent.loop.index }}_{{ loop.index }}"
+                                >
+                                    <fieldset>
+                                        <div class="sonata-ba-collapsed-fields">
+                                            {% for field_name, form_field_name in form_group.fields|filter(form_field_name => nested_group_field.children[form_field_name] is defined) %}
+                                                {% set nested_field = nested_group_field.children[form_field_name] %}
+                                                <div class="sonata-ba-field-{{ id }}-{{ field_name }}{% if field_name == sortable_field %} hide{% endif %}">
+                                                    {% if associationAdmin.formfielddescriptions[field_name] is defined %}
+                                                        {{ form_row(nested_field) }}
+                                                        {% set dummy = nested_group_field.setrendered %}
+                                                    {% else %}
+                                                        {{ form_row(nested_field) }}
+                                                    {% endif %}
+                                                </div>
+                                            {% endfor %}
+                                        </div>
+                                    </fieldset>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% else %}
+                    {% for form_group in associationAdmin.formgroups %}
+                        <div class="sonata-ba-collapsed-fields">
+                            {% for field_name, form_field_name in form_group.fields|filter(form_field_name => nested_group_field.children[form_field_name] is defined) %}
+                                {% set nested_field = nested_group_field.children[form_field_name] %}
+                                <div class="sonata-ba-field-{{ id }}-{{ field_name }}{% if field_name == sortable_field %} hide{% endif %}">
+                                    {% if associationAdmin.formfielddescriptions[field_name] is defined %}
+                                        {{ form_row(nested_field) }}
+                                        {% set dummy = nested_group_field.setrendered %}
+                                    {% else %}
+                                        {{ form_row(nested_field) }}
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+</div>

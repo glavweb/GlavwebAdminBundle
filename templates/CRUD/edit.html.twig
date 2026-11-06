@@ -1,0 +1,11 @@
+{% extends '@SonataAdmin/CRUD/base_edit.html.twig' %}
+
+{% block navbar_title %}
+    {% if objectId|default(admin.id(object)) is not null %}
+        {{ "title_edit"|trans({'%name%': admin.toString(object)|u.truncate(30) }, 'SonataAdminBundle') }}
+    {% else %}
+        {{ "title_create"|trans({}, 'SonataAdminBundle') }}
+    {% endif %}
+{% endblock %}
+
+

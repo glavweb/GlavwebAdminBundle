@@ -1,0 +1,70 @@
+// Bootstrap 3 dropdown menus.
+
+@use '../tokens' as t;
+
+.dropdown-menu {
+  position: absolute;
+  z-index: 1060;
+  min-width: 180px;
+  padding: t.$crm-space-1 0;
+  margin-top: 0;
+  border: 1px solid t.$crm-color-border !important;
+  border-radius: t.$crm-radius-md !important;
+  background: t.$crm-color-white !important;
+  box-shadow: t.$crm-shadow-md !important;
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-md;
+
+  > li > a {
+    display: block;
+    padding: 8px 12px;
+    font-size: t.$crm-font-size-md;
+    font-weight: t.$crm-font-weight-regular;
+    line-height: 1.4;
+    color: t.$crm-color-text !important;
+    white-space: nowrap;
+    background: transparent !important;
+
+    &:hover,
+    &:focus {
+      color: t.$crm-color-text !important;
+      background: t.$crm-color-primary-soft !important;
+      text-decoration: none;
+    }
+  }
+
+  > .active > a,
+  > .active > a:hover,
+  > .active > a:focus {
+    color: t.$crm-color-text !important;
+    background: t.$crm-color-primary-soft !important;
+  }
+
+  .divider {
+    margin: t.$crm-space-1 0;
+    background-color: t.$crm-color-border;
+  }
+}
+
+.dropdown-toggle .caret {
+  border-top-color: t.$crm-color-text-muted;
+  border-bottom-color: t.$crm-color-text-muted;
+}
+
+.open:not(.dropup) > .dropdown-toggle .caret {
+  border-top-color: t.$crm-color-text;
+  border-bottom-color: t.$crm-color-text;
+  transform: rotate(180deg);
+}
+
+.dropup > .dropdown-menu {
+  top: auto;
+  bottom: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.dropup.open > .dropdown-toggle .caret {
+  border-top-color: t.$crm-color-text;
+  border-bottom-color: t.$crm-color-text;
+}

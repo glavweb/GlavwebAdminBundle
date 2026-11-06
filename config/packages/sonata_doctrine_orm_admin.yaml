@@ -1,0 +1,16 @@
+sonata_doctrine_orm_admin:
+    templates:
+        types:
+            list:
+                enum_array: '@GlavwebAdmin/sonata-admin/CRUD/list_enum_array.html.twig'
+                media: '@GlavwebAdmin/sonata-admin/CRUD/list_media.html.twig'
+                enum: '@GlavwebAdmin/fieldtypes/list_field_enum.html.twig'
+                user: '@GlavwebAdmin/fieldtypes/list_field_user.html.twig'
+                glavweb_image: '@GlavwebAdmin/fieldtypes/list_glavweb_image.html.twig'
+                glavweb_file: '@GlavwebAdmin/fieldtypes/list_glavweb_file.html.twig'
+            show:
+                enum_array: '@GlavwebAdmin/sonata-admin/CRUD/show_enum_array.html.twig'
+                media: '@GlavwebAdmin/sonata-admin/CRUD/show_media.html.twig'
+                enum: '@GlavwebAdmin/fieldtypes/show_field_enum.html.twig'
+                raw_text: '@GlavwebAdmin/fieldtypes/show_field_raw_text.html.twig'
+                user: '@GlavwebAdmin/fieldtypes/show_field_user.html.twig'

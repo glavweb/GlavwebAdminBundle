@@ -1,0 +1,15 @@
+{% extends '@!SonataAdmin/CRUD/base_show.html.twig' %}
+
+{# Title in sticky content-header (.navbar-brand) — same chrome as edit #}
+{% block navbar_title %}
+    {{ 'title_show'|trans({'%name%': admin.toString(object)|u.truncate(30) }, 'SonataAdminBundle') }}
+{% endblock %}
+
+{% block notice %}
+    {% if object is archivable and object is archived %}
+        <div class="alert alert-warning">
+            Архивная запись. Изменение и использование недоступно.
+        </div>
+    {% endif %}
+    {{ parent() }}
+{% endblock notice %}

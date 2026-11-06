@@ -1,0 +1,8 @@
+{% if imageUrl %}
+    {% set objectUrl = admin.listObjectUrl(object) %}
+    {% if objectUrl %}
+        <a href="{{ objectUrl }}"><img src="{{ imageUrl }}" class="sonata-list-thumb" alt=""></a>
+    {% else %}
+        <img src="{{ imageUrl }}" class="sonata-list-thumb" alt="">
+    {% endif %}
+{% endif %}

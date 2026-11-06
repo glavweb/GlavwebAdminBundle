@@ -1,0 +1,15 @@
+{% set value = value ? value : field_description.options.data %}
+<td colspan="2">
+    <div class="form-group" id="sonata-ba-field-container-s6104ffbd6a9fb_status">
+        <label class="control-label">
+            {% apply spaceless %}
+                {% if field_description.label is not same as(false) %}
+                    {{ field_description.label|trans({}, field_description.translationDomain ?: admin.translationDomain) }}
+                {% endif %}
+            {% endapply %}
+        </label>
+        <div class="sonata-ba-field sonata-ba-field-standard-natural">
+            <div class="form-control-static">{{ value|raw }}</div>
+        </div>
+    </div>
+</td>

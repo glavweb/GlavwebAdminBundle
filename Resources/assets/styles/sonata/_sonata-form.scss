@@ -1,0 +1,902 @@
+// OVERRIDE: Sonata edit/create form theme (AdminLTE content area) aligned with CRM tokens.
+// CSS-only: no Twig/DOM changes. Does not restyle main-sidebar.
+// Scope: .sonata-ba-form (+ related notices in .content). content-header chrome shared with list theme.
+
+@use '../tokens' as t;
+
+// ---------------------------------------------------------------------------
+// Edit title in content-header (.navbar-brand) + action buttons
+// ---------------------------------------------------------------------------
+
+// Edit/create toolbar has .navbar-brand; list pages use tabs instead
+.content-header:has(.navbar-header .navbar-brand) {
+  .navbar-header {
+    float: none;
+    display: flex;
+    align-items: center; // vertically center title in 49px bar
+    align-self: stretch;
+    margin-right: 0;
+  }
+
+  .navbar-header .navbar-brand {
+    float: none;
+    display: inline-flex;
+    align-items: center;
+    height: auto;
+    max-width: none;
+    padding: 0 8px;
+    margin: 0;
+    font-family: t.$crm-font-family;
+    font-size: t.$crm-font-size-md;
+    font-weight: t.$crm-font-weight-semibold;
+    line-height: 1.2;
+    color: t.$crm-color-text !important;
+    background: transparent;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Form shell
+// ---------------------------------------------------------------------------
+
+.sonata-ba-form {
+  font-family: t.$crm-font-family;
+  color: t.$crm-color-text;
+
+  > form {
+    margin: 0;
+  }
+}
+
+// Alerts: theme/_alerts.scss
+
+// ---------------------------------------------------------------------------
+// Boxes — Sonata nesting (chrome: theme/_box.scss)
+// ---------------------------------------------------------------------------
+
+.sonata-ba-form {
+  .box.box-primary {
+    margin-bottom: t.$crm-space-3;
+  }
+
+  .header-hidden.box.box-primary,
+  .header-hidden > .box.box-primary,
+  .box.box-primary.header-hidden {
+    > .box-header {
+      display: none !important;
+    }
+  }
+
+  // Outside tabs: header-hidden create/edit still a single card (Contact-tag)
+  &:not(:has(.nav-tabs-custom)) {
+    .header-hidden > .box.box-primary,
+    .col-md-7.header-hidden > .box,
+    .col-md-6.header-hidden > .box,
+    .col-md-8.header-hidden > .box,
+    .col-md-12.header-hidden > .box {
+      border: 1px solid t.$crm-color-border !important;
+      border-radius: t.$crm-radius-lg;
+      box-shadow: t.$crm-shadow-sm !important;
+
+      // OVERRIDE: theme/_box.scss only rounds box-body bottom; header is hidden
+      > .box-body {
+        border-radius: t.$crm-radius-lg;
+      }
+    }
+  }
+
+  // Inside tabs (Figma): outer .nav-tabs-custom is the card;
+  // header-hidden columns stay flat; titled side groups keep their own cards
+  .nav-tabs-custom {
+    .header-hidden > .box.box-primary,
+    [class*='col-'].header-hidden > .box.box-primary,
+    [class*='col-'].header-hidden > .box {
+      margin-bottom: 0;
+      border: 0 !important;
+      border-radius: 0;
+      box-shadow: none !important;
+      background: transparent;
+
+      > .box-body {
+        padding: 0; // padding comes from .tab-pane > .box-body.container-fluid
+      }
+    }
+
+    // Titled groups (Мессенджеры / Инфо / UTM) — keep CRM cards
+    [class*='col-']:not(.header-hidden) > .box.box-primary {
+      border: 1px solid t.$crm-color-border !important;
+      border-radius: t.$crm-radius-lg;
+      box-shadow: t.$crm-shadow-sm !important;
+      background: t.$crm-color-white;
+
+      > .box-header {
+        padding: t.$crm-space-3 t.$crm-space-4;
+      }
+
+      > .box-body {
+        padding: t.$crm-space-4;
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Tabs (.nav-tabs-custom)
+// ---------------------------------------------------------------------------
+
+.sonata-ba-form {
+  .nav-tabs-custom {
+    margin-bottom: t.$crm-space-3;
+    border: 1px solid t.$crm-color-border;
+    border-radius: t.$crm-radius-lg;
+    background: t.$crm-color-white;
+    box-shadow: t.$crm-shadow-sm;
+    overflow: hidden;
+
+    > .nav-tabs {
+      margin: 0;
+      padding: 0 12px;
+      border-bottom: 1px solid t.$crm-color-border;
+      background: t.$crm-color-white;
+      border-radius: t.$crm-radius-lg t.$crm-radius-lg 0 0;
+
+      > li {
+        margin: 0;
+        border: 0 !important;
+        border-top: 0 !important;
+
+        > a {
+          position: relative;
+          margin: 0;
+          padding: 14px 16px;
+          font-family: t.$crm-font-family;
+          font-size: 13px;
+          font-weight: t.$crm-font-weight-regular;
+          line-height: 1.2;
+          color: t.$crm-color-text-muted !important;
+          background: transparent !important;
+          border: 0 !important;
+          border-radius: 0;
+
+          .fa.has-errors {
+            margin-right: 6px;
+            color: t.$crm-color-danger;
+          }
+
+          &:hover,
+          &:focus {
+            color: t.$crm-color-text !important;
+            background: transparent !important;
+          }
+        }
+
+        &.active > a,
+        &.active > a:hover,
+        &.active > a:focus {
+          color: t.$crm-color-text !important;
+          font-weight: t.$crm-font-weight-semibold;
+          background: transparent !important;
+          border: 0 !important;
+
+          &::after {
+            content: '';
+            position: absolute;
+            left: 16px;
+            right: 16px;
+            bottom: 7px;
+            height: 2px;
+            background: t.$crm-color-primary;
+          }
+        }
+      }
+    }
+
+    > .tab-content {
+      padding: 0;
+      background: t.$crm-color-white;
+
+      > .tab-pane > .box-body.container-fluid {
+        padding: t.$crm-space-4;
+      }
+    }
+  }
+
+  // CollectionType inline tabs (ученики / звонки) — no second card chrome
+  // NOTE: Sonata class is .sonata-ba-tabs (plural)
+  .sonata-ba-tabs .nav-tabs-custom,
+  .nav-tabs-custom .nav-tabs-custom {
+    margin-bottom: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    overflow: visible;
+    background: transparent;
+
+    > .nav-tabs {
+      padding: 0;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      min-height: 0;
+    }
+
+    > .tab-content {
+      background: transparent;
+
+      > .tab-pane > .box-body.container-fluid {
+        padding: t.$crm-space-3 0 0;
+      }
+    }
+  }
+
+  // Empty collection item tab bars → separators between items (calls)
+  // Real multi-item tab strips (students) keep their .nav-tabs
+  .sonata-ba-tabs {
+    // 1 item / first empty strip — hide leftover 1px border line
+    > div:only-child .nav-tabs-custom > .nav-tabs:not(:has(li + li)),
+    > div:first-child .nav-tabs-custom > .nav-tabs:empty {
+      display: none !important;
+      border: 0 !important;
+      height: 0 !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
+    // 2+ stacked item blocks — green divider above each following item
+    > div:not(:first-child) .nav-tabs-custom > .nav-tabs {
+      display: block !important;
+      height: 0;
+      margin: t.$crm-space-6 0; // 24px above/below
+      padding: 0;
+      border: 0 !important;
+      border-bottom: 2px solid t.$crm-color-primary !important;
+      background: transparent;
+      overflow: hidden;
+      min-height: 0;
+
+      > li {
+        display: none !important;
+      }
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Fields — Sonata layout (controls: theme/_forms.scss)
+// ---------------------------------------------------------------------------
+
+.sonata-ba-form {
+  // Horizontal form: stack label above control (CRM edit look)
+  .form-horizontal {
+    .form-group {
+      .sonata-ba-field,
+      [class*='col-sm-'],
+      [class*='col-md-'] {
+        width: 100% !important;
+        float: none !important;
+        padding-left: 0;
+        padding-right: 0;
+      }
+    }
+  }
+
+  // Controls / Select2 / checkbox / help: theme/_forms.scss + theme/_select2.scss
+
+  // Sonata validation message class (chrome: theme has-error)
+  .form-group.has-error {
+    .help-block.sonata-ba-field-error-messages,
+    .sonata-ba-field-error-messages {
+      color: t.$crm-color-danger;
+      font-size: t.$crm-font-size-sm;
+    }
+  }
+}
+
+// Callouts: theme/_callouts.scss + theme/_labels.scss
+// Sonata-only: grid spacing inside callouts + static field spacing
+.sonata-ba-form {
+  .callout {
+    .row {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    [class*='col-'] {
+      padding-left: 0;
+      padding-right: 0;
+    }
+
+    hr {
+      margin: 8px 0;
+      border: 0;
+      border-top: 1px solid t.$crm-color-border;
+    }
+
+    .btn {
+      margin: 8px 0 0 !important;
+    }
+
+    .pull-right {
+      float: none !important;
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+      margin-top: t.$crm-space-1;
+    }
+
+    .label {
+      margin: 0 6px 4px 0;
+    }
+  }
+
+  .form-control-static .callout {
+    margin-bottom: 0;
+  }
+
+  .form-control-static:has(> .callout) {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Form actions
+// ---------------------------------------------------------------------------
+
+.sonata-ba-form-actions.well,
+.sonata-ba-form .sonata-ba-form-actions,
+.sonata-ba-form-actions.form-actions {
+  margin: t.$crm-space-3 0 0;
+  padding: 12px 16px !important;
+  border: 1px solid t.$crm-color-border !important;
+  border-radius: t.$crm-radius-lg !important;
+  background: t.$crm-color-white !important;
+  box-shadow: t.$crm-shadow-sm;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: t.$crm-space-2;
+
+  &::before,
+  &::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .btn {
+    margin: 0 !important;
+    float: none !important;
+  }
+
+  // Soft secondary actions in form footer (Sonata often uses .btn-primary here)
+  .btn-info,
+  .btn-primary {
+    color: t.$crm-color-text !important;
+    background: t.$crm-color-white !important;
+    border-color: t.$crm-color-border !important;
+
+    &:hover,
+    &:focus {
+      background: t.$crm-color-primary-soft !important;
+      border-color: t.$crm-color-primary !important;
+      color: t.$crm-color-text !important;
+    }
+  }
+
+  // OVERRIDE: restore AdminLTE/Sonata full-bleed sticky footer
+  // (layout.css .form-actions.stuck uses margin-left:-15px for .content padding;
+  // our card margin above would otherwise win and leave the bar inset)
+  &.stuck {
+    margin: 0 0 0 -15px !important;
+    padding-left: 30px !important; // 15px content pad + 15px inner
+    padding-right: 30px !important;
+    border-radius: 0 !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.06);
+    z-index: 5;
+  }
+}
+
+// Placeholder kept in document flow while actions are position:fixed (.stuck)
+.sonata-ba-form-actions-stuck-spacer {
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+// Field «Добавить …» / soft CTAs: theme .btn-sm.btn-success / .btn-soft-success
+// Footer save filled: theme .btn-success / .btn-primary
+
+
+// Collection / inline fieldsets — CRM Variant B (compact row, soft-danger delete)
+.sonata-ba-form {
+  .sonata-ba-field-inline-table {
+    margin-bottom: t.$crm-space-2;
+
+    .sonata-ba-inline-table {
+      margin-bottom: 0;
+
+      > thead > tr > th,
+      > tbody > tr > td {
+        vertical-align: middle;
+      }
+
+      &__actions {
+        width: 48px;
+        text-align: center;
+        white-space: nowrap;
+        padding-left: t.$crm-space-2;
+        padding-right: t.$crm-space-2;
+      }
+
+      tr.sonata-collection-item--pending-delete > td.sonata-collection-item__pending {
+        display: table-cell;
+      }
+
+      tr.sonata-collection-item--pending-delete > td:not(.sonata-collection-item__pending) {
+        display: none !important;
+      }
+
+      .sonata-collection-delete {
+        display: inline-flex;
+        vertical-align: middle;
+      }
+
+      .sonata-ba-sortable-handler {
+        display: inline-flex;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .sonata-collection-delete-field {
+    display: none !important;
+  }
+
+  .sonata-collection-item__pending {
+    display: none;
+  }
+
+  .sonata-collection-item__pending-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: t.$crm-space-3;
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  .sonata-collection-item--pending-delete {
+    > .sonata-collection-item__pending {
+      display: block;
+      flex: 1 1 auto;
+      min-width: 0;
+      width: 100%;
+    }
+
+    > .sonata-ba-sortable-handler,
+    > .sonata-collection-row__header,
+    > .sonata-collection-row__body,
+    > .sonata-collection-delete {
+      display: none !important;
+    }
+  }
+
+  .sonata-ba-sortable-handler {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: t.$crm-color-text-muted;
+    cursor: move;
+  }
+
+  .sonata-collection-row {
+    display: flex;
+    align-items: center;
+    gap: t.$crm-space-2;
+    margin-bottom: t.$crm-space-2;
+    padding: t.$crm-space-2 t.$crm-space-3; // 8px 12px — compact vs former 12px
+    border: 1px solid t.$crm-color-border;
+    border-radius: t.$crm-radius-md;
+    background: t.$crm-color-white; // no gray "disabled" fill
+
+    &:last-of-type {
+      margin-bottom: t.$crm-space-2;
+    }
+
+    .sonata-collection-row__body {
+      flex: 1 1 auto;
+      min-width: 0;
+
+      // Nested form rows inside a slot: tighter labels / less dead space
+      > .form-group,
+      > .sonata-ba-field-container,
+      .form-group {
+        margin-bottom: 0;
+      }
+
+      .control-label,
+      label.control-label {
+        display: block;
+        margin-bottom: t.$crm-space-1;
+        font-size: t.$crm-font-size-xs;
+        font-weight: t.$crm-font-weight-medium;
+        color: t.$crm-color-text-muted;
+      }
+
+      // Nested collection under day ("Время для занятий") — space from field above.
+      // Sonata: id="sonata-ba-field-container-…", class="form-group" (not a CSS class name).
+      .form-group:has(> label.control-label):has([data-prototype]),
+      .form-group:has(> label.control-label):has(.sonata-collection-row),
+      .form-group:has(> label.control-label):has(.sonata-collection-actions) {
+        margin-top: t.$crm-space-3; // 12px
+
+        > label.control-label {
+          display: block;
+          margin-bottom: t.$crm-space-2;
+        }
+      }
+
+      // Bootstrap grid leftovers inside body — keep horizontal fields
+      > .row {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+
+    // Sonata inline without table: keep card chrome, fields stacked (tabs, CKEditor).
+    &--stacked {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      padding: 0;
+      overflow: hidden;
+
+      .sonata-collection-item__pending {
+        padding: t.$crm-space-3 t.$crm-space-4;
+      }
+
+      .sonata-collection-row__header {
+        display: flex;
+        align-items: center;
+        gap: t.$crm-space-2;
+        margin: 0;
+        padding: t.$crm-space-1 t.$crm-space-4;
+        min-height: 39px;
+        border-bottom: 1px solid t.$crm-color-border;
+
+        .sonata-collection-delete {
+          margin-left: auto;
+          flex: 0 0 auto;
+        }
+      }
+
+      .sonata-collection-row__title {
+        flex: 1 1 auto;
+        min-width: 0;
+        font-family: t.$crm-font-family;
+        font-size: t.$crm-font-size-sm;
+        font-weight: t.$crm-font-weight-semibold;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        line-height: 1.2;
+        color: t.$crm-color-text-muted;
+      }
+
+      .sonata-collection-row__body {
+        padding: t.$crm-space-4;
+
+        .form-group {
+          margin-bottom: t.$crm-space-3;
+        }
+
+        .nav-tabs-custom {
+          margin-bottom: 0;
+          box-shadow: none;
+        }
+      }
+    }
+
+    // Leaf entries (time slot, inline rows, etc.): fields side-by-side, no card chrome.
+    // Day blocks / stacked inline contain nested UI — keep them with border.
+    &:not(.sonata-collection-row--stacked):not(:has(.sonata-collection-row)):not(:has([data-prototype])) {
+      align-items: flex-end; // delete aligns with inputs, not with labels
+      border: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      padding-left: 0;
+      padding-right: 0;
+      background: transparent;
+
+      .sonata-ba-sortable-handler {
+        align-self: flex-end;
+        margin-bottom: 3px;
+      }
+
+      .sonata-collection-row__body {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        gap: t.$crm-space-3;
+
+        > .form-group,
+        > .sonata-ba-field-container,
+        > [class*='sonata-ba-td-'] {
+          flex: 1 1 140px;
+          min-width: 0;
+          margin-bottom: 0;
+        }
+
+        // Sonata horizontal form leftovers (col-sm-*) — labels above inputs
+        .col-sm-3,
+        .col-sm-9,
+        .col-sm-12 {
+          width: 100%;
+          float: none;
+          padding-left: 0;
+          padding-right: 0;
+        }
+
+        // TimeSlotType widget — flush with "Время для занятий" label
+        .time-slot-fields {
+          display: flex;
+          flex-wrap: wrap;
+          align-items: flex-start;
+          gap: t.$crm-space-3;
+          width: 100%;
+          margin: 0;
+          padding: 0;
+
+          &__item {
+            flex: 1 1 140px;
+            min-width: 0;
+            margin: 0;
+            padding: 0;
+
+            label,
+            .control-label {
+              display: block;
+              margin-bottom: t.$crm-space-1;
+              padding: 0;
+              font-size: t.$crm-font-size-xs;
+              font-weight: t.$crm-font-weight-medium;
+              color: t.$crm-color-text-muted;
+            }
+          }
+        }
+      }
+
+      // form-control = 37px, btn-icon = 32px — optical center on the input
+      .sonata-collection-delete {
+        align-self: flex-end;
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+        min-height: 32px;
+        margin-bottom: 3px;
+      }
+    }
+
+    // Chrome: theme .btn-icon.btn-soft-danger (form_admin_fields)
+    .sonata-collection-delete {
+      flex: 0 0 auto;
+    }
+  }
+
+  .sonata-collection-actions {
+    display: block;
+    margin-top: t.$crm-space-3;
+
+    .sonata-collection-add {
+      margin-top: 0;
+    }
+  }
+
+  // Chrome: theme .btn-sm.btn-soft-success (form_admin_fields)
+  // Direct child of the collection root (Stimulus insertBefore the add button).
+  .sonata-collection-add {
+    margin-top: t.$crm-space-3;
+
+    &__label {
+      white-space: nowrap;
+    }
+  }
+
+  // Nested collection (e.g. day → time slots): keep outer day block lighter
+  .sonata-collection-row .sonata-collection-row {
+    background: t.$crm-color-white;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// iCheck square skins → CRM checkbox/radio (form + list batch)
+// Overrides public/js/vendor/iCheck/skins/square/{red,blue}.css sprites
+// ---------------------------------------------------------------------------
+
+.content-wrapper,
+body.login-page {
+  .icheckbox_square-red,
+  .icheckbox_square-blue,
+  .icheckbox_square-grey {
+    position: relative !important;
+    display: inline-block !important;
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: t.$crm-color-white !important;
+    background-image: none !important;
+    border: 1px solid t.$crm-color-border !important;
+    border-radius: t.$crm-radius-sm; // 3px
+    box-shadow: none !important;
+    cursor: pointer;
+    vertical-align: middle;
+
+    &.hover,
+    &:hover {
+      border-color: t.$crm-color-primary !important;
+      background-image: none !important;
+    }
+
+    &.checked {
+      background: t.$crm-color-primary !important;
+      background-image: none !important;
+      border-color: t.$crm-color-primary !important;
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 6px;
+        top: 3px;
+        width: 5px;
+        height: 10px;
+        border: solid t.$crm-color-white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+        pointer-events: none;
+      }
+    }
+
+    &.disabled {
+      opacity: 0.45;
+      cursor: default;
+      background-image: none !important;
+    }
+
+    &.checked.disabled {
+      background: t.$crm-color-primary !important;
+      border-color: t.$crm-color-primary !important;
+      opacity: 0.45;
+    }
+
+    // Hide sprite-sized helper quirks — keep hit area
+    > .iCheck-helper {
+      border-radius: t.$crm-radius-sm;
+    }
+  }
+
+  .iradio_square-red,
+  .iradio_square-blue,
+  .iradio_square-grey {
+    position: relative !important;
+    display: inline-block !important;
+    width: 20px !important;
+    height: 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: t.$crm-color-white !important;
+    background-image: none !important;
+    border: 1px solid t.$crm-color-border !important;
+    border-radius: 50%;
+    box-shadow: none !important;
+    cursor: pointer;
+    vertical-align: middle;
+
+    &.hover,
+    &:hover {
+      border-color: t.$crm-color-primary !important;
+      background-image: none !important;
+    }
+
+    &.checked {
+      background: t.$crm-color-white !important;
+      background-image: none !important;
+      border-color: t.$crm-color-primary !important;
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: t.$crm-color-primary;
+        pointer-events: none;
+      }
+    }
+
+    &.disabled {
+      opacity: 0.45;
+      cursor: default;
+      background-image: none !important;
+    }
+  }
+
+  // Native checkboxes (batch footer / rare non-iCheck) — same look
+  input[type='checkbox']:not(.select2-input) {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    padding: 0;
+    vertical-align: middle;
+    background: t.$crm-color-white;
+    border: 1px solid t.$crm-color-border;
+    border-radius: t.$crm-radius-sm;
+    cursor: pointer;
+    flex-shrink: 0;
+
+    &:hover {
+      border-color: t.$crm-color-primary;
+    }
+
+    &:checked {
+      background: t.$crm-color-primary;
+      border-color: t.$crm-color-primary;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' d='M4 8l3 3 5-6'/%3E%3C/svg%3E");
+      background-size: 14px 14px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    &:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px t.$crm-color-primary-soft;
+    }
+  }
+}
+
+.less-margin-top .box-body {
+  margin-top: -18px;
+}
+
+.glavweb-security-field-wrapper {
+  margin-top: -15px;
+}
+
+.glavweb-security-header-basic-roles {
+  margin-bottom: 20px;
+}
+
+.glavweb-security-header-permissions-entities {
+  margin: 40px 0 20px;
+}
+
+.gwu-gallery-box-wr {
+  width: 100%;
+}
+
+.gwu-gallery-box {
+  min-height: 75px;
+  max-height: inherit;
+}
+
+.editable-unsaved {
+  font-weight: normal;
+}

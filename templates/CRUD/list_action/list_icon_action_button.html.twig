@@ -1,0 +1,5 @@
+{% set options = actions.options.call(admin, object) %}
+
+<a class="btn btn-icon btn-ghost" href="{{ options.url }}" title="{{ options.title }}" target="{{ options.target | default('') }}">
+    <i class="fa {{ options.icon_class }}" aria-hidden="true"></i>
+</a>

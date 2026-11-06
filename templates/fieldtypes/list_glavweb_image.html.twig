@@ -1,0 +1,10 @@
+{% extends '@SonataAdmin/CRUD/base_list_field.html.twig' %}
+
+{% block field %}
+    {% if value %}
+        {% set path = admin.container.get('Glavweb\\UploaderBundle\\Helper\\MediaHelper').getContentPath(value, false) %}
+        {% set url = admin.container.get('Glavweb\\ApiBundle\\Imagine\\FilterHelper').filter(path, field_description.options.thumbnail_filter) %}
+
+        {% include '@GlavwebAdmin/CRUD/_list_linked_image.html.twig' with { imageUrl: url } %}
+    {% endif %}
+{% endblock %}

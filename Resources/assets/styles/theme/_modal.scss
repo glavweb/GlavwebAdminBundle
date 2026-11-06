@@ -1,0 +1,258 @@
+// Bootstrap 3 / AdminLTE modals — site-wide shell + size variants.
+// Aliases: .field-dialog / .crm-admin-modal (legacy markup) → same chrome as .modal.
+// Size modifiers: --wide | --drawer (also .field-dialog--* / .crm-admin-modal--*).
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+.modal {
+  font-family: t.$crm-font-family;
+
+  // Flex centering for the whole show/hide cycle. BS3 removes .in/.show
+  // before display:none, so centering only on those classes makes the
+  // dialog jump to the top-left while fading out.
+  &.in,
+  &.show,
+  &[style*='display: block'],
+  &[style*='display:block'] {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    padding: t.$crm-space-4 !important;
+  }
+}
+
+// BS3 slides .modal-dialog with translate(0, -25%) when .in is dropped.
+// With a centered flex overlay that looks like a jump to the corner — fade only.
+.modal.fade .modal-dialog {
+  transform: none;
+  transition: none;
+}
+
+.modal-dialog {
+  margin: 0;
+  width: 100%;
+  max-width: 480px; // compact default
+  height: auto !important;
+  padding: 0 !important;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  max-height: min(90vh, 720px);
+  overflow: hidden;
+  border: 1px solid t.$crm-color-border !important;
+  border-radius: t.$crm-radius-lg !important;
+  background: t.$crm-color-white;
+  box-shadow: t.$crm-shadow-lg;
+  height: auto !important;
+  padding: 0 !important;
+
+  > form {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    max-height: inherit;
+    flex: 1 1 auto;
+  }
+}
+
+.modal-header {
+  display: flex;
+  flex-direction: row-reverse; // close on the right (BS3 puts .close first)
+  align-items: center;
+  justify-content: space-between;
+  gap: t.$crm-space-2;
+  margin: 0;
+  padding: t.$crm-space-4 !important;
+  border-bottom: 1px solid t.$crm-color-border;
+  border-radius: t.$crm-radius-lg t.$crm-radius-lg 0 0;
+  background: t.$crm-color-white !important;
+  color: t.$crm-color-text !important;
+}
+
+.modal-title {
+  flex: 1 1 auto;
+  margin: 0;
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-lg;
+  font-weight: t.$crm-font-weight-semibold;
+  line-height: t.$crm-line-height-tight;
+  color: t.$crm-color-text !important;
+
+  &.lead {
+    font-size: t.$crm-font-size-lg;
+    font-weight: t.$crm-font-weight-semibold;
+    line-height: t.$crm-line-height-tight;
+  }
+}
+
+.modal-header .close {
+  float: none;
+  margin: 0;
+  padding: t.$crm-space-1;
+  font-size: 22px;
+  font-weight: t.$crm-font-weight-regular;
+  line-height: 1;
+  color: t.$crm-color-text-muted !important;
+  opacity: 1;
+  text-shadow: none;
+
+  &:hover,
+  &:focus {
+    color: t.$crm-color-text !important;
+    opacity: 1;
+  }
+}
+
+.modal-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: auto !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+  padding: t.$crm-space-4 t.$crm-space-4 0 !important;
+  background: t.$crm-color-white;
+  font-family: t.$crm-font-family;
+  color: t.$crm-color-text;
+
+  @include m.crm-scrollbar;
+}
+
+.modal-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: t.$crm-space-2;
+  margin: 0 !important;
+  padding: t.$crm-space-3 t.$crm-space-4 !important;
+  border: 0 !important;
+  border-top: 1px solid t.$crm-color-border !important;
+  border-radius: 0 0 t.$crm-radius-lg t.$crm-radius-lg !important;
+  background: t.$crm-color-white !important;
+  box-shadow: none !important;
+  text-align: right;
+
+  .btn {
+    margin: 0;
+  }
+
+  // Dialog footers: prefer .btn-soft-primary / .btn-default in markup.
+  // Legacy .btn-primary / .btn-success in footers → soft brand chip.
+  // .btn-warning / .btn-danger stay filled (caution / destructive confirm).
+  .btn-primary:not(.btn-soft-primary):not(.btn-soft-success),
+  .btn-success:not(.btn-soft-primary):not(.btn-soft-success) {
+    color: t.$crm-color-text !important;
+    background: t.$crm-color-primary-soft !important;
+    border-color: t.$crm-color-primary !important;
+
+    &:hover,
+    &:focus-visible {
+      background: t.$crm-color-white !important;
+      color: t.$crm-color-text !important;
+    }
+  }
+}
+
+.modal-backdrop.in {
+  opacity: 0.45;
+}
+
+// ---------------------------------------------------------------------------
+// Size variants (prefer .modal--wide / .modal--drawer / .modal--fullscreen; legacy aliases kept)
+// Class on .modal or on .modal-dialog (see doc/ui-kit/modal.md).
+// ---------------------------------------------------------------------------
+
+.modal.modal--wide,
+.modal.field-dialog--wide,
+.modal.crm-admin-modal--wide,
+.modal:has(> .modal-dialog.modal--wide) {
+  .modal-dialog {
+    max-width: 900px;
+  }
+
+  .modal-content {
+    max-height: min(90vh, 860px);
+  }
+}
+
+.modal.modal--drawer,
+.modal.field-dialog--drawer {
+  &.in,
+  &.show,
+  &[style*='display: block'],
+  &[style*='display:block'] {
+    align-items: stretch;
+    justify-content: flex-end;
+    padding: 0 !important;
+  }
+
+  .modal-dialog {
+    width: 400px;
+    max-width: 100%;
+    height: 100% !important;
+    margin: 0;
+  }
+
+  .modal-content {
+    height: 100% !important;
+    max-height: none;
+    border-radius: 0 !important;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+  }
+
+  .modal-header {
+    border-radius: 0;
+  }
+}
+
+.modal.modal--fullscreen,
+.modal:has(> .modal-dialog.modal--fullscreen),
+.modal:has(> .modal-dialog.modal-fullscreen) {
+  &.in,
+  &.show,
+  &[style*='display: block'],
+  &[style*='display:block'] {
+    align-items: stretch;
+    justify-content: stretch;
+    padding: 0 !important;
+  }
+
+  .modal-dialog {
+    width: 100%;
+    max-width: none;
+    height: 100% !important;
+    margin: 0;
+    overflow: auto;
+  }
+
+  .modal-content {
+    min-height: 100%;
+    height: auto !important;
+    max-height: none;
+    overflow: visible;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none;
+  }
+
+  .modal-header,
+  .modal-footer {
+    border-radius: 0 !important;
+  }
+}
+
+// Sonata Admin.setup_list_modal may set inline geometry — neutralize on CRM dialogs
+.field-dialog.modal .modal-content,
+.crm-admin-modal.modal .modal-content {
+  height: auto !important;
+  padding: 0 !important;
+}

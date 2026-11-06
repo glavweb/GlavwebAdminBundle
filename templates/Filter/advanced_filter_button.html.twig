@@ -1,0 +1,8 @@
+{% if admin.hasRoute('advanced_filter') %}
+    <li>
+        <a class="sonata-action-element" href="{{ admin.generateUrl('advanced_filter', {filter: admin.filterParameters}) }}">
+            <i class="fa fa-sliders" aria-hidden="true"></i>
+            {{ 'advanced_filter.button'|trans({}, 'GlavwebAdminBundle') }}
+        </a>
+    </li>
+{% endif %}

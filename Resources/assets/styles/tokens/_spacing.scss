@@ -1,0 +1,24 @@
+// Design tokens: spacing (4px base scale)
+
+$crm-space-0:  0 !default;
+$crm-space-1:  4px !default;
+$crm-space-2:  8px !default;
+$crm-space-3:  12px !default;
+$crm-space-4:  16px !default;
+$crm-space-5:  20px !default;
+$crm-space-6:  24px !default;
+$crm-space-8:  32px !default;
+$crm-space-10: 40px !default;
+
+// Map for utility generation (crm-u-*)
+$crm-spaces: (
+  0: $crm-space-0,
+  1: $crm-space-1,
+  2: $crm-space-2,
+  3: $crm-space-3,
+  4: $crm-space-4,
+  5: $crm-space-5,
+  6: $crm-space-6,
+  8: $crm-space-8,
+  10: $crm-space-10,
+) !default;

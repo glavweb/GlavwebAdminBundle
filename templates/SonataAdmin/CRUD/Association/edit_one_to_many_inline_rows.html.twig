@@ -1,0 +1,79 @@
+{#
+  CRM inline 'rows': labeled fields in .sonata-collection-row (schedule-like).
+  Use field option inline => 'rows'.
+#}
+{% set sortable_field = sonata_admin.field_description.option('sortable', false) %}
+
+<div class="sonata-ba-tbody">
+    {% for nested_group_field_name, nested_group_field in form.children %}
+        {% set collection_item = nested_group_field.vars.data ?? null %}
+        {% set collection_persisted = collection_item is not null and collection_item.id %}
+        {% set collection_deleted = nested_group_field['_delete'] is defined and nested_group_field['_delete'].vars.checked %}
+        <div class="sonata-collection-row{% if collection_deleted %} sonata-collection-item--pending-delete{% endif %}" data-sonata-collection-item data-sonata-collection-persisted="{{ collection_persisted ? '1' : '0' }}">
+            <div class="sonata-collection-item__pending">
+                {% include '@SonataAdmin/CRUD/Association/_inline_collection_pending_delete.html.twig' %}
+            </div>
+            {% if sortable_field %}
+                <span class="sonata-ba-sortable-handler">
+                    <i class="fa fa-arrows" aria-hidden="true"></i>
+                </span>
+            {% endif %}
+
+            <div class="sonata-collection-row__body">
+                {% for field_name, nested_field in nested_group_field.children %}
+                    {% set is_hidden_field = field_name == sortable_field
+                        or nested_field.vars.attr.hidden|default(false)
+                        or 'hidden' in nested_field.vars.block_prefixes
+                    %}
+
+                    {% if field_name == '_delete' %}
+                        {# rendered after the body #}
+                    {% elseif is_hidden_field %}
+                        <div class="sonata-ba-td-{{ id }}-{{ field_name }} hide{% if nested_field.vars.errors|default(false) %} has-error sonata-ba-field-error{% endif %}">
+                            {{ form_widget(nested_field) }}
+                            {% if nested_field.vars.errors|default(false) %}
+                                <div class="help-block sonata-ba-field-error-messages">
+                                    {{ form_errors(nested_field) }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="
+                            sonata-ba-td-{{ id }}-{{ field_name }}
+                            form-group
+                            {% if nested_field.vars.errors|default(false) %} has-error sonata-ba-field-error{% endif %}
+                        ">
+                            {% if nested_field.vars.label is not same as(false) %}
+                                <label class="control-label{% if nested_field.vars.required|default(false) %} required{% endif %}" for="{{ nested_field.vars.id }}">
+                                    {% if nested_field.vars.translation_domain is same as(false) %}
+                                        {{ nested_field.vars.label }}
+                                    {% else %}
+                                        {% set translationDomain = nested_field.vars.translation_domain|default(nested_field.vars['sonata_admin'].admin.translationDomain|default(null)) %}
+                                        {{ nested_field.vars.label|trans({}, translationDomain) }}
+                                    {% endif %}
+                                </label>
+                            {% endif %}
+
+                            {% if sonata_admin.field_description.associationadmin.formfielddescriptions[field_name] is defined %}
+                                {{ form_widget(nested_field) }}
+                                {{ form_help(nested_field) }}
+                                {% set dummy = nested_group_field.setrendered %}
+                            {% else %}
+                                {{ form_widget(nested_field) }}
+                                {{ form_help(nested_field) }}
+                            {% endif %}
+
+                            {% if nested_field.vars.errors|default(false) %}
+                                <div class="help-block help-inline sonata-ba-field-error-messages">
+                                    {{ form_errors(nested_field) }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+            {% include '@SonataAdmin/CRUD/Association/_inline_collection_delete.html.twig' %}
+        </div>
+    {% endfor %}
+</div>

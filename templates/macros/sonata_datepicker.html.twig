@@ -1,0 +1,48 @@
+{# Same markup as Sonata Form DatePickerType (Stimulus + Tempus Dominus). #}
+
+{% macro field(options) %}
+    {% set id = options.id %}
+    {% set controllerId = id ~ '_controller' %}
+    {% set datetime = options.datetime|default(false) %}
+    {% set dpOptions = {
+        useCurrent: false,
+        display: {
+            theme: 'light',
+            components: datetime ? { seconds: false } : { clock: false },
+        },
+        localization: {
+            locale: 'ru',
+            format: datetime ? 'dd.MM.yyyy HH:mm' : 'dd.MM.yyyy',
+        },
+    } %}
+    {% if datetime %}
+        {% set dpOptions = dpOptions|merge({ stepping: 1 }) %}
+    {% endif %}
+    <div
+        id="{{ controllerId }}"
+        class="input-group date{{ options.class is defined and options.class ? ' ' ~ options.class : '' }}"
+        data-controller="datepicker"
+        data-datepicker-options-value="{{ dpOptions|json_encode|escape('html_attr') }}"
+        data-td-target-input="nearest"
+        data-td-target-toggle="nearest"
+    >
+        <input
+            type="text"
+            id="{{ id }}"
+            name="{{ options.name }}"
+            class="sonata-medium-date form-control{{ options.input_class is defined and options.input_class ? ' ' ~ options.input_class : '' }}"
+            {% if options.required|default(false) %}required{% endif %}
+            {% if options.value is defined %}value="{{ options.value }}"{% endif %}
+            {% if options.placeholder is defined %}placeholder="{{ options.placeholder }}"{% endif %}
+            autocomplete="off"
+            data-td-target="#{{ controllerId }}"
+        >
+        <span
+            class="input-group-addon"
+            data-td-target="#{{ controllerId }}"
+            data-td-toggle="datetimepicker"
+        >
+            <i class="fas fa-calendar"></i>
+        </span>
+    </div>
+{% endmacro %}

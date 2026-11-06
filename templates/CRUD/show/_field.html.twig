@@ -1,0 +1,25 @@
+{#
+  Read-only stacked field (label above value).
+
+  Params:
+    label  — string|false (omit/false to hide)
+    value  — scalar or HTML (with raw=true)
+    raw    — bool, default false
+    empty  — placeholder when value is missing, default '—'
+    class  — extra CSS class on root
+#}
+{% set _has_value = value is defined and value is not same as(null) and value is not same as('') %}
+<div class="sonata-show-field{{ class is defined and class ? ' ' ~ class : '' }}">
+    {% if label is defined and label is not same as(false) and label is not same as(null) and label != '' %}
+        <div class="sonata-show-field__label">{{ label }}</div>
+    {% endif %}
+    <div class="sonata-show-field__value{{ not _has_value ? ' sonata-show-field__value-empty' : '' }}">
+        {% if not _has_value %}
+            {{ empty|default('—') }}
+        {% elseif raw|default(false) %}
+            {{ value|raw }}
+        {% else %}
+            {{ value }}
+        {% endif %}
+    </div>
+</div>

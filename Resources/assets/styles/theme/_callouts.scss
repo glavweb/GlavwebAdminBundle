@@ -1,0 +1,120 @@
+// AdminLTE .callout* — soft banner + inner accent bar.
+// Double class (.callout.callout-*) beats AdminLTE skin
+// `.callout.callout-warning { background-color: #f39c12 !important }`.
+
+@use '../tokens' as t;
+
+.callout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+  margin: 0 0 t.$crm-space-3;
+  padding: t.$crm-space-3 14px t.$crm-space-3 22px;
+  border-radius: t.$crm-radius-md;
+  border: 1px solid t.$crm-color-border !important;
+  box-shadow: none !important;
+  font-family: t.$crm-font-family;
+  font-size: 13px;
+  font-weight: t.$crm-font-weight-medium;
+  line-height: 1.25;
+  color: t.$crm-color-text !important;
+  background-color: t.$crm-color-white !important;
+  background-image: none !important;
+  text-shadow: none;
+
+  // Inner rounded accent (not AdminLTE's full-height border-left).
+  &::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 10px;
+    bottom: 10px;
+    width: 4px;
+    border-radius: 4px;
+    background-color: t.$crm-color-border;
+  }
+
+  h4 {
+    margin: 0;
+    font-family: t.$crm-font-family;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+    color: inherit !important;
+
+    + p {
+      margin-top: 4px;
+    }
+
+    .fa {
+      margin-right: 6px;
+    }
+  }
+
+  p {
+    margin: 0 0 8px;
+    font-size: inherit;
+    line-height: inherit;
+    color: inherit !important;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  a:not(.btn) {
+    color: t.$crm-color-info !important;
+    font-weight: t.$crm-font-weight-medium;
+    text-decoration: underline;
+
+    &:hover {
+      color: t.$crm-color-text !important;
+    }
+  }
+
+  strong {
+    font-weight: t.$crm-font-weight-semibold;
+    color: inherit !important;
+  }
+}
+
+.callout.callout-info {
+  color: t.$crm-color-text !important;
+  background-color: color-mix(in srgb, t.$crm-color-info 12%, t.$crm-color-white) !important;
+  border-color: color-mix(in srgb, t.$crm-color-info 40%, t.$crm-color-border) !important;
+
+  &::before {
+    background-color: t.$crm-color-info;
+  }
+}
+
+.callout.callout-warning {
+  color: t.$crm-color-text !important;
+  background-color: color-mix(in srgb, t.$crm-color-warning 10%, t.$crm-color-white) !important;
+  border-color: color-mix(in srgb, t.$crm-color-warning 45%, t.$crm-color-border) !important;
+
+  &::before {
+    background-color: t.$crm-color-warning;
+  }
+}
+
+.callout.callout-danger {
+  color: t.$crm-color-text !important;
+  background-color: color-mix(in srgb, t.$crm-color-danger 10%, t.$crm-color-white) !important;
+  border-color: color-mix(in srgb, t.$crm-color-danger 40%, t.$crm-color-border) !important;
+
+  &::before {
+    background-color: t.$crm-color-danger;
+  }
+}
+
+.callout.callout-success {
+  color: t.$crm-color-text !important;
+  background-color: color-mix(in srgb, t.$crm-color-primary 14%, t.$crm-color-white) !important;
+  border-color: color-mix(in srgb, t.$crm-color-primary 40%, t.$crm-color-border) !important;
+
+  &::before {
+    background-color: t.$crm-color-primary;
+  }
+}

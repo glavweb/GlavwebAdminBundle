@@ -1,0 +1,9 @@
+{% extends '@SonataAdmin/CRUD/list_enum.html.twig' %}
+
+{% block field %}
+    {%- include '@GlavwebAdmin/sonata-admin/CRUD/display_enum_array.html.twig' with {
+        value: value,
+        use_value: field_description.option('use_value', false),
+        translation_domain: field_description.option('enum_translation_domain', null),
+    } only -%}
+{% endblock %}

@@ -1,0 +1,61 @@
+// Login page shell. Form / button / box chrome: theme/_forms, _buttons, _box.
+
+@use '../tokens' as t;
+
+body.sonata-bc.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: t.$crm-space-6 t.$crm-space-4;
+  font-family: t.$crm-font-family;
+  color: t.$crm-color-text;
+  background: t.$crm-color-surface;
+
+  .login-box {
+    width: 100%;
+    max-width: 360px;
+    margin: 0;
+  }
+
+  .login-logo {
+    margin: 0 0 t.$crm-space-4;
+    font-size: t.$crm-font-size-xl;
+    font-weight: t.$crm-font-weight-semibold;
+    line-height: t.$crm-line-height-tight;
+    text-align: center;
+
+    a {
+      color: t.$crm-color-text;
+      text-decoration: none;
+
+      &:hover,
+      &:focus {
+        color: t.$crm-color-text;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .box {
+    margin-bottom: 0;
+  }
+
+  .box-footer {
+    .btn {
+      width: auto;
+    }
+  }
+
+  // AdminLTE login-page: checkbox is position:absolute; margin-left:-20px
+  .checkbox input[type='checkbox'] {
+    position: static;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 479px) {
+  body.sonata-bc.login-page {
+    padding: t.$crm-space-4;
+  }
+}

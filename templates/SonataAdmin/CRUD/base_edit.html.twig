@@ -1,0 +1,35 @@
+{% extends '@!SonataAdmin/CRUD/base_edit.html.twig' %}
+
+{% block title %}
+    {# NEXT_MAJOR: remove default filter #}
+    {% if objectId|default(admin.id(object)) is not null %}
+        {{ "title_edit"|trans({'%name%': admin.toString(object)|u.truncate(30) }, 'SonataAdminBundle') }}
+    {% else %}
+        {% if admin.hasActiveSubClass %}
+            {% set subclass = admin.activeSubclassCode %}
+            {% set labelName = admin.labelTranslatorStrategy.getLabel(admin.classnameLabel ~ '_' ~ subclass ~ '_create', 'breadcrumb', 'link') %}
+            {% set labelNameTranslated = labelName|trans({}, admin.translationDomain) %}
+        {% else %}
+            {% set labelName = admin.labelTranslatorStrategy.getLabel(admin.classnameLabel ~ '_create', 'breadcrumb', 'link') %}
+            {% set labelNameTranslated = labelName|trans({}, admin.translationDomain) %}
+        {% endif %}
+        {% if labelName == labelNameTranslated %}
+            {{ "title_create"|trans({}, 'SonataAdminBundle') }}
+        {% else %}
+            {{ labelNameTranslated }}
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block navbar_title %}
+    {{ block('title') }}
+{% endblock %}
+
+{% block notice %}
+    {% if object is archivable and object is archived %}
+        <div class="alert alert-warning">
+            Архивная запись. Изменение и использование недоступно.
+        </div>
+    {% endif %}
+    {{ parent() }}
+{% endblock notice %}

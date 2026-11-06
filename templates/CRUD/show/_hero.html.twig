@@ -1,0 +1,37 @@
+{#
+  Profile / billboard hero for custom show pages.
+
+  Params:
+    name      — primary title
+    meta      — muted secondary line (string or HTML with meta_raw)
+    meta_raw  — bool
+    media     — optional HTML for media slot (avatar / image), raw
+    media_url — optional image URL (used if media omitted)
+    chip      — optional HTML chip/badge under meta, raw
+    class     — extra CSS class
+#}
+{% set _has_media = (media is defined and media) or (media_url is defined and media_url) %}
+<div class="sonata-show-hero{{ class is defined and class ? ' ' ~ class : '' }}">
+    {% if _has_media %}
+        <div class="sonata-show-hero__media">
+            {% if media is defined and media %}
+                {{ media|raw }}
+            {% else %}
+                <img src="{{ media_url }}" alt="" class="sonata-show-hero__img">
+            {% endif %}
+        </div>
+    {% endif %}
+    <div class="sonata-show-hero__info">
+        {% if name is defined and name %}
+            <div class="sonata-show-hero__name">{{ name }}</div>
+        {% endif %}
+        {% if meta is defined and meta %}
+            <div class="sonata-show-hero__meta">
+                {% if meta_raw|default(false) %}{{ meta|raw }}{% else %}{{ meta }}{% endif %}
+            </div>
+        {% endif %}
+        {% if chip is defined and chip %}
+            <div class="sonata-show-hero__chip">{{ chip|raw }}</div>
+        {% endif %}
+    </div>
+</div>

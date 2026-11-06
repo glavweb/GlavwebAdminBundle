@@ -1,0 +1,156 @@
+{% block choice_field_modify_widget %}
+    {{ block('choice_widget') }}
+    {# Taking the form name excluding ending field glue character #}
+    {% set main_form_name = id|slice(0, (id|length - name|length)-1) %}
+    {% if expanded %}
+        {% set js_selector = '#' ~ main_form_name ~ '_' ~ name ~ ' input' %}
+        {% set js_event = 'ifChecked' %}
+    {% else %}
+        {% set js_selector = '#' ~ main_form_name ~ '_' ~ name %}
+        {% set js_event = 'change' %}
+    {% endif %}
+    <script>
+        jQuery(document).ready(function() {
+            var widgetKey = 'choice_field_modify',
+                map = {{ map|json_encode|raw }},
+                defaultFieldsState = {{ default_fields_state|json_encode|raw }},
+                $modifyChoiceEl = jQuery("{{ js_selector }}"),
+                formName = "{{ main_form_name }}",
+                $modifyChoiceContainer = getControlGroup("{{ name }}");
+
+            $modifyChoiceEl.on("{{ js_event }}", function () {
+                choiceFieldModify(jQuery(this).val());
+            });
+
+            if (isVisible($modifyChoiceContainer)) {
+                {% if value is empty %}
+                choiceFieldModify($modifyChoiceEl.val());
+                {% else %}
+                choiceFieldModify('{{ value|e('js') }}');
+                {% endif %}
+            }
+
+            function choiceFieldModify(value) {
+                var config = map[value] || defaultFieldsState
+
+                if (config) {
+                    jQuery.each(config, function (field, data) {
+                        var $fieldContainer = getControlGroup(field);
+                        var inputId = formName + '_' + field;
+
+                        if (data.show) {
+                            show($fieldContainer, true)
+                        } else if (data.show !== undefined) {
+                            show($fieldContainer, false)
+                        }
+
+                        if (data.value !== undefined || data.defaultValue !== undefined) {
+                            var $input = jQuery('#' + inputId);
+                            var value = data.defaultValue !== undefined && $input.val() === null ? data.defaultValue : data.value;
+
+                            if (!$input.length) {
+                                throw new Error('Form field input element with id "' + inputId +  '" not found');
+                            }
+
+                            if (value !== undefined) {
+                                $input.val(value).trigger('change');
+                            }
+                        }
+
+                        if (data.label !== undefined) {
+                            var $label = jQuery('label[for=' + inputId + ']');
+
+                            if (!$label.length) {
+                                throw new Error('Label for form field input element with id "' + inputId +  '" not found');
+                            }
+
+                            var labelElement = $label.get(0);
+
+                            for (var i = 0; i < labelElement.childNodes.length; i++) {
+                                var children = labelElement.childNodes.item(i);
+
+                                if (children.nodeType === Node.TEXT_NODE) {
+                                    children.nodeValue = data.label;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (data.required !== undefined) {
+                            var $label = jQuery('label[for=' + inputId + ']');
+
+                            if (!$label.length) {
+                                throw new Error('Label for form field input element with id "' + inputId + '" not found');
+                            }
+
+                            if (data.required) {
+                                $label.addClass('required');
+                            } else {
+                                $label.removeClass('required');
+                            }
+
+                            var $input = $fieldContainer
+                                .find('[required="required"], [data-required="required"], input, select, textarea')
+                                .not('[type="hidden"]')
+                                .first();
+
+                            if (data.required) {
+                                $input.attr('required', 'required').attr('data-required', 'required');
+                            } else {
+                                $input.removeAttr('required').removeAttr('data-required');
+                            }
+                        }
+                    });
+                }
+            }
+
+            function getControlGroup(field) {
+                const $controlGroup = jQuery('#sonata-ba-field-container-' + formName + '_' + field);
+
+                if ($controlGroup.length) {
+                    return $controlGroup;
+                }
+
+                return jQuery('#sonata-ba-field-container-' + formName + '-' + field);
+            }
+
+            function show($element, value) {
+                if (value) {
+                    $element.show();
+                    $element.find('[data-required="required"]').attr('required', 'required');
+                } else {
+                    $element.hide();
+                    $element.find('[required="required"]').attr('data-required', 'required').removeAttr("required");
+                }
+
+                $element.data(widgetKey, {show: value})
+
+                hideEmptyTab($element);
+            }
+
+            function hideEmptyTab($element) {
+                var hasVisibleFields = $element
+                    .closest('.sonata-ba-collapsed-fields')
+                    .children()
+                    .is(function (i, el) {
+                        return isVisible(jQuery(el))
+                    })
+                var tabId = $element.closest('.tab-pane').attr('id');
+                var $tabHeader = jQuery('[aria-controls="' + tabId + '"]');
+
+                if (hasVisibleFields) {
+                    $tabHeader.show();
+                } else {
+                    $tabHeader.hide();
+                }
+            }
+
+            function isVisible($element) {
+                var data = $element.data(widgetKey);
+
+                return !data || data.show !== false
+            }
+        });
+
+    </script>
+{% endblock %}

@@ -1,0 +1,666 @@
+// Select2 v3 widget + v4 dropdown host (appended to body).
+
+@use '../tokens' as t;
+
+// Select2 mounts as .form-control — strip BS height/padding chrome
+.select2-container.form-control {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  height: auto !important;
+}
+
+// Widget only. Select2 v4 copies .select2-container onto a body-level host
+// that wraps .select2-dropdown — that host must keep JS inline width
+// (dropdownAutoWidth), otherwise options stretch to 100vw.
+.select2-container:not(.select2-container-multi):not(.select2-container--multiple):not(:has(> .select2-dropdown)) {
+  width: 100% !important;
+  display: block;
+  height: auto !important;
+  min-height: 37px;
+
+  .select2-choice {
+    display: block;
+    height: 37px !important;
+    padding: 0 0 0 12px !important;
+    overflow: hidden;
+    position: relative;
+    line-height: 35px !important;
+    font-family: t.$crm-font-family;
+    font-size: t.$crm-font-size-md !important;
+    color: t.$crm-color-text;
+    text-decoration: none;
+    white-space: nowrap;
+    border: 1px solid t.$crm-color-border !important;
+    border-radius: t.$crm-radius-md !important;
+    background-color: t.$crm-color-white !important;
+    background-image: none !important;
+    box-shadow: none !important;
+
+    > .select2-chosen {
+      display: block;
+      float: none;
+      width: auto;
+      height: 35px !important;
+      max-height: 35px !important;
+      margin-right: 36px;
+      padding: 0 !important;
+      line-height: 35px !important;
+      font-size: t.$crm-font-size-md !important;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: t.$crm-color-text;
+    }
+
+    abbr.select2-search-choice-close,
+    abbr {
+      top: 50% !important;
+      right: 34px !important;
+      margin-top: -6px !important;
+      transform: none !important;
+    }
+
+    .select2-arrow {
+      display: block;
+      width: 32px !important;
+      height: 100% !important;
+      position: absolute;
+      right: 0;
+      top: 0;
+      border-left: 0 !important;
+      border-radius: 0 t.$crm-radius-md t.$crm-radius-md 0;
+      background: transparent !important;
+      background-image: none !important;
+
+      b {
+        display: block;
+        width: 0 !important;
+        height: 0 !important;
+        margin: 16px auto 0 !important;
+        padding: 0;
+        background: none !important;
+        background-image: none !important;
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;
+        border-top: 5px solid t.$crm-color-text-muted;
+        border-bottom: 0;
+      }
+    }
+  }
+
+  &.select2-default .select2-choice > .select2-chosen,
+  .select2-choice.select2-default > .select2-chosen {
+    color: t.$crm-color-text-muted;
+  }
+
+  &.select2-allowclear .select2-choice > .select2-chosen {
+    margin-right: 52px;
+  }
+
+  &.select2-dropdown-open .select2-choice {
+    border-color: t.$crm-color-primary !important;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    box-shadow: 0 0 0 3px t.$crm-color-primary-soft !important;
+
+    .select2-arrow b {
+      border-top: 0;
+      border-bottom: 5px solid t.$crm-color-text-muted;
+      margin-top: 14px !important;
+    }
+  }
+
+  &.select2-container-active .select2-choice {
+    border-color: t.$crm-color-primary !important;
+    box-shadow: 0 0 0 3px t.$crm-color-primary-soft !important;
+  }
+
+  &.select2-container-disabled {
+    cursor: not-allowed !important;
+    opacity: 1 !important;
+
+    .select2-choice {
+      cursor: not-allowed !important;
+      background-color: t.$crm-color-surface-2 !important;
+      background-image: none !important;
+      border-color: t.$crm-color-border !important;
+      box-shadow: none !important;
+      color: t.$crm-color-text-muted !important;
+
+      > .select2-chosen {
+        color: t.$crm-color-text-muted !important;
+      }
+
+      .select2-arrow {
+        background: transparent !important;
+        border-left: 0 !important;
+
+        b {
+          border-top-color: #b8c0cc !important;
+        }
+      }
+
+      abbr {
+        display: none !important;
+      }
+    }
+  }
+
+  // Select2 v4 (Sonata 4) — match .form-control height 37px
+  .select2-selection--single {
+    display: block;
+    height: 37px !important;
+    padding: 0 0 0 12px !important;
+    overflow: hidden;
+    position: relative;
+    line-height: 35px !important;
+    font-family: t.$crm-font-family;
+    font-size: t.$crm-font-size-md !important;
+    color: t.$crm-color-text;
+    border: 1px solid t.$crm-color-border !important;
+    border-radius: t.$crm-radius-md !important;
+    background-color: t.$crm-color-white !important;
+    background-image: none !important;
+    box-shadow: none !important;
+
+    .select2-selection__rendered {
+      display: block;
+      padding: 0 28px 0 0 !important;
+      line-height: 35px !important;
+      font-size: t.$crm-font-size-md !important;
+      color: t.$crm-color-text;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    // Room for × (20px) + arrow zone (28px) so the label does not overlap clear
+    &:has(.select2-selection__clear) .select2-selection__rendered {
+      padding-right: 48px !important;
+    }
+
+    .select2-selection__placeholder {
+      color: t.$crm-color-text-muted;
+    }
+
+    .select2-selection__clear {
+      position: absolute !important;
+      top: 0 !important;
+      right: 28px !important;
+      left: auto !important;
+      float: none !important;
+      width: 20px !important;
+      height: 35px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      line-height: 35px !important;
+      text-align: center;
+      font-weight: t.$crm-font-weight-medium;
+      color: t.$crm-color-text-muted;
+      cursor: pointer;
+      z-index: 2;
+
+      &:hover {
+        color: t.$crm-color-text;
+      }
+    }
+
+    .select2-selection__arrow {
+      position: absolute !important;
+      height: 35px !important;
+      width: 20px !important;
+      top: 1px !important;
+      right: 8px !important;
+      left: auto !important;
+
+      b {
+        position: absolute !important;
+        left: 50% !important;
+        right: auto !important;
+        top: 50% !important;
+        width: 0 !important;
+        height: 0 !important;
+        margin-top: -2px !important;
+        margin-left: -4px !important;
+        background: none !important;
+        border-style: solid;
+        border-width: 5px 4px 0 4px;
+        border-color: t.$crm-color-text-muted transparent transparent transparent;
+      }
+    }
+  }
+
+  &.select2-container--open .select2-selection--single,
+  &.select2-container--focus .select2-selection--single {
+    border-color: t.$crm-color-primary !important;
+    box-shadow: 0 0 0 3px t.$crm-color-primary-soft !important;
+  }
+
+  &.select2-container--open .select2-selection--single {
+    .select2-selection__arrow b {
+      border-width: 0 4px 5px 4px;
+      border-color: transparent transparent t.$crm-color-text-muted transparent;
+    }
+  }
+
+  &.select2-container--open.select2-container--below .select2-selection--single {
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+
+  &.select2-container--open.select2-container--above .select2-selection--single {
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+  }
+
+  &.select2-container--disabled .select2-selection--single {
+    cursor: not-allowed !important;
+    background-color: t.$crm-color-surface-2 !important;
+    border-color: t.$crm-color-border !important;
+    box-shadow: none !important;
+    color: t.$crm-color-text-muted !important;
+
+    .select2-selection__rendered {
+      color: t.$crm-color-text-muted !important;
+    }
+  }
+}
+
+.select2-container-multi {
+  width: 100% !important;
+  display: block;
+  height: auto !important;
+  min-height: 37px;
+
+  &.select2-container-active .select2-choices,
+  &.select2-dropdown-open .select2-choices {
+    border-color: t.$crm-color-primary !important;
+    box-shadow: 0 0 0 3px t.$crm-color-primary-soft !important;
+  }
+
+  .select2-choices {
+    min-height: 37px;
+    padding: 4px 6px;
+    border: 1px solid t.$crm-color-border !important;
+    border-radius: t.$crm-radius-md !important;
+    background: t.$crm-color-white !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    overflow: hidden;
+
+    .select2-search-choice {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      max-width: 100%;
+      margin: 2px 4px 2px 0 !important;
+      padding: 4px 22px 4px 10px !important;
+      border: 0 !important;
+      border-radius: t.$crm-radius-pill !important;
+      background: t.$crm-color-surface-2 !important;
+      background-image: none !important;
+      box-shadow: none !important;
+      color: t.$crm-color-text-muted !important;
+      font-family: t.$crm-font-family;
+      font-size: t.$crm-font-size-sm;
+      font-weight: t.$crm-font-weight-medium;
+      line-height: 1.2;
+      cursor: default;
+
+      > div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .select2-search-choice-close {
+        left: auto !important;
+        right: 6px !important;
+        top: 50% !important;
+        width: 12px !important;
+        height: 12px !important;
+        margin-top: -6px !important;
+        background: none !important;
+        background-image: none !important;
+        opacity: 0.8;
+
+        &::before {
+          content: '\00d7';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          font-family: t.$crm-font-family;
+          font-size: 14px;
+          font-weight: t.$crm-font-weight-medium;
+          line-height: 1;
+          color: t.$crm-color-text-muted;
+        }
+
+        &:hover {
+          opacity: 1;
+          background: none !important;
+          background-image: none !important;
+
+          &::before {
+            color: t.$crm-color-text;
+          }
+        }
+      }
+    }
+
+    .select2-search-choice-focus {
+      background: t.$crm-color-primary-soft !important;
+      color: t.$crm-color-text !important;
+    }
+
+    .select2-search-field {
+      margin: 0;
+      padding: 0;
+      white-space: nowrap;
+
+      input.select2-input {
+        height: 29px !important;
+        margin: 0;
+        padding: 0 6px !important;
+        font-family: t.$crm-font-family;
+        font-size: t.$crm-font-size-md;
+        color: t.$crm-color-text;
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+      }
+    }
+  }
+
+  &.select2-container-disabled {
+    cursor: not-allowed !important;
+
+    .select2-choices {
+      cursor: not-allowed !important;
+      background-color: t.$crm-color-surface-2 !important;
+      background-image: none !important;
+      border-color: t.$crm-color-border !important;
+      box-shadow: none !important;
+
+      .select2-search-choice {
+        opacity: 0.85;
+        color: t.$crm-color-text-muted !important;
+        padding-right: 10px !important;
+      }
+
+      .select2-search-field input.select2-input {
+        cursor: not-allowed !important;
+        color: t.$crm-color-text-muted !important;
+      }
+    }
+  }
+}
+
+// Select2 4 puts --multiple on the selection, not the container.
+.select2-container:has(.select2-selection--multiple):not(:has(> .select2-dropdown)) {
+  width: 100% !important;
+  display: block;
+  height: auto !important;
+  min-height: 37px;
+}
+
+.select2-selection--multiple {
+  min-height: 37px !important;
+  padding: 4px 6px !important;
+  border: 1px solid t.$crm-color-border !important;
+  border-radius: t.$crm-radius-md !important;
+  background: t.$crm-color-white !important;
+  box-shadow: none !important;
+  outline: none !important;
+  cursor: text;
+
+  .select2-selection__rendered {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center;
+    overflow: visible !important;
+    width: 100%;
+    margin: 0;
+    padding: 0 !important;
+    list-style: none;
+    white-space: normal !important;
+  }
+
+  .select2-selection__choice {
+    display: inline-flex !important;
+    float: none !important;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    margin: 2px 4px 2px 0 !important;
+    padding: 4px 8px 4px 10px !important;
+    border: 0 !important;
+    border-radius: t.$crm-radius-pill !important;
+    background: t.$crm-color-surface-2 !important;
+    color: t.$crm-color-text-muted !important;
+    font-family: t.$crm-font-family;
+    font-size: t.$crm-font-size-sm;
+    font-weight: t.$crm-font-weight-medium;
+    line-height: 1.2;
+    white-space: nowrap;
+  }
+
+  // v4 puts × first in the DOM; screenshot / v3 had it after the label
+  .select2-selection__choice__remove {
+    order: 1;
+    float: none !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: t.$crm-color-text-muted;
+    font-size: 14px;
+    font-weight: t.$crm-font-weight-medium;
+    line-height: 1;
+    cursor: pointer;
+
+    &:hover {
+      color: t.$crm-color-text;
+    }
+  }
+
+  // Inline typeahead — not the dropdown search box.
+  // flex:1 so an empty multiple widget stays usable (Select2 sets a tiny inline width).
+  .select2-search--inline {
+    display: inline-flex;
+    float: none !important;
+    flex: 1 1 auto;
+    width: auto !important;
+    min-width: 8em;
+    max-width: 100%;
+    margin: 0;
+    padding: 0 !important;
+
+    .select2-search__field {
+      width: 100% !important;
+      height: 29px !important;
+      margin: 0 !important;
+      padding: 0 6px !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+      font-family: t.$crm-font-family;
+      font-size: t.$crm-font-size-md;
+      color: t.$crm-color-text;
+      -webkit-appearance: textfield;
+
+      &:focus {
+        border: 0 !important;
+        box-shadow: none !important;
+        outline: none !important;
+      }
+    }
+  }
+}
+
+// Bootstrap .input-group is display:table — Select2 sibling collapses without an addon.
+.input-group:has(> .select2-container) {
+  display: block;
+  width: 100%;
+
+  > .select2-container {
+    width: 100% !important;
+  }
+}
+
+.select2-container--focus .select2-selection--multiple,
+.select2-container--open .select2-selection--multiple {
+  border-color: t.$crm-color-primary !important;
+  box-shadow: 0 0 0 3px t.$crm-color-primary-soft !important;
+}
+
+// Square the edge that meets the results list so the field and dropdown read as one piece.
+// clip-path drops the focus ring on the joining side (3px = primary-soft spread).
+.select2-container--open.select2-container--below .select2-selection--multiple {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  clip-path: inset(-3px -3px 0 -3px);
+}
+
+.select2-container--open.select2-container--above .select2-selection--multiple {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+  clip-path: inset(0 -3px -3px -3px);
+}
+
+.select2-container--disabled .select2-selection--multiple {
+  background-color: t.$crm-color-surface-2 !important;
+  border-color: t.$crm-color-border !important;
+  box-shadow: none !important;
+  cursor: not-allowed !important;
+}
+
+.form-group.has-error {
+  .select2-container:not(.select2-container-multi) .select2-choice,
+  .select2-container .select2-selection--single {
+    border-color: t.$crm-color-danger !important;
+    background-color: t.$crm-color-danger-soft !important;
+  }
+
+  .select2-container-multi .select2-choices,
+  .select2-selection--multiple {
+    border-color: t.$crm-color-danger !important;
+    background-color: t.$crm-color-danger-soft !important;
+  }
+}
+
+.select2-container:has(> .select2-dropdown) {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+.select2-drop,
+.select2-dropdown {
+  margin-top: -1px;
+  border: 1px solid t.$crm-color-primary !important;
+  border-radius: 0 0 t.$crm-radius-md t.$crm-radius-md !important;
+  background: t.$crm-color-white;
+  box-shadow: t.$crm-shadow-md !important;
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-md;
+  color: t.$crm-color-text;
+
+  &.select2-drop-above,
+  &.select2-dropdown--above {
+    margin-top: 0;
+    margin-bottom: -1px;
+    border-radius: t.$crm-radius-md t.$crm-radius-md 0 0 !important;
+  }
+}
+
+// Dropdown search only. Multiple widgets reuse .select2-search on the
+// inline typeahead (li.select2-search--inline) — that field must stay chrome-free.
+.select2-dropdown .select2-search,
+.select2-drop .select2-search {
+  padding: t.$crm-space-2;
+
+  input,
+  .select2-search__field {
+    height: 32px !important;
+    padding: 4px 10px !important;
+    border: 1px solid t.$crm-color-border !important;
+    border-radius: t.$crm-radius-md !important;
+    background: t.$crm-color-white !important;
+    background-image: none !important;
+    font-family: t.$crm-font-family;
+    color: t.$crm-color-text;
+    box-shadow: none !important;
+
+    &:focus {
+      border-color: t.$crm-color-primary !important;
+      outline: none;
+    }
+  }
+}
+
+.select2-results {
+  margin: 0;
+  padding: t.$crm-space-1 0;
+  max-height: 240px;
+
+  li,
+  .select2-result,
+  .select2-result-label {
+    border: 0 !important;
+    border-bottom: 0 !important;
+    box-shadow: none !important;
+  }
+
+  li {
+    font-family: t.$crm-font-family;
+  }
+
+  .select2-result-label,
+  .select2-results__option {
+    padding: 8px 12px;
+    color: t.$crm-color-text;
+  }
+
+  .select2-highlighted,
+  .select2-results__option--highlighted {
+    background: t.$crm-color-primary-soft !important;
+    color: t.$crm-color-text !important;
+
+    .select2-result-label {
+      color: t.$crm-color-text;
+    }
+  }
+
+  .select2-no-results,
+  .select2-searching,
+  .select2-results__message,
+  .select2-results__option.loading-results {
+    padding: 8px 12px;
+    color: t.$crm-color-text-muted;
+    background: transparent;
+  }
+}
+
+.select2-drop-mask {
+  background: transparent !important;
+}
+
+// Multiple: hide already chosen options (Select2 3 behaviour).
+// Do not hide the ajax "searching" / empty-message rows — they are often
+// aria-selected=true and would leave an empty white dropdown.
+.select2-dropdown--hide-selected {
+  .select2-results__option[aria-selected='true']:not(.loading-results):not(.select2-results__message),
+  .select2-results__option--selected:not(.loading-results):not(.select2-results__message) {
+    display: none;
+  }
+}
+
+.select2-selection--multiple .select2-selection__clear {
+  display: none !important;
+}

@@ -1,0 +1,419 @@
+// Button system — size × color/variant (AdminLTE + CRM soft/ghost/icon).
+//
+// Size:     .btn-xs | .btn-sm | (default) | .btn-lg | .btn-icon | .btn-block
+// Color:    .btn-default | .btn-primary | .btn-success | .btn-info
+//           .btn-warning | .btn-danger | .btn-link
+// Soft:     .btn-soft-primary | .btn-soft-success | .btn-soft-info
+//           .btn-soft-warning | .btn-soft-danger
+// Ghost:    .btn-ghost
+// State:    .btn-active | .disabled
+//
+// Example: <button class="btn btn-sm btn-soft-success">Добавить</button>
+//          <a class="btn btn-icon btn-ghost"><i class="fa fa-pencil"></i></a>
+
+@use 'sass:color';
+@use '../tokens' as t;
+
+// ---------------------------------------------------------------------------
+// Base
+// ---------------------------------------------------------------------------
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: t.$crm-space-2 t.$crm-space-3; // 8×12 — md
+  min-height: 37px;
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-sm;
+  font-weight: t.$crm-font-weight-medium;
+  line-height: 1.2;
+  border-radius: t.$crm-radius-md;
+  border: 1px solid transparent;
+  box-shadow: none;
+  text-shadow: none;
+  text-decoration: none !important;
+  vertical-align: middle;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+
+  .fa,
+  .glyphicon {
+    margin: 0;
+    line-height: 1;
+  }
+
+  &:hover,
+  &:focus,
+  &:focus-visible,
+  &:active,
+  &.active {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  &[disabled],
+  &.disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Sizes (orthogonal to color)
+// ---------------------------------------------------------------------------
+
+.btn-xs {
+  padding: 2px 6px;
+  min-height: 24px;
+  font-size: 10px;
+  gap: 4px;
+}
+
+.btn-sm {
+  padding: t.$crm-space-1 t.$crm-space-2; // 4×8
+  min-height: 28px;
+  font-size: t.$crm-font-size-xs;
+  gap: 4px;
+}
+
+.btn-lg {
+  padding: t.$crm-space-3 t.$crm-space-5;
+  min-height: 44px;
+  font-size: t.$crm-font-size-md;
+  gap: 8px;
+}
+
+// Square icon-only control (list row actions, sort)
+.btn-icon {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  padding: 0;
+  gap: 0;
+
+  .fa,
+  .glyphicon {
+    font-size: 14px;
+  }
+}
+
+.btn-icon.btn-sm {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+
+  .fa,
+  .glyphicon {
+    font-size: 12px;
+  }
+}
+
+.btn-icon.btn-lg {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+
+  .fa,
+  .glyphicon {
+    font-size: 16px;
+  }
+}
+
+.btn-block {
+  display: flex;
+  width: 100%;
+}
+
+// ---------------------------------------------------------------------------
+// Filled colors (AdminLTE names)
+// ---------------------------------------------------------------------------
+
+.btn-default,
+.btn-secondary {
+  color: t.$crm-color-text !important;
+  background: t.$crm-color-white !important;
+  border-color: t.$crm-color-border !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-text !important;
+    background: t.$crm-color-primary-soft !important;
+    border-color: t.$crm-color-border !important;
+  }
+}
+
+// Brand fill — Sonata save often uses .btn-success
+.btn-primary,
+.btn-success {
+  color: t.$crm-color-white !important;
+  background: t.$crm-color-primary !important;
+  border-color: t.$crm-color-primary !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-white !important;
+    background: color.adjust(t.$crm-color-primary, $lightness: -6%) !important;
+    border-color: color.adjust(t.$crm-color-primary, $lightness: -6%) !important;
+  }
+}
+
+.btn-info {
+  color: t.$crm-color-white !important;
+  background: t.$crm-color-info !important;
+  border-color: t.$crm-color-info !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-white !important;
+    background: color.adjust(t.$crm-color-info, $lightness: -8%) !important;
+    border-color: color.adjust(t.$crm-color-info, $lightness: -8%) !important;
+  }
+}
+
+.btn-warning {
+  color: t.$crm-color-white !important;
+  background: t.$crm-color-warning !important;
+  border-color: t.$crm-color-warning !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-white !important;
+    background: color.adjust(t.$crm-color-warning, $lightness: -8%) !important;
+    border-color: color.adjust(t.$crm-color-warning, $lightness: -8%) !important;
+  }
+}
+
+.btn-danger {
+  color: t.$crm-color-white !important;
+  background: t.$crm-color-danger !important;
+  border-color: t.$crm-color-danger !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-white !important;
+    background: color.adjust(t.$crm-color-danger, $lightness: -6%) !important;
+    border-color: color.adjust(t.$crm-color-danger, $lightness: -6%) !important;
+  }
+}
+
+.btn-link {
+  min-height: 0;
+  padding-left: 0;
+  padding-right: 0;
+  color: t.$crm-color-info !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+
+  &:hover,
+  &:focus-visible {
+    color: t.$crm-color-info !important;
+    background: transparent !important;
+    text-decoration: underline !important;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Soft (text on soft fill) — CRM «Добавить», secondary destructive, etc.
+// ---------------------------------------------------------------------------
+
+.btn-soft-primary,
+.btn-soft-success {
+  color: t.$crm-color-text !important;
+  background: t.$crm-color-primary-soft !important;
+  border-color: t.$crm-color-primary !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-text !important;
+    background: t.$crm-color-white !important;
+    border-color: t.$crm-color-primary !important;
+  }
+
+  .fa-plus-circle::before {
+    content: '\f067'; // plain plus
+  }
+}
+
+.btn-soft-info {
+  color: t.$crm-color-info !important;
+  background: t.$crm-color-info-soft !important;
+  border-color: color-mix(in srgb, t.$crm-color-info 40%, t.$crm-color-border) !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-white !important;
+    background: t.$crm-color-info !important;
+    border-color: t.$crm-color-info !important;
+  }
+}
+
+.btn-soft-warning {
+  color: t.$crm-color-warning-text !important;
+  background: t.$crm-color-warning-soft !important;
+  border-color: color-mix(in srgb, t.$crm-color-warning 40%, t.$crm-color-border) !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-warning-text !important;
+    background: t.$crm-color-white !important;
+    border-color: t.$crm-color-warning !important;
+  }
+}
+
+.btn-soft-danger {
+  color: t.$crm-color-danger !important;
+  background: t.$crm-color-danger-soft !important;
+  border-color: color-mix(in srgb, t.$crm-color-danger 35%, t.$crm-color-border) !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-white !important;
+    background: t.$crm-color-danger !important;
+    border-color: t.$crm-color-danger !important;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Ghost — transparent / border-only action.
+// ---------------------------------------------------------------------------
+
+.btn-ghost {
+  color: t.$crm-color-text-muted !important;
+  background: t.$crm-color-white !important;
+  border-color: t.$crm-color-border !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-text !important;
+    background: t.$crm-color-primary-soft !important;
+    border-color: t.$crm-color-border !important;
+  }
+}
+
+// Toggle / selected state.
+.btn-active,
+.btn.btn-active {
+  color: t.$crm-color-text !important;
+  background: t.$crm-color-primary-soft !important;
+  border-color: t.$crm-color-primary !important;
+}
+
+// ---------------------------------------------------------------------------
+// Groups
+// ---------------------------------------------------------------------------
+
+.btn-group {
+  display: inline-flex;
+  align-items: center;
+  gap: t.$crm-space-1;
+  vertical-align: middle;
+
+  > .btn {
+    float: none;
+    margin: 0;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Legacy aliases (old markup without .btn-soft-* / .btn-icon / .btn-ghost)
+// Prefer explicit soft/ghost/icon classes in new code.
+// ---------------------------------------------------------------------------
+
+// Compact «Добавить …» used to be .btn-sm.btn-success
+.btn-sm.btn-success:not(.btn-soft-success):not(.btn-soft-primary),
+.btn-xs.btn-success:not(.btn-soft-success):not(.btn-soft-primary),
+a.btn-success.sonata-ba-action {
+  color: t.$crm-color-text !important;
+  background: t.$crm-color-primary-soft !important;
+  border-color: t.$crm-color-primary !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-text !important;
+    background: t.$crm-color-white !important;
+    border-color: t.$crm-color-primary !important;
+  }
+
+  .fa-plus-circle::before {
+    content: '\f067';
+  }
+}
+
+// Compact soft danger/warning/primary (show inline actions)
+.btn-sm.btn-danger:not(.btn-soft-danger),
+.btn-xs.btn-danger:not(.btn-soft-danger) {
+  color: t.$crm-color-danger !important;
+  background: t.$crm-color-danger-soft !important;
+  border-color: color-mix(in srgb, t.$crm-color-danger 35%, t.$crm-color-border) !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-white !important;
+    background: t.$crm-color-danger !important;
+    border-color: t.$crm-color-danger !important;
+  }
+}
+
+.btn-sm.btn-warning:not(.btn-soft-warning),
+.btn-xs.btn-warning:not(.btn-soft-warning) {
+  color: t.$crm-color-warning-text !important;
+  background: t.$crm-color-warning-soft !important;
+  border-color: color-mix(in srgb, t.$crm-color-warning 40%, t.$crm-color-border) !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-warning-text !important;
+    background: t.$crm-color-white !important;
+    border-color: t.$crm-color-warning !important;
+  }
+}
+
+.btn-sm.btn-primary:not(.btn-soft-primary):not(.btn-ghost),
+.btn-xs.btn-primary:not(.btn-soft-primary):not(.btn-ghost) {
+  color: t.$crm-color-text !important;
+  background: t.$crm-color-white !important;
+  border-color: t.$crm-color-border !important;
+
+  &:hover,
+  &:focus-visible,
+  &:active,
+  &.active {
+    color: t.$crm-color-text !important;
+    background: t.$crm-color-primary-soft !important;
+    border-color: t.$crm-color-primary !important;
+  }
+}

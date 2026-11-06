@@ -1,0 +1,75 @@
+// Bootstrap 3 / AdminLTE .label* — soft chip style (Variant D).
+
+@use '../tokens' as t;
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 2px 8px 4px;
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-xs;
+  font-weight: t.$crm-font-weight-medium;
+  line-height: 1;
+  border-radius: t.$crm-radius-md;
+  border-style: solid;
+  border-width: 1px;
+  text-shadow: none !important;
+  white-space: nowrap;
+  vertical-align: middle;
+
+  .fa,
+  .glyphicon {
+    flex-shrink: 0;
+    width: 1em;
+    text-align: center;
+  }
+}
+
+.label-success {
+  color: #5a6e1e !important;
+  background-color: t.$crm-color-primary-soft !important;
+  border: 1px solid color-mix(in srgb, t.$crm-color-primary 40%, t.$crm-color-border) !important;
+}
+
+.label-danger {
+  color: t.$crm-color-danger !important;
+  background-color: t.$crm-color-danger-soft !important;
+  border: 1px solid color-mix(in srgb, t.$crm-color-danger 35%, t.$crm-color-border) !important;
+}
+
+.label-warning {
+  color: t.$crm-color-warning-text !important;
+  background-color: t.$crm-color-warning-soft !important;
+  border: 1px solid color-mix(in srgb, t.$crm-color-warning 40%, t.$crm-color-border) !important;
+}
+
+.label-info,
+.label-primary {
+  color: t.$crm-color-info !important;
+  background-color: t.$crm-color-info-soft !important;
+  border: 1px solid color-mix(in srgb, t.$crm-color-info 40%, t.$crm-color-border) !important;
+}
+
+.label-default {
+  color: t.$crm-color-text-muted !important;
+  background-color: t.$crm-color-surface-2 !important;
+  border: 1px solid t.$crm-color-border !important;
+}
+
+// BS3 also ships .badge — align with soft chips
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 8px;
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-xs;
+  font-weight: t.$crm-font-weight-medium;
+  line-height: 1;
+  border-radius: t.$crm-radius-pill;
+  text-shadow: none;
+  background-color: t.$crm-color-text-muted;
+  color: t.$crm-color-white;
+}

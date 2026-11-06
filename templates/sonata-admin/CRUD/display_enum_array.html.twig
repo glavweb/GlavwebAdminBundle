@@ -1,0 +1,23 @@
+{%- apply trim|raw %}
+    {% if value is null %}
+        &nbsp;
+    {% else %}
+        {% for item in value %}
+            {% if item.trans is defined %}
+                {# Enum implements TranslatableInterface and therefore has direct control over how it should be displayed. #}
+                {{- item|trans -}}
+            {% else %}
+                {% set item = use_value|default(false) ? item.value : item.name %}
+
+                {% if translation_domain|default(null) is null %}
+                    {% set item = item %}
+                {% else %}
+                    {% set item = item|trans({}, translation_domain) %}
+                {% endif %}
+
+                {{- item -}}
+            {% endif %}
+            {% if not loop.last %}, {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endapply -%}

@@ -1,0 +1,10 @@
+{#
+  Placeholder shown instead of a persisted collection item marked for deletion.
+  Restore unchecks _delete (see delete script).
+#}
+<div class="alert alert-warning sonata-collection-item__pending-banner" role="status">
+    <span class="sonata-collection-item__pending-message">Элемент будет удален после сохранения</span>
+    <button type="button" class="btn btn-sm btn-soft-warning" data-sonata-inline-restore>
+        Восстановить
+    </button>
+</div>

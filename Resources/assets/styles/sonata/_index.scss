@@ -1,0 +1,8 @@
+// Reusable Sonata layout. Project-specific bridges and legacy styles stay in the app.
+
+@use 'login';
+@use 'modal';
+@use 'sonata-header';
+@use 'sonata-list';
+@use 'sonata-form';
+@use 'sonata-show';

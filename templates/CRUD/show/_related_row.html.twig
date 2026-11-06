@@ -1,0 +1,43 @@
+{#
+  Single related-entity row for _related_table.
+
+  Params:
+    name       — primary text (or HTML with name_raw)
+    name_raw   — bool
+    name_url   — optional: wrap name in a link (same target as action_url)
+    meta       — optional muted meta (or HTML with meta_raw)
+    meta_raw   — bool
+    action_url — optional link URL (ghost 32 action)
+    action_title — title/aria for action, default 'Просмотр'
+    class      — extra CSS class
+#}
+<div class="sonata-show-related__row{{ class is defined and class ? ' ' ~ class : '' }}">
+    <div class="sonata-show-related__name">
+        {% if name_url is defined and name_url %}
+            <a
+                class="inherit-link"
+                href="{{ name_url }}"
+                title="{{ action_title|default('Просмотр') }}"
+            >
+                {% if name_raw|default(false) %}{{ name|raw }}{% else %}{{ name }}{% endif %}
+            </a>
+        {% else %}
+            {% if name_raw|default(false) %}{{ name|raw }}{% else %}{{ name }}{% endif %}
+        {% endif %}
+    </div>
+    {% if meta is defined and meta %}
+        <div class="sonata-show-related__meta">
+            {% if meta_raw|default(false) %}{{ meta|raw }}{% else %}{{ meta }}{% endif %}
+        </div>
+    {% endif %}
+    {% if action_url is defined and action_url %}
+        <a
+            class="sonata-show-related__action"
+            href="{{ action_url }}"
+            title="{{ action_title|default('Просмотр') }}"
+            aria-label="{{ action_title|default('Просмотр') }}"
+        >
+            <i class="fa fa-search" aria-hidden="true"></i>
+        </a>
+    {% endif %}
+</div>

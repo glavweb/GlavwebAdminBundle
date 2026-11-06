@@ -1,0 +1,6 @@
+{% extends '@SonataAdmin/CRUD/base_show.html.twig' %}
+
+{% block navbar_title %}
+    {{ "title_show"|trans({'%name%': admin.toString(object)|u.truncate(30) }, 'SonataAdminBundle') }}
+{% endblock %}
+

@@ -1,0 +1,21 @@
+{#
+
+This file is part of the Sonata package.
+
+(c) Thomas Rabaix <thomas.rabaix@sonata-project.org>
+
+For the full copyright and license information, please view the LICENSE
+file that was distributed with this source code.
+
+#}
+
+{% if admin.hasAccess('show', object) and admin.hasRoute('show') and admin.canAccessObjectAction('show', object) %}
+    {% set labelName = admin.labelTranslatorStrategy.getLabel(admin.classnameLabel ~ '_action_show', 'button', 'link') %}
+    {% set labelNameTranslated = labelName|trans({}, admin.translationDomain) %}
+    {% set labelNameTranslated = labelName == labelNameTranslated ? 'link_action_create'|trans({}, 'SonataAdminBundle') : labelNameTranslated %}
+
+    <a class="btn btn-sm btn-soft-info" href="{{ admin.generateObjectUrl('show', object) }}" title="{{ labelNameTranslated }}">
+        <i class="fa fa-search" aria-hidden="true"></i>
+        {{ labelNameTranslated }}
+    </a>
+{% endif %}

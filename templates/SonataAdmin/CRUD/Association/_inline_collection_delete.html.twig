@@ -1,0 +1,32 @@
+{#
+  Hidden _delete checkbox + CRM trash icon.
+  Persisted rows stay in the DOM with _delete checked; unsaved rows are removed (see delete script).
+
+  A disabled hidden flag is enabled while pending-delete: AdminHelper looks for the
+  `_delete` key in POST when AJAX-adding a sibling, and iCheck/hidden checkboxes
+  often fail to submit that key.
+#}
+{% if nested_group_field['_delete'] is defined %}
+    <div class="sonata-collection-delete-field">
+        <input
+            type="hidden"
+            class="sonata-collection-delete-flag"
+            name="{{ nested_group_field['_delete'].vars.full_name }}"
+            value="1"
+            {% if not (collection_deleted|default(false)) %}disabled="disabled"{% endif %}
+        >
+        {{ form_widget(nested_group_field['_delete'], { label: false, attr: { class: 'sonata-collection-delete-checkbox' } }) }}
+    </div>
+    {% set delete_label = 'action_delete'|trans({}, 'SonataAdminBundle') %}
+    {% if delete_button_labeled|default(false) %}
+        <button type="button" class="btn btn-sm btn-soft-danger sonata-collection-delete" data-sonata-inline-delete>
+            <i class="fa fa-trash" aria-hidden="true"></i>
+            {{ delete_label }}
+        </button>
+    {% else %}
+        <button type="button" class="btn btn-icon btn-soft-danger sonata-collection-delete" data-sonata-inline-delete title="{{ delete_label }}">
+            <i class="fa fa-trash" aria-hidden="true"></i>
+            <span class="sr-only">{{ delete_label }}</span>
+        </button>
+    {% endif %}
+{% endif %}

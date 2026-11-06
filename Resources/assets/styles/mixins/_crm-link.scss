@@ -1,0 +1,15 @@
+@use '../tokens' as t;
+
+// Content links: body text color + brand green underline (not AdminLTE blue).
+@mixin crm-link {
+  color: t.$crm-color-text;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, t.$crm-color-primary 55%, transparent);
+  text-underline-offset: 2px;
+
+  &:hover,
+  &:focus {
+    color: t.$crm-color-text;
+    text-decoration-color: t.$crm-color-primary;
+  }
+}

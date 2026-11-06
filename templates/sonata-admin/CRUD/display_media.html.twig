@@ -1,0 +1,10 @@
+<div {% if class|default(false) %}class="{{ class|e('html_attr') }}"{% endif %} {% if style|default(false) %}style="{{ style|e('html_attr')
+}}"{% endif %}>
+    {% if value is iterable %}
+        {% for item in value %}
+            {{ glavweb_uploader_display(item, provider_options) }}
+        {% endfor %}
+    {% else %}
+        {{ glavweb_uploader_display(value, provider_options) }}
+    {% endif %}
+</div>

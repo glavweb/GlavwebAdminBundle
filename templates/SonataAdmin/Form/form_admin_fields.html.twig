@@ -1,0 +1,142 @@
+{% extends '@!SonataAdmin/Form/form_admin_fields.html.twig' %}
+
+{% block sonata_type_choice_field_mask_widget %}
+    {{ block('choice_widget') }}
+    {# Taking the form name excluding ending field glue character #}
+    {% set main_form_name = id|slice(0, (id|length - name|length)-1) %}
+    {% if expanded %}
+        {% set js_selector = '#' ~ main_form_name ~ '_' ~ name ~ ' input' %}
+        {% set js_events = ['change', 'ifChecked'] %}
+    {% else %}
+        {% set js_selector = '#' ~ main_form_name ~ '_' ~ name %}
+        {# Select2 4: select2:select / clear; native change as fallback #}
+        {% set js_events = ['change', 'select2:select', 'select2:unselect', 'select2:clear'] %}
+    {% endif %}
+    <script>
+        jQuery(document).ready(function() {
+            var allFields = {{ all_fields|json_encode|raw }},
+                map = {{ map|json_encode|raw }},
+                showMaskChoiceEl = jQuery("{{ js_selector }}");
+                {% for js_event in js_events %}
+                    showMaskChoiceEl.on("{{ js_event }}", function () {
+                        choice_field_mask_show(showMaskChoiceEl.val());
+                    });
+                {% endfor %}
+
+            function choice_field_mask_show(val) {
+                var controlGroupIdFunc = function (field) {
+                    // Most of fields are named with an underscore
+                    var defaultFieldId = '#sonata-ba-field-container-{{ main_form_name }}_' + field;
+
+                    // Some fields may be named with a dash (like keys of immutable array form type)
+                    if (jQuery(defaultFieldId).length === 0) {
+                        defaultFieldId = '#sonata-ba-field-container-{{ main_form_name }}-' + field;
+                    }
+
+                    // Some fields are rendered by form_widget (no container)
+                    if (jQuery(defaultFieldId).length === 0) {
+                        defaultFieldId = '#{{ main_form_name }}_' + field;
+                    }
+
+                    // catch select2 fields with inline: table option
+                    if (jQuery(defaultFieldId).length === 0) {
+                        defaultFieldId = '#{{ main_form_name }}_' + field + '_autocomplete_input';
+                    }
+
+                    return defaultFieldId;
+                };
+
+                jQuery.each(allFields, function (i, field) {
+                    var fieldContainer = controlGroupIdFunc(field);
+                    jQuery(fieldContainer).hide();
+                    var $cell = jQuery(fieldContainer).closest('[class*="sonata-ba-td-"]');
+                    if ($cell.length) {
+                        $cell.hide();
+                        var $table = $cell.closest('table');
+                        if ($table.length) {
+                            $table.find('thead tr th').eq($cell.index()).hide();
+                        }
+                    }
+                    jQuery(fieldContainer).find('[required="required"]').attr('data-required', 'required').removeAttr("required");
+                });
+
+                if (map[val]) {
+                    jQuery.each(map[val], function (i, field) {
+                        var fieldContainer = controlGroupIdFunc(field);
+                        jQuery(fieldContainer).show();
+                        var $cell = jQuery(fieldContainer).closest('[class*="sonata-ba-td-"]');
+                        if ($cell.length) {
+                            $cell.show();
+                            var $table = $cell.closest('table');
+                            if ($table.length) {
+                                $table.find('thead tr th').eq($cell.index()).show();
+                            }
+                        }
+                        jQuery(fieldContainer).find('[data-required="required"]').attr("required", "required");
+                    });
+                }
+            }
+
+            {% if value is empty %}
+                choice_field_mask_show(showMaskChoiceEl.val());
+            {% else %}
+                choice_field_mask_show('{{ value|e('js') }}');
+            {% endif %}
+        });
+
+    </script>
+{% endblock %}
+
+{#
+  Native CollectionType — CRM layout (day cards, time rows, labeled add).
+  Must live in this theme: Sonata Admin renders @SonataAdmin/Form/form_admin_fields.
+  Stimulus attrs are required (Sonata 4 dropped jQuery setup_collection).
+  Add button is a direct child of the collection root: controller insertBefore() needs that.
+#}
+{% block sonata_type_native_collection_widget_row %}
+{% apply spaceless %}
+    <div class="sonata-collection-row" {{ stimulus_target('sonata-collection', 'item') }}>
+        <div class="sonata-collection-row__body">
+            {{ form_row(child, { label: false }) }}
+        </div>
+        {% if allow_delete %}
+            <button type="button" class="btn btn-icon btn-soft-danger sonata-collection-delete" {{ stimulus_action('sonata-collection', 'delete', 'click') }} title="{{ 'action_delete'|trans({}, 'SonataAdminBundle') }}">
+                <i class="fa fa-trash" aria-hidden="true"></i>
+                <span class="sr-only">{{ 'action_delete'|trans({}, 'SonataAdminBundle') }}</span>
+            </button>
+        {% endif %}
+    </div>
+{% endapply %}
+{% endblock sonata_type_native_collection_widget_row %}
+
+{% block sonata_type_native_collection_widget %}
+{% apply spaceless %}
+    {% if prototype is defined %}
+        {% set child = prototype %}
+        {% set allow_delete_backup = allow_delete %}
+        {% set allow_delete = true %}
+        {% set attr = attr|merge({
+            'data-prototype': block('sonata_type_native_collection_widget_row'),
+            'data-prototype-name': prototype.vars.name,
+            'class': attr.class|default(''),
+        })|merge(stimulus_controller('sonata-collection').toArray()) %}
+        {% set allow_delete = allow_delete_backup %}
+    {% endif %}
+    <div {{ block('widget_container_attributes') }}>
+        {{ form_errors(form) }}
+        {% for child in form %}
+            {{ block('sonata_type_native_collection_widget_row') }}
+        {% endfor %}
+        {{ form_rest(form) }}
+        {% if allow_add %}
+            {% set btn_add_label = btn_add|default(false) %}
+            <button type="button" class="btn btn-sm btn-soft-success sonata-collection-add"{% if btn_add_label %} title="{{ btn_add_label|trans({}, btn_catalogue|default('messages')) }}"{% endif %} {{ stimulus_action('sonata-collection', 'add', 'click') }}>
+                <i class="fa fa-plus" aria-hidden="true"></i>
+                {% if btn_add_label %}
+                    <span class="sonata-collection-add__label">{{ btn_add_label|trans({}, btn_catalogue|default('messages')) }}</span>
+                {% endif %}
+            </button>
+        {% endif %}
+    </div>
+{% endapply %}
+{% endblock sonata_type_native_collection_widget %}

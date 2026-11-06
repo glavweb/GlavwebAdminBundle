@@ -1,0 +1,132 @@
+// Sonata field-dialog leftovers (ajax association create).
+// Shell / sizes / footer chrome: theme/_modal.scss.
+// Form controls: theme/_forms.scss + theme/_buttons.scss.
+
+@use '../tokens' as t;
+
+.field-dialog.modal,
+.crm-admin-modal.modal {
+  // Flat fields — no nested .box card inside dialog
+  .box.box-primary,
+  .header-hidden > .box.box-primary,
+  [class*='col-'].header-hidden > .box.box-primary,
+  [class*='col-'].header-hidden > .box,
+  .col-md-12.header-hidden > .box {
+    margin: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+
+    > .box-header {
+      display: none !important;
+    }
+
+    > .box-body {
+      padding: 0 !important;
+    }
+  }
+
+  // Drop Bootstrap column gutters — modal-body already pads
+  form > .row,
+  .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  [class*='col-md-'],
+  [class*='col-sm-'],
+  [class*='col-xs-'] {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  // Sonata sticky actions rendered inside .modal-body (bleed to edges)
+  .sonata-ba-form-actions.well,
+  .sonata-ba-form-actions.form-actions,
+  .sonata-ba-form .sonata-ba-form-actions {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: t.$crm-space-2;
+    margin: t.$crm-space-4 (-#{t.$crm-space-4}) 0 !important;
+    padding: t.$crm-space-3 t.$crm-space-4 !important;
+    border: 0 !important;
+    border-top: 1px solid t.$crm-color-border !important;
+    border-radius: 0 !important;
+    background: t.$crm-color-white !important;
+    box-shadow: none !important;
+    text-align: right;
+  }
+
+  // Period row: «Начало / Окончание / Стоимость» in one line (team member & teacher modals)
+  .form-period-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: t.$crm-space-2 t.$crm-space-3;
+    align-items: center;
+  }
+
+  .form-period-item {
+    display: flex;
+    flex: 1 1 0;
+    align-items: center;
+    gap: t.$crm-space-2;
+    min-width: 0;
+    font-family: t.$crm-font-family;
+    font-size: t.$crm-font-size-sm;
+    color: t.$crm-color-text-muted;
+    white-space: nowrap;
+
+    .form-period-label {
+      flex: 0 0 auto;
+    }
+
+    .input-group.date,
+    .js-datepicker,
+    .input-group,
+    .form-control {
+      flex: 1 1 auto;
+      min-width: 0;
+      width: 100%;
+    }
+
+    input.form-control {
+      width: 100% !important;
+    }
+  }
+
+  .js-datepicker.input-group,
+  .input-group.date {
+    width: 100%;
+
+    .form-control {
+      border-radius: t.$crm-radius-md 0 0 t.$crm-radius-md;
+    }
+
+    .input-group-addon {
+      position: relative;
+      width: 48px;
+      min-width: 48px;
+      max-width: 48px;
+      padding: 0;
+      margin-left: -1px;
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+
+      .fa,
+      .fas {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin: 0;
+        line-height: 1;
+        transform: translate(-50%, -50%);
+      }
+    }
+  }
+}

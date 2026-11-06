@@ -1,0 +1,162 @@
+{% extends base_template %}
+
+{% form_theme form with [
+    '@SonataAdmin/Form/form_admin_fields.html.twig',
+    '@SonataForm/Form/datepicker.html.twig',
+] %}
+{% form_theme filter_form admin.templateRegistry.getTemplate('filter') %}
+
+{% block title %}
+    {{ 'advanced_filter.title'|trans({'%label%': admin.label|trans({}, admin.translationdomain)}, 'GlavwebAdminBundle') }}
+{% endblock %}
+
+{% block navbar_title %}
+    {{ 'advanced_filter.navbar_title'|trans({}, 'GlavwebAdminBundle') }}
+{% endblock %}
+
+{% block breadcrumb %}
+    <li>
+        <a href="{{ path('sonata_admin_dashboard') }}">
+            <i class="fa fa-home" aria-hidden="true"></i>
+        </a>
+    </li>
+    <li>
+        <a href="{{ admin.generateUrl('list', {filter: admin.filterParameters}) }}">
+            {{ admin.label|trans({}, admin.translationdomain) }}
+        </a>
+    </li>
+    <li class="active">
+        <span>{{ 'advanced_filter.navbar_title'|trans({}, 'GlavwebAdminBundle') }}</span>
+    </li>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        jQuery(function ($) {
+            var $form = $('#advanced-filter-form');
+            if (!$form.length || typeof Admin === 'undefined') {
+                return;
+            }
+
+            if (typeof Admin.setup_select2 === 'function') {
+                Admin.setup_select2($form);
+            }
+            if (typeof Admin.setup_icheck === 'function') {
+                Admin.setup_icheck($form);
+            }
+        });
+    </script>
+{% endblock %}
+
+{% block sonata_admin_content %}
+    {% block notice %}
+        {% include ['@SonataCore/FlashMessage/render.html.twig', '@SonataTwig/FlashMessage/render.html.twig'] %}
+    {% endblock notice %}
+
+    <div class="sonata-ba-form">
+        {{ form_start(form, {
+            attr: {
+                id: 'advanced-filter-form',
+                role: 'form',
+                class: 'form-horizontal',
+            },
+        }) }}
+
+        <div class="row">
+            <div class="col-md-10 col-sm-12">
+                <div class="row">
+                    {% for group_name, group_options in advanced_filter_bag.groups %}
+                        {% set fields = advanced_filter_bag.fieldsInGroup(group_name) %}
+                        {% if fields is not empty %}
+                            {% set group_label = group_options.label|default(false) %}
+                            {% set group_class = group_options.class|default('col-md-12') %}
+                            <div class="{{ group_class }}">
+                                <div class="box box-primary">
+                                    {% if group_label is not same as(false) and group_label is not same as('') %}
+                                        <div class="box-header with-border">
+                                            <h4 class="box-title">
+                                                {% if group_options.translation_domain is defined and group_options.translation_domain is same as(false) %}
+                                                    {{ group_label }}
+                                                {% else %}
+                                                    {{ group_label|trans({}, group_options.translation_domain|default(admin.translationDomain)) }}
+                                                {% endif %}
+                                            </h4>
+                                        </div>
+                                    {% endif %}
+                                    <div class="box-body">
+                                        <div class="sonata-ba-collapsed-fields">
+                                            {% for field_def in fields %}
+                                                {% set child = form[field_def.name] %}
+                                                {% set field_label = field_def.filterOptions.label|default(null) %}
+                                                {% if field_label is null %}
+                                                    {% set field_label = admin.labelTranslatorStrategy.getLabel(field_def.name, 'filter', 'label') %}
+                                                {% endif %}
+
+                                                {% if field_def.advancedFilterClass %}
+                                                    {% set fields_inner = child.children %}
+                                                    {% set field_count = fields_inner|length %}
+
+                                                    {% if field_count > 1 %}
+                                                        <div class="form-group">
+                                                            <label class="control-label">
+                                                                {{ field_label|trans({}, field_def.filterOptions.translation_domain|default(admin.translationDomain)) }}
+                                                            </label>
+                                                        </div>
+                                                    {% endif %}
+
+                                                    {% for field in fields_inner %}
+                                                        <div class="form-group{% if not field.vars.valid %} has-error{% endif %}">
+                                                            {% if field_count == 1 %}
+                                                                <label class="control-label" for="{{ field.vars.id }}">
+                                                                    {{ field_label|trans({}, field_def.filterOptions.translation_domain|default(admin.translationDomain)) }}
+                                                                </label>
+                                                            {% else %}
+                                                                {{ form_label(field) }}
+                                                            {% endif %}
+                                                            <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                                                                {{ form_widget(field) }}
+                                                                {{ form_errors(field) }}
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {% set value_field = child.value is defined ? child.value : child %}
+                                                    <div class="form-group{% if not value_field.vars.valid %} has-error{% endif %}">
+                                                        <label class="control-label" for="{{ value_field.vars.id }}">
+                                                            {{ field_label|trans({}, field_def.filterOptions.translation_domain|default(admin.translationDomain)) }}
+                                                        </label>
+                                                        <div class="sonata-ba-field sonata-ba-field-standard-natural">
+                                                            {{ form_widget(value_field) }}
+                                                            {{ form_errors(value_field) }}
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="sonata-ba-form-actions well well-small form-actions">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-filter" aria-hidden="true"></i>
+                        {{ 'advanced_filter.apply'|trans({}, 'GlavwebAdminBundle') }}
+                    </button>
+                    <a href="{{ admin.generateUrl('list', {filter: admin.filterParameters}) }}" class="btn btn-default">
+                        {{ 'advanced_filter.cancel'|trans({}, 'GlavwebAdminBundle') }}
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-2 col-sm-12" style="margin-left: -15px; padding-right: 2px">
+                {% include '@GlavwebAdmin/Filter/advanced_filter_sidebar.html.twig' %}
+            </div>
+        </div>
+
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% set copyLabel = copy_label|default('Скопировать в буфер обмена') %}
+{% set copiedLabel = copied_label|default('Скопировано') %}
+<button type="button"
+        class="btn btn-icon btn-ghost js-copy-to-clipboard"
+        data-copy="{{ text }}"
+        data-copy-label="{{ copyLabel }}"
+        data-copied-label="{{ copiedLabel }}"
+        title="{{ copyLabel }}"
+        aria-label="{{ copyLabel }}">
+    <i class="fa fa-clipboard" aria-hidden="true"></i>
+</button>

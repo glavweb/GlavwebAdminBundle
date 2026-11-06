@@ -1,0 +1,50 @@
+// Global typography + page canvas for AdminLTE content area.
+
+@use '../tokens' as t;
+@use '../mixins' as m;
+
+body.skin-black,
+body.sonata-bc {
+  font-family: t.$crm-font-family;
+  color: t.$crm-color-text;
+}
+
+.content-wrapper {
+  background-color: t.$crm-color-surface;
+  font-family: t.$crm-font-family;
+  color: t.$crm-color-text;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: t.$crm-font-family;
+    line-height: t.$crm-line-height-tight;
+    color: t.$crm-color-text;
+  }
+
+  p {
+    font-family: t.$crm-font-family;
+    color: t.$crm-color-text;
+  }
+
+  .text-muted {
+    color: t.$crm-color-text-muted !important;
+  }
+}
+
+.content-wrapper .content {
+  padding-top: t.$crm-space-2;
+
+  // Content body links — text + brand green underline (.crm-link).
+  // Not content-header toolbar tabs / buttons / labels.
+  a:not(.btn):not(.label):not(.dropdown-toggle):not(.changer-tab) {
+    @include m.crm-link;
+  }
+
+  .nav-tabs a {
+    text-decoration: none;
+  }
+}

@@ -1,0 +1,1575 @@
+// OVERRIDE: Sonata list theme (AdminLTE content area) aligned with CRM tokens.
+// CSS-only: no Twig/DOM changes. Does not restyle main-sidebar.
+// Scope: content-header navbar, sonata-ba-list, filter box, list attention.
+
+@use '../tokens' as t;
+
+// Content surface / typography: theme/_typography.scss
+
+// ---------------------------------------------------------------------------
+// content-header / navbar.navbar-default (tabs + actions)
+// ---------------------------------------------------------------------------
+
+// OVERRIDE: sticky list toolbar as CRM card (no title/breadcrumbs — those stay in main-header)
+.content-header {
+  .sticky-wrapper,
+  .navbar-collapse,
+  .navbar-left,
+  .navbar-left > .nav.navbar-nav {
+    overflow: visible;
+  }
+
+  .navbar.navbar-default {
+    margin: 0 0 t.$crm-space-2; // half of previous space-3 gap before .content
+    border: 1px solid t.$crm-color-border;
+    border-radius: t.$crm-radius-lg;
+    background: t.$crm-color-white;
+    box-shadow: t.$crm-shadow-sm;
+    // OVERRIDE: same min height with/without Create button
+    min-height: 49px;
+    overflow: visible;
+  }
+
+  .navbar-default .container-fluid {
+    display: flex;
+    align-items: stretch;
+    min-height: 49px;
+    padding-left: t.$crm-space-2;
+    padding-right: t.$crm-space-3;
+  }
+
+  // OVERRIDE: cancel legacy negative margins from sonata_admin_layout inline CSS
+  .navbar-header {
+    margin-right: 0;
+  }
+
+  .navbar-left {
+    margin-left: 0 !important;
+    // OVERRIDE: float (not flex item) so tabs stay left while actions pack right
+    float: left;
+    display: flex;
+    align-items: stretch;
+  }
+
+  // OVERRIDE: classic Bootstrap float:right — multiple `.navbar-right` lists
+  // reverse visually (DOM: Действия then Показать → visual: Показать | Действия).
+  // Flex + margin-left:auto on each list split free space and put Показать on the far right.
+  .navbar-right {
+    float: right !important;
+    margin-left: 0; // tight to neighbor action (was space-2; gap via button/toggle padding)
+    margin-right: 0;
+    display: flex;
+    align-items: stretch; // «Действия» full bar height like left tabs
+    flex-wrap: wrap;
+    gap: t.$crm-space-2; // space between multiple «Добавить …» buttons in one list
+    min-height: 49px;
+
+    // Primary action buttons (Показать / Добавить) — vertical center in 49px bar
+    > li:not(.dropdown) {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .navbar-collapse {
+    // OVERRIDE: block formatting context so float:left/right work (flex ignores float)
+    display: block !important;
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 0;
+    align-self: stretch;
+    padding-left: 0;
+    padding-right: 0;
+
+    &::before,
+    &::after {
+      content: '';
+      display: table;
+    }
+
+    &::after {
+      clear: both;
+    }
+  }
+
+  // Tabs · Underline only — text vertically centered; active underline at bottom
+  .navbar-left > .nav.navbar-nav {
+    margin: 0;
+    display: flex;
+    align-items: stretch;
+    min-height: 49px;
+
+    > li {
+      margin: 0;
+      float: none;
+      display: flex;
+
+      > a {
+        position: relative;
+        display: inline-flex;
+        align-items: center; // text on vertical midpoint of bar
+        padding: 0 14px;
+        font-size: t.$crm-font-size-md;
+        font-weight: t.$crm-font-weight-medium;
+        line-height: 1.2;
+        color: t.$crm-color-text-muted;
+        background: transparent;
+        border: 0 !important;
+        border-radius: 0;
+        box-shadow: none !important;
+      }
+
+      > a:hover,
+      > a:focus {
+        color: t.$crm-color-text;
+        background: transparent;
+      }
+
+      &.active > a,
+      &.active > a:hover,
+      &.active > a:focus {
+        color: t.$crm-color-text;
+        font-weight: t.$crm-font-weight-semibold;
+        background: transparent;
+
+        // underline closer to text (≈ half the previous gap under centered label)
+        &::after {
+          content: '';
+          position: absolute;
+          left: 14px;
+          right: 14px;
+          bottom: calc((100% - 1.2em) / 4 - 1.5px);
+          height: 3px;
+          background: t.$crm-color-primary;
+        }
+      }
+
+      // Date / filter dropdown («За все время» etc.) — match CRM Select2 / export menu
+      &.dropdown {
+        position: relative;
+
+        > a.dropdown-toggle {
+          gap: 6px;
+
+          .caret {
+            margin-left: 2px;
+            border-top-color: t.$crm-color-text-muted;
+            border-bottom-color: t.$crm-color-text-muted;
+          }
+        }
+
+        &.open > a.dropdown-toggle,
+        &.open > a.dropdown-toggle:hover,
+        &.open > a.dropdown-toggle:focus,
+        &.current_ancestor > a.dropdown-toggle,
+        &.active > a.dropdown-toggle {
+          color: t.$crm-color-text;
+          font-weight: t.$crm-font-weight-semibold;
+          background: transparent;
+
+          .caret {
+            border-top-color: t.$crm-color-text;
+            border-bottom-color: t.$crm-color-text;
+          }
+
+          &::after {
+            content: '';
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            bottom: calc((100% - 1.2em) / 4 - 1.5px);
+            height: 3px;
+            background: t.$crm-color-primary;
+          }
+        }
+
+        > .dropdown-menu {
+          z-index: 1060;
+          min-width: 180px;
+          padding: t.$crm-space-1 0;
+          margin-top: 0;
+          border: 1px solid t.$crm-color-border !important;
+          border-radius: t.$crm-radius-md !important;
+          background: t.$crm-color-white !important;
+          box-shadow: t.$crm-shadow-md !important;
+          font-family: t.$crm-font-family;
+          font-size: t.$crm-font-size-md; // 14px — same as Select2 / tab labels
+
+          > li > a {
+            display: block;
+            padding: 8px 12px;
+            font-size: t.$crm-font-size-md;
+            font-weight: t.$crm-font-weight-regular;
+            line-height: 1.4;
+            color: t.$crm-color-text !important;
+            white-space: nowrap;
+            background: transparent !important;
+
+            &:hover,
+            &:focus {
+              color: t.$crm-color-text !important;
+              background: t.$crm-color-primary-soft !important;
+              text-decoration: none;
+            }
+          }
+
+          > .active > a,
+          > .active > a:hover,
+          > .active > a:focus,
+          > .current > a,
+          > .current > a:hover,
+          > .current > a:focus {
+            color: t.$crm-color-text !important;
+            background: t.$crm-color-primary-soft !important;
+            font-weight: t.$crm-font-weight-medium;
+          }
+
+          .divider {
+            display: none; // no separators between date-range options
+          }
+        }
+      }
+    }
+  }
+
+  // «Действия» dropdown — same underline tab chrome as navbar-left filter dropdowns
+  .navbar-right > li.dropdown.sonata-actions {
+    position: relative;
+    float: none;
+    display: flex;
+    align-self: stretch;
+    margin: 0;
+
+    > a.dropdown-toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 14px 0 9px; // 5px closer to neighboring action button (was 14px left)
+      font-size: t.$crm-font-size-md;
+      font-weight: t.$crm-font-weight-medium;
+      line-height: 1.2;
+      color: t.$crm-color-text-muted;
+      background: transparent;
+      border: 0 !important;
+      border-radius: 0;
+      box-shadow: none !important;
+
+      .caret {
+        margin-left: 2px;
+        border-top-color: t.$crm-color-text-muted;
+        border-bottom-color: t.$crm-color-text-muted;
+      }
+
+      &:hover,
+      &:focus {
+        color: t.$crm-color-text;
+        background: transparent;
+      }
+    }
+
+    &.open > a.dropdown-toggle,
+    &.open > a.dropdown-toggle:hover,
+    &.open > a.dropdown-toggle:focus {
+      color: t.$crm-color-text;
+      // keep medium weight: semibold widens the label and shifts «Показать» left (float:right)
+      background: transparent;
+
+      .caret {
+        border-top-color: t.$crm-color-text;
+        border-bottom-color: t.$crm-color-text;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 9px;
+        right: 14px;
+        bottom: calc((100% - 1.2em) / 4 - 1.5px);
+        height: 3px;
+        background: t.$crm-color-primary;
+      }
+    }
+
+    > .dropdown-menu {
+      z-index: 1060;
+      right: 0;
+      left: auto;
+      min-width: 180px;
+      padding: t.$crm-space-1 0;
+      margin-top: 0;
+      border: 1px solid t.$crm-color-border !important;
+      border-radius: t.$crm-radius-md !important;
+      background: t.$crm-color-white !important;
+      box-shadow: t.$crm-shadow-md !important;
+      font-family: t.$crm-font-family;
+      font-size: t.$crm-font-size-md;
+
+      > li > a {
+        display: block;
+        padding: 8px 12px;
+        font-size: t.$crm-font-size-md;
+        font-weight: t.$crm-font-weight-regular;
+        line-height: 1.4;
+        color: t.$crm-color-text !important;
+        white-space: nowrap;
+        background: transparent !important;
+
+        &:hover,
+        &:focus {
+          color: t.$crm-color-text !important;
+          background: t.$crm-color-primary-soft !important;
+          text-decoration: none;
+        }
+
+        .fa {
+          margin-right: 6px;
+        }
+      }
+    }
+  }
+
+  // Labeled toolbar actions (edit, show, create, clone, …) — soft primary
+  .navbar-nav > li > a.sonata-action-element:not(:has(> .fa-info-circle:only-child)) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: auto !important;
+    min-width: 0;
+    height: auto !important;
+    margin: 0;
+    padding: t.$crm-space-2 t.$crm-space-3;
+    gap: 6px;
+    font-size: t.$crm-font-size-sm;
+    font-weight: t.$crm-font-weight-regular;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: visible;
+    color: t.$crm-color-text !important;
+    background: t.$crm-color-primary-soft;
+    border: 1px solid t.$crm-color-primary;
+    border-radius: t.$crm-radius-md;
+
+    &:hover,
+    &:focus {
+      background: t.$crm-color-white;
+      border-color: t.$crm-color-primary;
+      color: t.$crm-color-text !important;
+      text-decoration: none;
+    }
+
+    .fa {
+      margin-right: 0;
+      transform: translateY(1px);
+    }
+  }
+
+  // Delete in the toolbar — soft danger (href or fa-times)
+  .navbar-nav > li > a.sonata-action-element[href*='/delete'],
+  .navbar-nav > li > a.sonata-action-element:has(.fa-times) {
+    color: t.$crm-color-danger !important;
+    background: t.$crm-color-danger-soft !important;
+    border: 1px solid color-mix(in srgb, t.$crm-color-danger 35%, t.$crm-color-border) !important;
+
+    &:hover,
+    &:focus {
+      color: t.$crm-color-danger !important;
+      background: t.$crm-color-white !important;
+      border-color: t.$crm-color-danger !important;
+      text-decoration: none;
+    }
+  }
+
+  // Hint chip in the toolbar (e.g. «Создать черновики» without category filter)
+  .navbar-nav > li > .navbar-text {
+    display: inline-flex;
+    align-items: center;
+    float: none;
+    margin: 0;
+
+    .label {
+      padding: t.$crm-space-2 t.$crm-space-3;
+      font-size: t.$crm-font-size-sm;
+      font-weight: t.$crm-font-weight-regular;
+      line-height: 1.2;
+    }
+  }
+
+  // Icon-only navbar actions (help)
+  .navbar-nav > li > a.sonata-action-element:has(> .fa-info-circle:only-child) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+    padding: 0;
+    color: t.$crm-color-text-muted;
+    background: t.$crm-color-white;
+    border: 1px solid t.$crm-color-border;
+    border-radius: t.$crm-radius-md;
+
+    &:hover,
+    &:focus {
+      color: t.$crm-color-text;
+      background: t.$crm-color-primary-soft;
+      border-color: t.$crm-color-primary;
+      text-decoration: none;
+    }
+  }
+}
+
+// OVERRIDE: Sonata sticky toolbar — keep in flow; clear JS inline width from Admin.js
+.content-header {
+  .navbar.navbar-default,
+  .navbar.navbar-default.stuck {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: auto !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+  }
+}
+
+body.fixed .content-header .navbar.stuck {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  right: auto !important;
+  width: auto !important;
+  max-width: 100% !important;
+  margin-left: 0 !important;
+  border-radius: t.$crm-radius-lg !important;
+  z-index: auto;
+}
+
+@media (max-width: (t.$crm-bp-md - 1px)) {
+  // OVERRIDE: replace Bootstrap floats with a predictable stacked mobile toolbar.
+  .content-header {
+    .navbar-default .container-fluid {
+      flex-direction: column;
+      align-items: stretch;
+      gap: t.$crm-space-2;
+      padding: t.$crm-space-2 t.$crm-space-3;
+    }
+
+    .navbar-header {
+      flex: 0 1 auto;
+      align-self: auto;
+      width: 100%;
+      min-width: 0;
+      margin: 0;
+    }
+
+    .navbar-header .navbar-brand {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .navbar-collapse {
+      display: flex !important;
+      flex: 0 1 auto;
+      align-self: auto;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: t.$crm-space-2;
+      width: 100%;
+      min-height: 0;
+      margin: 0;
+      border: 0;
+      box-shadow: none;
+
+      &::before,
+      &::after {
+        display: none;
+      }
+    }
+
+    .navbar-left,
+    .navbar-right {
+      float: none !important;
+      min-height: 0;
+      margin: 0 !important;
+    }
+
+    .navbar-right {
+      gap: t.$crm-space-2;
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// list-header attention (often inside .box-body.table-responsive above <table>)
+// ---------------------------------------------------------------------------
+
+.list-header-data {
+  margin: t.$crm-space-3 t.$crm-space-3 t.$crm-space-2;
+  padding: t.$crm-space-2 t.$crm-space-3 !important;
+  border: 1px solid #f5d29a;
+  border-radius: t.$crm-radius-md;
+  background: t.$crm-color-warning-soft;
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-sm;
+  color: t.$crm-color-text;
+}
+
+// When banner sits inside the table card — separate it from thead
+.box-body.table-responsive > .list-header-data {
+  margin: t.$crm-space-3 t.$crm-space-3 t.$crm-space-3;
+  border-bottom: 1px solid #f5d29a;
+}
+
+// Stats panel (payment list totals etc.) — CRM card, not warning strip
+.list-header-data:has(.table),
+.list-header-data:has(.list-header-stats) {
+  padding: t.$crm-space-3 t.$crm-space-4 !important;
+  border: 1px solid t.$crm-color-border;
+  border-radius: t.$crm-radius-lg;
+  background: t.$crm-color-white;
+  box-shadow: t.$crm-shadow-sm;
+  color: t.$crm-color-text;
+
+  > .row,
+  .list-header-stats {
+    margin-top: t.$crm-space-3 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    background: transparent !important;
+
+    // Align labels with «Данные отфильтрованы!» (no Bootstrap col gutters)
+    > [class*='col-'] {
+      padding-left: 0 !important;
+      padding-right: t.$crm-space-4 !important;
+
+      &:last-child {
+        padding-right: 0 !important;
+      }
+    }
+  }
+
+  .table {
+    margin: 0 !important;
+    background: transparent !important;
+    width: 100%;
+
+    > thead > tr > th,
+    > tbody > tr > th,
+    > tbody > tr > td,
+    > tfoot > tr > td {
+      border-top: 0 !important;
+      border-left: 0 !important;
+      border-right: 0 !important;
+      border-bottom: 1px solid t.$crm-color-border !important;
+      padding: 8px 0;
+      font-family: t.$crm-font-family;
+      font-size: t.$crm-font-size-sm;
+      line-height: 1.4;
+      background: transparent !important;
+      vertical-align: middle;
+    }
+
+    > tbody > tr > td:first-child {
+      color: t.$crm-color-text-muted;
+      padding-right: t.$crm-space-3;
+      width: 72%;
+    }
+
+    > tbody > tr > td:last-child {
+      text-align: right;
+      font-weight: t.$crm-font-weight-medium;
+      color: t.$crm-color-text;
+      white-space: nowrap;
+    }
+
+    > tbody > tr:first-child > td {
+      padding-top: 0;
+    }
+
+    > tbody > tr:last-child > td {
+      border-bottom: 0 !important;
+      padding-bottom: 0;
+    }
+
+    strong {
+      font-weight: t.$crm-font-weight-semibold;
+      color: t.$crm-color-text;
+    }
+  }
+}
+
+.box-body.table-responsive > .list-header-data:has(.table),
+.box-body.table-responsive > .list-header-data:has(.list-header-stats) {
+  border-bottom: 1px solid t.$crm-color-border;
+}
+
+// OVERRIDE: hide truly empty banner node (legacy templates with only whitespace still fail :empty)
+.list-header-data:empty {
+  display: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+}
+
+// OVERRIDE: replace legacy red attention with CRM warning chip
+.list-header-attention {
+  display: inline-block;
+  margin-right: t.$crm-space-2;
+  padding: 2px t.$crm-space-2;
+  font-size: t.$crm-font-size-sm;
+  font-weight: t.$crm-font-weight-semibold;
+  color: t.$crm-color-warning !important;
+  background: #fce8c4;
+  border-radius: t.$crm-radius-pill;
+}
+
+// Empty list — Sonata «Нет результатов»: layout + empty variant on top of theme/_info-box.scss
+.list-mode-list .box-body > .info-box,
+.box.box-primary > .box-body > .info-box:not(.contact-item) {
+  justify-content: center;
+  gap: t.$crm-space-3;
+  min-height: 96px;
+  width: auto !important;
+  max-width: none;
+  margin: t.$crm-space-4 t.$crm-space-3 t.$crm-space-3 !important;
+  padding: t.$crm-space-4 t.$crm-space-5;
+  background: t.$crm-color-surface;
+  box-shadow: none;
+  font-size: t.$crm-font-size-md;
+  font-weight: t.$crm-font-weight-medium;
+  color: t.$crm-color-text-muted;
+
+  .info-box-icon {
+    width: 48px;
+    height: 48px;
+    margin: 0;
+    border: 1px solid t.$crm-color-primary;
+    background: t.$crm-color-white !important;
+    color: t.$crm-color-primary !important;
+    font-size: 20px;
+
+    &.bg-aqua,
+    &.bg-green,
+    &.bg-blue,
+    &.bg-yellow,
+    &.bg-red {
+      background: t.$crm-color-white !important;
+      color: t.$crm-color-primary !important;
+    }
+
+    > i {
+      margin: 0;
+      color: inherit;
+
+      // OVERRIDE: Sonata uses fa-arrow-circle-right — show fa-search instead
+      &::before {
+        content: '\f002'; // Font Awesome 4: fa-search
+      }
+    }
+  }
+
+  .info-box-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0;
+    padding: 0;
+  }
+
+  .info-box-text {
+    font-size: t.$crm-font-size-md;
+    font-weight: t.$crm-font-weight-medium;
+    color: t.$crm-color-text-muted;
+  }
+
+  .progress,
+  .progress-description {
+    display: none;
+  }
+}
+
+// Extra gap under «Данные фильтрованы!» before empty state
+.list-header-data + .info-box {
+  margin-top: t.$crm-space-4 !important;
+  margin-left: t.$crm-space-3 !important;
+  margin-right: t.$crm-space-3 !important;
+}
+
+// ---------------------------------------------------------------------------
+// Table card (.list-mode-list wraps Sonata list table box)
+// ---------------------------------------------------------------------------
+
+.list-mode-list {
+  > .box.box-primary,
+  .box.box-primary {
+    margin-bottom: 0;
+    // Chrome: theme/_box.scss
+    // OVERRIDE: visible so Export dropdown-menu is not clipped
+    overflow: visible;
+  }
+
+  .box-header {
+    display: none; // list table box usually empty/noisy
+  }
+
+  .box-body.table-responsive {
+    padding: 0;
+    border-radius: t.$crm-radius-lg t.$crm-radius-lg 0 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  // Empty list: Sonata omits table-responsive; header is display:none, no footer.
+  // theme/_box.scss only rounds box-body bottom — top corners were square.
+  .box-body:not(.table-responsive) {
+    border-radius: t.$crm-radius-lg;
+  }
+}
+
+// Fallback when list is not wrapped in list-mode-* (still style sonata table box)
+.box.box-primary:has(> .box-body > .sonata-ba-list),
+.box.box-primary:has(> .box-body.table-responsive > .sonata-ba-list) {
+  margin-bottom: 0;
+  // OVERRIDE: visible so Export dropdown-menu is not clipped
+  overflow: visible;
+
+  > .box-body.table-responsive {
+    padding: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+}
+
+table.table.sonata-ba-list {
+  // auto: width is a hint; min-content (longest word) can grow a column.
+  // width:1% on typed cols keeps leftover on string/text/many_to_many.
+  table-layout: auto;
+  width: 100%;
+  min-width: 100%;
+
+  // Thumb columns: size to 48px image + cell padding. Header nowrap (theme
+  // _tables.scss) would otherwise inflate the column to the label (e.g. «ФАЙЛ»).
+  // max-width:0 on the matching th is the usual table trick: header is ignored
+  // for column min-content; body cells (thumb or filename) set the width.
+  td:has(.sonata-list-thumb) {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  @for $i from 1 through 16 {
+    &:has(td:nth-child(#{$i}):has(.sonata-list-thumb)) {
+      > thead > tr > th:nth-child(#{$i}) {
+        width: 1%;
+        max-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+  }
+
+  td img {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    max-width: none;
+    object-fit: cover;
+    border-radius: t.$crm-radius-md;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  // Chrome: theme/_tables.scss — here only Sonata sort / list specifics
+
+  > thead > tr.sonata-ba-list-field-header > th,
+  > thead > tr > th {
+    // OVERRIDE: list headers slightly denser than generic .table
+    padding: 12px;
+    letter-spacing: 0.02em;
+    border-top: 1px solid t.$crm-color-border !important;
+  }
+
+  // Sort headers — system chrome: keep header color, never crm-link underline.
+  // Specificity must beat `.content-wrapper .content a:not(...)` from _typography.scss.
+  th.sonata-ba-list-field-header-orderable,
+  th[class*='sonata-ba-list-field-header-order-'],
+  th[class*='sonata-ba-list-field-header-'] {
+    a:not(.btn):not(.label):not(.dropdown-toggle):not(.changer-tab) {
+      color: inherit;
+      text-decoration: none;
+      text-decoration-color: transparent;
+
+      &:hover,
+      &:focus {
+        color: inherit;
+        text-decoration: none;
+        text-decoration-color: transparent;
+      }
+    }
+  }
+
+  // Active sort ASC/DESC
+  th.sonata-ba-list-field-order-active {
+    color: t.$crm-color-text;
+
+    a:not(.btn):not(.label):not(.dropdown-toggle):not(.changer-tab) {
+      color: t.$crm-color-text;
+      font-weight: t.$crm-font-weight-semibold;
+      text-decoration: none;
+      text-decoration-color: transparent;
+
+      &:hover,
+      &:focus {
+        color: t.$crm-color-text;
+        text-decoration: none;
+        text-decoration-color: transparent;
+      }
+    }
+
+    .fa-sort-asc,
+    .fa-sort-desc,
+    .fa-sort-up,
+    .fa-sort-down {
+      color: t.$crm-color-primary;
+    }
+  }
+
+  > tbody > tr > td {
+    padding: 8px 12px;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  // OVERRIDE: Sonata identifier is font-weight 700 (e.g. course name)
+  td.sonata-ba-list-field a.sonata-link-identifier {
+    font-weight: t.$crm-font-weight-regular;
+  }
+
+  // Compact typed columns: shrink-to-fit leftover, floor at historic widths,
+  // grow for min-content (longest unbreakable word). theme/_tables.scss
+  // nowrap on th would otherwise inflate the column to the full label.
+  //
+  // Batch: use the same left padding on th and td. Thead rule
+  // `> thead > tr > th { padding: 12px }` is more specific than a bare
+  // `th.….batch { padding-left }` and used to leave the header checkbox
+  // 4px to the right of row checkboxes.
+  > thead > tr > th.sonata-ba-list-field-header-batch,
+  > tbody > tr > td.sonata-ba-list-field-batch {
+    width: 1%;
+    min-width: 39px;
+    padding-left: t.$crm-space-3;
+    padding-right: t.$crm-space-2;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  th.sonata-ba-list-field-header-batch,
+  th.sonata-ba-list-field-header-integer,
+  th.sonata-ba-list-field-header-number,
+  th.sonata-ba-list-field-header-date,
+  th.sonata-ba-list-field-header-datetime,
+  th.sonata-ba-list-field-header-boolean,
+  th.sonata-ba-list-field-header-actions,
+  th.sonata-ba-list-field-sort-mini {
+    white-space: normal;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  th.sonata-ba-list-field-header-integer,
+  th.sonata-ba-list-field-header-number,
+  th.sonata-ba-list-field-header-date,
+  th.sonata-ba-list-field-header-datetime,
+  th.sonata-ba-list-field-header-boolean,
+  th.sonata-ba-list-field-header-actions,
+  th.sonata-ba-list-field-sort-mini,
+  td.sonata-ba-list-field-integer,
+  td.sonata-ba-list-field-number,
+  td.sonata-ba-list-field-date,
+  td.sonata-ba-list-field-datetime,
+  td.sonata-ba-list-field-boolean,
+  td.sonata-ba-list-field-actions {
+    width: 1%;
+    padding-left: t.$crm-space-2;
+    padding-right: t.$crm-space-2;
+  }
+
+  th.sonata-ba-list-field-header-integer,
+  th.sonata-ba-list-field-header-number,
+  td.sonata-ba-list-field-integer,
+  td.sonata-ba-list-field-number {
+    min-width: 38px;
+  }
+
+  th.sonata-ba-list-field-header-date,
+  td.sonata-ba-list-field-date {
+    min-width: 110px;
+  }
+
+  th.sonata-ba-list-field-header-datetime,
+  td.sonata-ba-list-field-datetime {
+    min-width: 160px;
+  }
+
+  th.sonata-ba-list-field-header-boolean,
+  td.sonata-ba-list-field-boolean {
+    min-width: 60px;
+  }
+
+  th.sonata-ba-list-field-header-actions,
+  td.sonata-ba-list-field-actions {
+    min-width: 180px;
+    text-align: center;
+  }
+
+  th.sonata-ba-list-field-header-actions:last-child,
+  td.sonata-ba-list-field-actions:last-child {
+    min-width: 130px;
+  }
+
+  th.sonata-ba-list-field-sort-mini {
+    min-width: 73px;
+  }
+
+  td:has(.project-build-list-item) {
+    width: 1%;
+    white-space: nowrap;
+  }
+
+  // Course progress ("0% · 0 из 2") — keep on one line
+  td:has(.course-list-lessons) {
+    width: 1%;
+    white-space: nowrap;
+  }
+}
+
+// Project list: build name + approval status stay on one line; long names ellipsize.
+.project-build-list-item {
+  display: flex;
+  align-items: center;
+  gap: t.$crm-space-1;
+  white-space: nowrap;
+
+  & + & {
+    margin-top: t.$crm-space-1;
+  }
+
+  &__name {
+    flex: 0 0 auto;
+    max-width: 20ch;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .label {
+    flex-shrink: 0;
+  }
+}
+
+// Action column layout — chrome: theme .btn-icon.btn-ghost (list__action_*.twig)
+td.sonata-ba-list-field-action,
+td.sonata-ba-list-field-actions {
+  white-space: nowrap;
+  text-align: center;
+
+  .btn-group {
+    display: inline-flex;
+    gap: t.$crm-space-1;
+    vertical-align: middle;
+  }
+
+  // Labeled show_full — not icon-only
+  a.btn.btn-soft-info,
+  a.btn.btn-info {
+    width: auto;
+    min-width: 0;
+    height: auto;
+    min-height: 28px;
+
+    .fa {
+      transform: translateY(1px);
+    }
+  }
+
+  .list-copy-link {
+    display: inline-flex;
+    align-items: center;
+    gap: t.$crm-space-1;
+    max-width: 100%;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  .list-copy-link__value {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .list-copy-link__status {
+    font-size: t.$crm-font-size-sm;
+    color: t.$crm-color-success;
+    white-space: nowrap;
+  }
+
+  .js-copy-to-clipboard {
+    flex-shrink: 0;
+
+    &.is-copied {
+      color: t.$crm-color-success !important;
+      border-color: t.$crm-color-success !important;
+    }
+  }
+
+  // Position number next to sort buttons (when rendered in _action cell)
+  input.custom-position-input,
+  input.js-custom-position {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 32px;
+    padding: 0 6px;
+    margin: 0;
+    vertical-align: middle;
+    text-align: center;
+    font-family: t.$crm-font-family;
+    font-size: t.$crm-font-size-sm;
+    color: t.$crm-color-text;
+    background: t.$crm-color-white;
+    border: 1px solid t.$crm-color-border;
+    border-radius: t.$crm-radius-md;
+    box-shadow: none;
+
+    &:focus {
+      border-color: t.$crm-color-primary;
+      outline: none;
+      box-shadow: 0 0 0 3px t.$crm-color-primary-soft;
+    }
+  }
+}
+
+// Sort / position — Sonata emits bare .btn; map to theme btn-icon + btn-ghost look
+table.sonata-ba-list {
+  span.btn.js-sortable-move,
+  a.btn[href*='/move/'] {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0;
+    margin: 0 2px 0 0;
+    gap: 0;
+    color: t.$crm-color-text-muted !important;
+    background: t.$crm-color-white !important;
+    border-color: t.$crm-color-border !important;
+    vertical-align: middle;
+
+    &:hover,
+    &:focus {
+      color: t.$crm-color-text !important;
+      background: t.$crm-color-primary-soft !important;
+      border-color: t.$crm-color-primary !important;
+      text-decoration: none !important;
+    }
+
+    .fa,
+    .glyphicon {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1;
+    }
+  }
+
+  span.btn.js-sortable-move {
+    cursor: move;
+  }
+
+  a.btn[href*='/move/'] {
+    cursor: pointer;
+  }
+
+  input.custom-position-input,
+  input.js-custom-position {
+    display: inline-block;
+    width: 40px;
+    height: 32px;
+    padding: 0 6px;
+    margin: 0 2px 0 0;
+    vertical-align: middle;
+    text-align: center;
+    font-family: t.$crm-font-family;
+    font-size: t.$crm-font-size-sm;
+    color: t.$crm-color-text;
+    background: t.$crm-color-white;
+    border: 1px solid t.$crm-color-border;
+    border-radius: t.$crm-radius-md;
+    box-shadow: none;
+
+    &:focus {
+      border-color: t.$crm-color-primary;
+      outline: none;
+      box-shadow: 0 0 0 3px t.$crm-color-primary-soft;
+    }
+  }
+}
+
+// jQuery UI 1.12+ dropped .disableSelection(); keep text unselected while dragging.
+body.is-dragging {
+  user-select: none;
+}
+
+// Labels: theme/_labels.scss
+// OVERRIDE: x-editable dashed underline around label in list cells
+table.sonata-ba-list {
+  .editable-click,
+  a.editable-click,
+  a.editable-click:hover,
+  span.editable-click,
+  span.x-editable {
+    border-bottom: 0 !important;
+    text-decoration: none !important;
+  }
+
+  .editable-click:hover,
+  span.x-editable:hover {
+    border-bottom: 0 !important;
+    text-decoration: none !important;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Box footer: export / pager / per-page
+// ---------------------------------------------------------------------------
+
+.list-mode-list .box-footer,
+.box.box-primary:has(.sonata-ba-list) > .box-footer {
+  // Match table batch column checkboxes (td.batch padding-left: 12px).
+  // Measured ~8px drift when using 12px here (footer checkbox sits to the right of
+  // list checkboxes) — keep 4px so the iCheck left edge lines up with the table.
+  padding: t.$crm-space-3 t.$crm-space-4 t.$crm-space-3 t.$crm-space-1;
+  border-top: 1px solid t.$crm-color-border;
+  border-radius: 0 0 t.$crm-radius-lg t.$crm-radius-lg;
+  background: t.$crm-color-white;
+  font-family: t.$crm-font-family;
+  font-size: t.$crm-font-size-sm;
+  color: t.$crm-color-text-muted;
+  overflow: visible;
+  position: relative;
+  z-index: 5;
+
+  // Sonata uses <label class="checkbox"> (not .checkbox > label). Neutralize
+  // Bootstrap/AdminLTE leftovers so the iCheck widget starts at the footer padding edge.
+  .pull-left > label.checkbox {
+    padding: 0 !important;
+    margin: 0 !important;
+    min-height: 0 !important;
+    gap: t.$crm-space-2;
+
+    > .icheckbox_square-blue,
+    > .icheckbox_square-red,
+    > .icheckbox_square-grey {
+      margin: 0 !important;
+      flex: 0 0 auto;
+    }
+  }
+
+  // Footer: wrap instead of horizontal scroll when the viewport shrinks
+  .form-inline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: t.$crm-space-2;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  .pull-left {
+    float: none !important;
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: t.$crm-space-2;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .pull-right {
+    float: none !important;
+    display: inline-flex;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: t.$crm-space-2;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    margin-left: auto;
+    text-align: right;
+    overflow: visible;
+    position: relative;
+    z-index: 6;
+
+    > * {
+      flex: 0 1 auto;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    // Pager / counters stay readable; wrap as whole chips between rows
+    .pagination,
+    ul.pagination {
+      margin: 0;
+      white-space: nowrap;
+    }
+  }
+
+  .btn-group {
+    position: relative;
+
+    > .btn.dropdown-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: t.$crm-space-1;
+    }
+
+    &.open > .btn.dropdown-toggle {
+      border-color: t.$crm-color-primary !important;
+      background: t.$crm-color-primary-soft !important;
+      color: t.$crm-color-text !important;
+      box-shadow: 0 0 0 3px t.$crm-color-primary-soft;
+    }
+
+    &.open > .dropdown-menu {
+      display: block;
+      z-index: 1060;
+    }
+  }
+
+  // Dropdown chrome: theme/_dropdown.scss
+
+  label,
+  label.control-label {
+    margin: 0;
+    font-weight: t.$crm-font-weight-medium;
+    color: t.$crm-color-text-muted;
+    display: inline-flex;
+    align-items: center;
+    gap: t.$crm-space-1;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    vertical-align: middle;
+  }
+
+  input[type='checkbox'] {
+    margin: 0;
+    vertical-align: middle;
+  }
+
+  // Compact per-page / export controls in list footer (size only; color: theme)
+  .form-control,
+  select.form-control,
+  select {
+    width: auto;
+    height: 32px;
+    padding: 4px 10px;
+    font-size: t.$crm-font-size-sm;
+  }
+
+  .btn {
+    min-height: 32px;
+    padding: 4px 12px;
+    font-size: t.$crm-font-size-sm;
+    flex: 0 0 auto;
+  }
+
+  // OVERRIDE: theme/_select2 uses width:100% and min-height:37px for form
+  // fields — footer per-page sizes to the selected value (10…999), stays on
+  // the same row as the label. min-height must match 32px or Select2 positions
+  // the dropdown 5px below the visible control.
+  .select2-container:not(.select2-container-multi):not(.select2-container--multiple):not(:has(> .select2-dropdown)) {
+    width: max-content !important;
+    min-width: 3.5em;
+    max-width: none;
+    flex: 0 0 auto;
+    height: 32px !important;
+    min-height: 32px !important;
+    display: inline-block;
+    vertical-align: middle;
+
+    .select2-choice {
+      display: inline-flex !important;
+      align-items: center;
+      width: max-content !important;
+      min-width: 3.5em;
+      height: 32px !important;
+      padding: 0 28px 0 10px !important; // room for .select2-arrow
+      line-height: 30px !important;
+      font-size: t.$crm-font-size-sm !important;
+      overflow: visible;
+
+      > .select2-chosen {
+        position: static !important;
+        float: none !important;
+        display: inline-block !important;
+        width: auto !important;
+        max-width: none !important;
+        height: auto !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 30px !important;
+        font-size: t.$crm-font-size-sm !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+      }
+
+      abbr.select2-search-choice-close {
+        right: 30px !important;
+      }
+
+      .select2-arrow {
+        width: 28px !important;
+
+        b {
+          margin: 13px auto 0 !important;
+          border-left-width: 4px;
+          border-right-width: 4px;
+          border-top-width: 4px;
+        }
+      }
+    }
+
+    .select2-selection--single {
+      display: inline-flex !important;
+      align-items: center;
+      width: max-content !important;
+      min-width: 3.5em;
+      height: 32px !important;
+      padding: 0 28px 0 10px !important;
+
+      .select2-selection__rendered {
+        display: inline-block !important;
+        padding: 0 !important;
+        line-height: 30px !important;
+        font-size: t.$crm-font-size-sm !important;
+      }
+
+      .select2-selection__arrow {
+        position: absolute !important;
+        width: 20px !important;
+        height: 30px !important;
+        top: 1px !important;
+        right: 8px !important;
+        left: auto !important;
+
+        b {
+          position: absolute !important;
+          left: 50% !important;
+          right: auto !important;
+          top: 50% !important;
+          margin-top: -2px !important;
+          margin-left: -4px !important;
+        }
+      }
+    }
+  }
+
+  .select2-container-multi {
+    min-height: 32px;
+  }
+}
+
+// Pagination: theme/_pagination.scss
+
+// ---------------------------------------------------------------------------
+// Filters right column (box + sonata-filter-form)
+// ---------------------------------------------------------------------------
+
+.content-wrapper .content > .row > [class*='col-']:has(.sonata-filter-form) {
+  overflow: visible;
+}
+
+.box.box-primary:has(.sonata-filter-form) {
+  margin-bottom: 0;
+  // Chrome: theme/_box.scss
+  // OVERRIDE: must stay visible — .sonata-filter-floating-panel renders to the left outside the box
+  overflow: visible;
+
+  > .box-header {
+    // OVERRIDE: «Фильтры» left / «Сбросить» right (Figma 188:737)
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: t.$crm-space-2;
+
+    > .box-title {
+      float: none !important;
+      display: block;
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    // OVERRIDE: glyphicon-erase → text link «Сбросить» as in Figma
+    > .filter-reset {
+      float: none !important;
+      flex: 0 0 auto;
+      margin: 0 !important;
+      padding: 0;
+
+      a {
+        display: inline-flex;
+        align-items: center;
+        white-space: nowrap;
+        color: t.$crm-color-info;
+        font-size: t.$crm-font-size-sm;
+        font-weight: t.$crm-font-weight-medium;
+        text-decoration: none;
+        line-height: 1.2;
+
+        .glyphicon {
+          display: none;
+        }
+
+        &::after {
+          content: 'Сбросить';
+        }
+
+        &:hover {
+          color: t.$crm-color-text;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  > .box-body {
+    padding: t.$crm-space-4;
+    overflow: visible;
+  }
+}
+
+.sonata-filter-form {
+  position: relative; // anchor for .sonata-filter-floating-panel
+  font-family: t.$crm-font-family;
+
+  .form-group {
+    margin-bottom: 14px;
+
+    > label {
+      color: t.$crm-color-text; // filters use stronger label than theme muted
+    }
+  }
+
+  // Filter submit — theme .btn-primary (filled brand)
+  button[type='submit'].btn,
+  .btn.btn-primary {
+    min-height: 33px;
+  }
+}
+
+.filter_container {
+  label {
+    display: block;
+    font-weight: normal;
+  }
+
+  .form-group > label {
+    font-weight: 700;
+  }
+}
+
+// Legacy filter drawer (layout JS toggles .open on .js-grid)
+.grid {
+  margin: 0 -15px;
+  display: block;
+
+  .grid-main {
+    width: 100%;
+    float: right;
+    display: block;
+    overflow: hidden;
+    transition: all 500ms linear;
+    transition-delay: 500ms;
+  }
+
+  .grid-aside {
+    float: right;
+    display: block;
+    width: 0;
+    transition: all 500ms linear;
+    transition-delay: 500ms;
+    position: relative;
+    right: -20%;
+  }
+
+  &.open .grid-main {
+    width: 80%;
+  }
+
+  &.open .grid-aside {
+    width: 20%;
+    right: 0;
+  }
+}
+
+.list-mode-mosaic {
+  .table-striped > tbody > tr:nth-of-type(odd),
+  .table-striped > tbody > tr:nth-of-type(odd) > td {
+    background-color: inherit !important;
+  }
+
+  .table td {
+    padding: 0 !important;
+    border: 0 !important;
+  }
+
+  .box {
+    border-radius: inherit;
+    background: inherit;
+    border-top: inherit;
+    box-shadow: inherit;
+  }
+}
+
+// Floating apply panel (shown by layout JS on filter change)
+.sonata-filter-floating-panel {
+  position: absolute;
+  // Sit just left of the filter column (parent is the filter form)
+  right: calc(100% + t.$crm-space-2);
+  left: auto;
+  width: auto;
+  margin-top: t.$crm-space-2;
+  z-index: 20;
+  transition: top 0.5s ease-out;
+}
+
+.sonata-filter-submit-panel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  margin: 0;
+  padding: t.$crm-space-2; // equal inset so the button does not stick to edges
+  border: 2px solid t.$crm-color-primary;
+  border-radius: t.$crm-radius-md;
+  background: t.$crm-color-white;
+  box-shadow: t.$crm-shadow-md;
+
+  .btn {
+    flex: 0 0 auto;
+    margin: 0;
+    min-height: 33px;
+  }
+}

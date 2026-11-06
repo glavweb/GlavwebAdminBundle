@@ -1,0 +1,9 @@
+advanced_filter:
+    title: 'Расширенный фильтр — %label%'
+    navbar_title: 'Расширенный фильтр'
+    button: 'Расширенный фильтр'
+    apply: 'Применить'
+    cancel: 'Отмена'
+    active_prefix: 'Расширенный фильтр:'
+    reset: 'Сбросить расширенные'
+    edit: 'Изменить'

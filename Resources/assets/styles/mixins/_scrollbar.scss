@@ -1,0 +1,20 @@
+@use '../tokens' as t;
+
+@mixin crm-scrollbar($width: 6px) {
+  scrollbar-width: thin;
+  scrollbar-color: t.$crm-color-border transparent;
+
+  &::-webkit-scrollbar {
+    width: $width;
+    height: $width;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: t.$crm-radius-pill;
+    background-color: t.$crm-color-border;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}

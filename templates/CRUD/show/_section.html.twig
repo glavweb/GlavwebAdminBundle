@@ -1,0 +1,33 @@
+{#
+  Section card for custom Sonata show pages.
+
+  Prefer {% embed %} + {% block body %} for rich content.
+  Or {% include %} with `body` HTML string.
+
+  Params:
+    title   — optional section title (rendered uppercase via CSS)
+    actions — optional HTML for header actions (raw)
+    flush   — bool: no body padding (related tables)
+    ruled   — bool: no card chrome; primary top divider (like edit stacked items)
+    class   — extra CSS class on root
+    body    — optional HTML when not using embed block
+#}
+<section class="sonata-show-section{{ class is defined and class ? ' ' ~ class : '' }}{{ flush|default(false) ? ' sonata-show-section-flush' : '' }}{{ ruled|default(false) ? ' sonata-show-section--ruled' : '' }}">
+    {% if (title is defined and title) or (actions is defined and actions) %}
+        <header class="sonata-show-section__header">
+            {% if title is defined and title %}
+                <h4 class="sonata-show-section__title">{{ title }}</h4>
+            {% else %}
+                <span class="sonata-show-section__title"></span>
+            {% endif %}
+            {% if actions is defined and actions %}
+                <div class="sonata-show-section__actions">{{ actions|raw }}</div>
+            {% endif %}
+        </header>
+    {% endif %}
+    <div class="sonata-show-section__body">
+        {% block body %}
+            {{ body|default('')|raw }}
+        {% endblock %}
+    </div>
+</section>

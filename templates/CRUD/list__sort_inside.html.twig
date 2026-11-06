@@ -1,0 +1,18 @@
+{% if admin.isGranted('EDIT', object) and admin.hasRoute('edit') %}
+    {% set current_position = currentObjectPosition(object) %}
+    {% set last_position    = lastPosition(object) %}
+
+    <input type="text" class="js-custom-position custom-position-input" min="1" max="{{ last_position + 1 }}" value="{{ current_position + 1 }}" title="Позиция в списке">
+
+    {% if current_position < last_position %}
+        <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('move', object, {'position': 'down'}) }}" title="{{ 'move_down'|trans }}">
+            <i class="fa fa-angle-down"></i>
+        </a>
+    {% endif %}
+
+    {% if current_position > 0 %}
+        <a class="btn btn-sm btn-default" href="{{ admin.generateObjectUrl('move', object, {'position': 'up'}) }}" title="{{ 'move_up'|trans }}">
+            <i class="fa fa-angle-up"></i>
+        </a>
+    {% endif %}
+{% endif %}

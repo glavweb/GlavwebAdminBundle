@@ -1,0 +1,103 @@
+// Bootstrap / AdminLTE alerts — Figma soft banners (222:885).
+
+@use '../tokens' as t;
+
+.alert {
+  // Не flex: иначе пробелы между текстом и <a> схлопываются.
+  position: relative;
+  margin-bottom: t.$crm-space-3;
+  padding: t.$crm-space-3 14px;
+  overflow: hidden;
+  border-radius: t.$crm-radius-md;
+  border-width: 1px;
+  border-style: solid;
+  font-family: t.$crm-font-family;
+  font-size: 13px;
+  font-weight: t.$crm-font-weight-medium;
+  line-height: 1.25;
+  box-shadow: none;
+  text-shadow: none;
+
+  > h4 {
+    display: inline-flex;
+    align-items: center;
+    margin: 0 8px 0 0;
+    font-size: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+  }
+
+  .icon {
+    margin-right: 8px;
+  }
+
+  // Не синий content-wrapper a: ссылки читаются в цвете баннера.
+  a:not(.btn):not(.close) {
+    color: inherit !important;
+    font-weight: t.$crm-font-weight-semibold;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover,
+    &:focus,
+    &:active,
+    &:visited {
+      color: inherit !important;
+      text-decoration: underline;
+    }
+  }
+}
+
+// Bootstrap 3 offsets .close with right: -21px and extra padding-right: 35px.
+.alert-dismissable,
+.alert-dismissible {
+  padding-right: 40px;
+}
+
+.alert.alert-danger {
+  color: t.$crm-color-danger !important;
+  background-color: color-mix(in srgb, t.$crm-color-danger 12%, t.$crm-color-white) !important;
+  border-color: t.$crm-color-danger !important;
+}
+
+.alert.alert-warning {
+  color: t.$crm-color-text !important;
+  background-color: color-mix(in srgb, t.$crm-color-warning 10%, t.$crm-color-white) !important;
+  border-color: t.$crm-color-warning !important;
+}
+
+.alert.alert-success {
+  color: t.$crm-color-text !important;
+  background-color: color-mix(in srgb, t.$crm-color-primary 16%, t.$crm-color-white) !important;
+  border-color: t.$crm-color-primary !important;
+}
+
+.alert.alert-info {
+  color: t.$crm-color-info !important;
+  background-color: color-mix(in srgb, t.$crm-color-info 12%, t.$crm-color-white) !important;
+  border-color: t.$crm-color-info !important;
+}
+
+.alert .close {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  transform: translateY(-50%);
+  float: none;
+  margin: 0;
+  padding: 0 4px;
+  font-size: 20px;
+  font-weight: t.$crm-font-weight-regular;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.55;
+  text-shadow: none;
+  background: transparent;
+  border: 0;
+
+  &:hover,
+  &:focus {
+    opacity: 1;
+    color: inherit;
+  }
+}

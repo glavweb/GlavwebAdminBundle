@@ -1,11 +1,13 @@
 {
     "name": "glavweb/admin-bundle",
-    "description": "Symfony GlavwebAdminBundle",
+    "type": "symfony-bundle",
+    "description": "Sonata Admin extras for Glavweb projects",
+    "license": "MIT",
     "authors": [
         {
             "name": "Andrey Nilov",
             "email": "nilov@glavweb.ru",
-            "homepage": "http://glavweb.ru"
+            "homepage": "https://glavweb.ru"
         },
         {
             "name": "Glavweb Community",
@@ -13,13 +15,22 @@
         }
     ],
     "require": {
-        "symfony/http-foundation": "~2.3",
-        "symfony/form": "~2.3",
-        "symfony/security": "~2.3",
-        "symfony/console": "~2.3",
-        "sonata-project/admin-bundle": "dev-master"
+        "php": ">=8.4",
+        "glavweb/extra-bundle": "^1.0",
+        "sonata-project/admin-bundle": "^4.6",
+        "sonata-project/doctrine-orm-admin-bundle": "^4.0",
+        "doctrine/orm": "^3.3",
+        "symfony/form": "^8.0",
+        "symfony/framework-bundle": "^8.0"
+    },
+    "suggest": {
+        "glavweb/uploader-bundle": "Media list/show templates and make:admin uploadable fields",
+        "phpoffice/phpspreadsheet": "Required for XlsxWriter",
+        "symfony/maker-bundle": "Required for make:admin"
     },
     "autoload": {
-        "psr-4": { "Glavweb\\AdminBundle\\": "" }
+        "psr-4": {
+            "Glavweb\\AdminBundle\\": "src/"
+        }
     }
 }

@@ -1,0 +1,9 @@
+advanced_filter:
+    title: 'Advanced filter — %label%'
+    navbar_title: 'Advanced filter'
+    button: 'Advanced filter'
+    apply: 'Apply'
+    cancel: 'Cancel'
+    active_prefix: 'Advanced filter:'
+    reset: 'Reset advanced'
+    edit: 'Edit'

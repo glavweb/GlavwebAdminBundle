@@ -1,0 +1,20 @@
+// Design tokens: typography
+// 'Exo 2' from Figma; Arial fallback matches legacy contact-show.
+
+$crm-font-family: 'Exo 2', 'Arial', sans-serif !default;
+
+$crm-font-size-xs:  11px !default;
+$crm-font-size-sm:  12px !default;
+$crm-font-size-md:  14px !default;
+$crm-font-size-lg:  16px !default;
+$crm-font-size-xl:  22px !default;
+$crm-font-size-2xl: 36px !default;
+
+$crm-font-weight-regular:  400 !default;
+$crm-font-weight-medium:   500 !default;
+$crm-font-weight-semibold: 600 !default;
+$crm-font-weight-bold:     700 !default;
+
+$crm-line-height-tight:  1.2 !default;
+$crm-line-height-normal: 1.4 !default;
+$crm-line-height-loose:  1.6 !default;

@@ -1,0 +1,19 @@
+// AdminLTE / Bootstrap theme primitives (global, same class names).
+// Import after tokens; before sonata layout leftovers.
+
+@use 'typography';
+@use 'links';
+@use 'buttons';
+@use 'forms';
+@use 'labels';
+@use 'tables';
+@use 'box';
+@use 'alerts';
+@use 'callouts';
+@use 'nav';
+@use 'pagination';
+@use 'dropdown';
+@use 'datetimepicker';
+@use 'modal';
+@use 'info-box';
+@use 'select2';
