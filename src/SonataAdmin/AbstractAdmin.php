@@ -15,6 +15,7 @@ use Doctrine\Persistence\ObjectRepository;
 use Glavweb\AdminBundle\SonataAdmin\AdvancedFilter\AdvancedDatagridMapper;
 use Glavweb\AdminBundle\SonataAdmin\AdvancedFilter\AdvancedFilterBag;
 use Glavweb\AdminBundle\SonataAdmin\AdvancedFilter\AdvancedFilterContext;
+use Glavweb\AdminBundle\SonataAdmin\ModelManager\DelegatingModelManager;
 use Glavweb\ExtraBundle\Http\RequestBag;
 use Psr\Container\ContainerInterface;
 use Sonata\AdminBundle\Admin\AbstractAdmin as BaseAdmin;
@@ -68,6 +69,11 @@ abstract class AbstractAdmin extends BaseAdmin
     protected function configure(): void
     {
         parent::configure();
+
+        $mm = $this->getModelManager();
+        if ($mm instanceof DelegatingModelManager) {
+            $mm->bind($this);
+        }
 
         $this->ensureHttpRequest();
         $this->buildAdvancedFilterBag();

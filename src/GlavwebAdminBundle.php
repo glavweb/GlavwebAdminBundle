@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Glavweb\AdminBundle;
 
+use Glavweb\AdminBundle\DependencyInjection\Compiler\AdminDelegatingModelManagerPass;
 use Glavweb\AdminBundle\DependencyInjection\Compiler\TwigSonataAdminOverridesPass;
 use Symfony\Bundle\MakerBundle\Maker\AbstractMaker;
 use Symfony\Component\Config\Definition\Configurator\DefinitionConfigurator;
@@ -23,6 +24,7 @@ class GlavwebAdminBundle extends AbstractBundle
         parent::build($container);
 
         $container->addCompilerPass(new TwigSonataAdminOverridesPass());
+        $container->addCompilerPass(new AdminDelegatingModelManagerPass());
     }
 
     public function prependExtension(ContainerConfigurator $container, ContainerBuilder $builder): void
@@ -36,6 +38,7 @@ class GlavwebAdminBundle extends AbstractBundle
         $builder->setParameter('glavweb_admin.maker.entity_namespace', $config['maker']['entity_namespace']);
         $builder->setParameter('glavweb_admin.sortable.position_field', $config['sortable']['position_field']);
         $builder->setParameter('glavweb_admin.sortable.groups', $config['sortable']['groups']);
+        $builder->setParameter('glavweb_admin.admin_locator_services', $config['admin_locator_services']);
 
         $container->import('../config/services.yaml');
 
@@ -61,6 +64,11 @@ class GlavwebAdminBundle extends AbstractBundle
                         ->variableNode('position_field')->defaultValue(['default' => 'position', 'entities' => []])->end()
                         ->variableNode('groups')->defaultValue(['entities' => []])->end()
                     ->end()
+                ->end()
+                ->arrayNode('admin_locator_services')
+                    ->info('Extra service ids exposed to AbstractAdmin::getContainer() (app helpers, managers, …).')
+                    ->scalarPrototype()->end()
+                    ->defaultValue([])
                 ->end()
             ->end()
         ;

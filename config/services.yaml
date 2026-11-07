@@ -9,6 +9,7 @@ services:
             - '../src/GlavwebAdminBundle.php'
             - '../src/Maker/'
             - '../src/SonataAdmin/AbstractAdmin.php'
+            - '../src/SonataAdmin/ModelManager/DelegatingModelManager.php'
             - '../src/SonataAdmin/AdvancedFilter/AbstractAdvancedFilter.php'
             - '../src/SonataAdmin/AdvancedFilter/AdvancedDatagridMapper.php'
             - '../src/SonataAdmin/AdvancedFilter/AdvancedFilterBag.php'
