@@ -12,11 +12,17 @@ use Exception;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectRepository;
+use Glavweb\FrameworkBundle\Exception\InvalidEntityException;
 use Glavweb\AdminBundle\SonataAdmin\AdvancedFilter\AdvancedDatagridMapper;
 use Glavweb\AdminBundle\SonataAdmin\AdvancedFilter\AdvancedFilterBag;
+use Glavweb\AdminBundle\SonataAdmin\AdvancedFilter\AdvancedFilterBagBuilder;
 use Glavweb\AdminBundle\SonataAdmin\AdvancedFilter\AdvancedFilterContext;
 use Glavweb\AdminBundle\SonataAdmin\ModelManager\DelegatingModelManager;
 use Glavweb\ExtraBundle\Http\RequestBag;
+use Glavweb\FrameworkBundle\Entity\Archivable;
+use Glavweb\FrameworkBundle\Model\ArchiveManager;
+use Glavweb\FrameworkBundle\Model\DeletionManager;
+use Sonata\Form\Type\BooleanType;
 use Psr\Container\ContainerInterface;
 use Sonata\AdminBundle\Admin\AbstractAdmin as BaseAdmin;
 use Sonata\AdminBundle\Admin\AdminInterface;
@@ -28,11 +34,13 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Exception\SessionNotFoundException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\FlashBagAwareSessionInterface;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints\Image;
+use Throwable;
 
 /**
  * Reusable Sonata 4 admin base (request fallback, locator helpers, list/filter UX).
@@ -48,7 +56,7 @@ abstract class AbstractAdmin extends BaseAdmin
      */
     private ?ContainerInterface $container = null;
 
-    private ?AdvancedFilterBag $advancedFilterBag = null;
+    private ?AdvancedFilterBagBuilder $advancedFilterBagBuilder = null;
 
     protected function getAccessMapping(): array
     {
@@ -56,6 +64,14 @@ abstract class AbstractAdmin extends BaseAdmin
 
         if (!isset($accessMapping['autocomplete'])) {
             $accessMapping['autocomplete'] = 'AUTOCOMPLETE';
+        }
+
+        if (!isset($accessMapping['archive'])) {
+            $accessMapping['archive'] = 'DELETE';
+        }
+
+        if (!isset($accessMapping['unarchive'])) {
+            $accessMapping['unarchive'] = 'DELETE';
         }
 
         return $accessMapping;
@@ -76,7 +92,7 @@ abstract class AbstractAdmin extends BaseAdmin
         }
 
         $this->ensureHttpRequest();
-        $this->buildAdvancedFilterBag();
+        $this->getAdvancedFilterBagBuilder()->reset();
     }
 
     /**
@@ -103,20 +119,12 @@ abstract class AbstractAdmin extends BaseAdmin
 
     public function hasAdvancedFilters(): bool
     {
-        if (null === $this->advancedFilterBag) {
-            $this->buildAdvancedFilterBag();
-        }
-
-        return null !== $this->advancedFilterBag && !$this->advancedFilterBag->isEmpty();
+        return $this->getAdvancedFilterBagBuilder()->hasFilters();
     }
 
     public function getAdvancedFilterBag(): AdvancedFilterBag
     {
-        if (null === $this->advancedFilterBag) {
-            $this->buildAdvancedFilterBag();
-        }
-
-        return $this->advancedFilterBag ?? new AdvancedFilterBag([], []);
+        return $this->getAdvancedFilterBagBuilder()->getBag();
     }
 
     /**
@@ -128,27 +136,12 @@ abstract class AbstractAdmin extends BaseAdmin
             return [];
         }
 
-        $labels = [];
-        $values = $this->getDatagrid()->getValues();
-
-        foreach ($this->getAdvancedFilterBag()->getFields() as $field) {
-            $value = $values[$field->name]['value'] ?? null;
-            if (null === $value || '' === $value || [] === $value) {
-                continue;
-            }
-
-            $label = $field->filterOptions['label'] ?? null;
-            if (null === $label || false === $label) {
-                $label = $this->getLabelTranslatorStrategy()->getLabel($field->name, 'filter', 'label');
-            }
-
-            if (\is_string($label)) {
-                $domain = $field->filterOptions['translation_domain'] ?? $this->getTranslationDomain();
-                $labels[] = false === $domain ? $label : $this->trans($label, [], $domain);
-            }
-        }
-
-        return $labels;
+        return $this->getAdvancedFilterBagBuilder()->getActiveLabels(
+            $this->getDatagrid()->getValues(),
+            $this->getLabelTranslatorStrategy(),
+            $this->getTranslationDomain(),
+            fn (string $id, array $params, string $domain): string => $this->trans($id, $params, $domain),
+        );
     }
 
     /**
@@ -156,23 +149,52 @@ abstract class AbstractAdmin extends BaseAdmin
      */
     public function getFilterParametersWithoutAdvanced(): array
     {
-        $filters = $this->getFilterParameters();
-        if (!$this->hasAdvancedFilters()) {
-            return $filters;
-        }
-
-        foreach ($this->getAdvancedFilterBag()->getNames() as $name) {
-            unset($filters[$name]);
-        }
-
-        return $filters;
+        return $this->getAdvancedFilterBagBuilder()->stripAdvancedParameters($this->getFilterParameters());
     }
 
-    private function buildAdvancedFilterBag(): void
+    private function getAdvancedFilterBagBuilder(): AdvancedFilterBagBuilder
     {
-        $mapper = new AdvancedDatagridMapper();
-        $this->configureAdvancedDatagridFilters($mapper);
-        $this->advancedFilterBag = $mapper->buildBag();
+        return $this->advancedFilterBagBuilder ??= new AdvancedFilterBagBuilder(
+            fn (AdvancedDatagridMapper $mapper) => $this->configureAdvancedDatagridFilters($mapper),
+        );
+    }
+
+    /**
+     * True when the list has any active filter that should be announced to the user.
+     */
+    public function hasDisplayableFilters(): bool
+    {
+        $parentAssociation = $this->isChild() ? $this->getParentAssociationMapping() : null;
+
+        foreach ($this->getDatagrid()->getFilters() as $name => $filter) {
+            if (null !== $parentAssociation && $name === $parentAssociation) {
+                continue;
+            }
+
+            if ($this->isHiddenDisplayableFilter((string) $name)) {
+                continue;
+            }
+
+            if ($filter->isActive()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Filters that should not trigger the "Данные фильтрованы!" banner (e.g. default archive).
+     */
+    protected function isHiddenDisplayableFilter(string $name): bool
+    {
+        if (ArchivableExtension::FILTER_ARCHIVED !== $name) {
+            return false;
+        }
+
+        $archivedValue = $this->getFilterParameters()[$name]['value'] ?? null;
+
+        return null === $archivedValue || '' === $archivedValue || BooleanType::TYPE_NO === (int) $archivedValue;
     }
 
     protected function configureDefaultSortValues(array &$sortValues): void
@@ -308,6 +330,11 @@ abstract class AbstractAdmin extends BaseAdmin
         if ($this->hasAdvancedFilters()) {
             $collection->add('advanced_filter');
         }
+
+        if (is_subclass_of($this->getModelClass(), Archivable::class)) {
+            $collection->add('archive', $this->getRouterIdParameter().'/archive');
+            $collection->add('unarchive', $this->getRouterIdParameter().'/unarchive');
+        }
     }
 
     protected function configureActionButtons(array $buttonList, string $action, ?object $object = null): array
@@ -343,6 +370,29 @@ abstract class AbstractAdmin extends BaseAdmin
             ];
         }
 
+        if ($object && \in_array($action, ['show', 'edit'], true)) {
+            if ($this->hasAccess('archive', $object) && $this->hasRoute('archive') && $this->canArchive($object)) {
+                $list['archive'] = [
+                    'template' => '@GlavwebAdmin/CRUD/action/icon_action_button.html.twig',
+                    'options' => [
+                        'icon_class' => 'fa-archive',
+                        'title' => $this->trans('archive.action_archive', [], 'GlavwebAdminBundle'),
+                        'url' => $this->generateObjectUrl('archive', $object),
+                    ],
+                ];
+            }
+            if ($this->hasAccess('unarchive', $object) && $this->hasRoute('unarchive') && $this->isArchived($object)) {
+                $list['unarchive'] = [
+                    'template' => '@GlavwebAdmin/CRUD/action/icon_action_button.html.twig',
+                    'options' => [
+                        'icon_class' => 'fa-undo',
+                        'title' => $this->trans('archive.action_unarchive', [], 'GlavwebAdminBundle'),
+                        'url' => $this->generateObjectUrl('unarchive', $object),
+                    ],
+                ];
+            }
+        }
+
         if ($object && !$this->canAccessObjectAction('edit', $object)) {
             unset($list['edit']);
         }
@@ -352,7 +402,7 @@ abstract class AbstractAdmin extends BaseAdmin
 
     public function getExportFormats(): array
     {
-        return ['xlsx', 'xls', 'csv'];
+        return ['xlsx', 'xls', 'csv', 'json'];
     }
 
     /**
@@ -382,17 +432,18 @@ abstract class AbstractAdmin extends BaseAdmin
         if ($annotation instanceof Image
             && ($annotation->minWidth && $annotation->minHeight || $annotation->maxWidth && $annotation->maxHeight)
         ) {
-            $imageHelp = 'Допустимый размер';
+            $domain = 'GlavwebAdminBundle';
+            $imageHelp = $this->trans('image_help.allowed_size', [], $domain);
 
             if ($annotation->minWidth == $annotation->maxWidth && $annotation->minHeight == $annotation->maxHeight) {
-                $imageHelp .= sprintf(' %s*%spx', $annotation->minWidth, $annotation->minHeight);
+                $imageHelp .= ' '.$this->trans('image_help.exact', ['%w%' => $annotation->minWidth, '%h%' => $annotation->minHeight], $domain);
             } else {
                 if ($annotation->minWidth && $annotation->minHeight) {
-                    $imageHelp .= sprintf(' от %s*%spx', $annotation->minWidth, $annotation->minHeight);
+                    $imageHelp .= ' '.$this->trans('image_help.from', ['%w%' => $annotation->minWidth, '%h%' => $annotation->minHeight], $domain);
                 }
 
                 if ($annotation->maxWidth && $annotation->maxHeight) {
-                    $imageHelp .= sprintf(' до %s*%spx', $annotation->maxWidth, $annotation->maxHeight);
+                    $imageHelp .= ' '.$this->trans('image_help.to', ['%w%' => $annotation->maxWidth, '%h%' => $annotation->maxHeight], $domain);
                 }
             }
         }
@@ -713,7 +764,18 @@ abstract class AbstractAdmin extends BaseAdmin
 
     protected function createModelManagerExceptionFrom(Exception $e): ModelManagerException
     {
-        return new ModelManagerException($e->getMessage(), $e->getCode(), $e);
+        $message = $e->getMessage();
+
+        if ($e instanceof InvalidEntityException && $e->getViolations()->count() > 0) {
+            foreach ($e->getViolations() as $violation) {
+                if (empty($violation->getPropertyPath())) {
+                    $message = (string) $violation->getMessage();
+                    break;
+                }
+            }
+        }
+
+        return new ModelManagerException($message, $e->getCode(), $e);
     }
 
     protected function addFlash(string $type, $message): void
@@ -905,13 +967,107 @@ abstract class AbstractAdmin extends BaseAdmin
         return $pool->getInstance($adminClasses[0]);
     }
 
+    public function canArchive(object $object): bool
+    {
+        /** @var ArchiveManager $archiveManager */
+        $archiveManager = $this->getContainer()->get(ArchiveManager::class);
+
+        return $archiveManager->canArchive($object);
+    }
+
+    public function isArchived(object $object): bool
+    {
+        /** @var ArchiveManager $archiveManager */
+        $archiveManager = $this->getContainer()->get(ArchiveManager::class);
+
+        return $archiveManager->isArchived($object);
+    }
+
     public function canDelete(object $object): bool
     {
-        return true;
+        /** @var DeletionManager $deletionManager */
+        $deletionManager = $this->getContainer()->get(DeletionManager::class);
+
+        return $deletionManager->canDelete($object);
     }
 
     public function canAccessObjectAction(string $action, object $object): bool
     {
         return true;
+    }
+
+    /**
+     * List identifier URL: show if available, otherwise edit.
+     */
+    public function getListObjectUrl(object $object): ?string
+    {
+        $this->ensureChildParentRequestAttributesFromObject($object);
+
+        try {
+            if ($this->hasRoute('show') && $this->hasAccess('show', $object) && $this->canAccessObjectAction('show', $object)) {
+                return $this->generateObjectUrl('show', $object);
+            }
+
+            if ($this->hasRoute('edit') && $this->hasAccess('edit', $object) && $this->canAccessObjectAction('edit', $object)) {
+                return $this->generateObjectUrl('edit', $object);
+            }
+        } catch (Throwable) {
+            return null;
+        }
+
+        return null;
+    }
+
+    /**
+     * Fills parent admin ids in request attributes for child admins (x-editable / list links).
+     */
+    private function ensureChildParentRequestAttributesFromObject(object $object): void
+    {
+        if (!$this->isChild() || !$this->hasRequest()) {
+            return;
+        }
+
+        $request = $this->getRequest();
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
+        $currentAdmin = $this;
+        $currentObject = $object;
+
+        while ($currentAdmin->isChild()) {
+            $parentAdmin = $currentAdmin->getParent();
+            $parentIdParameter = $parentAdmin->getIdParameter();
+            $mapping = $currentAdmin->getParentAssociationMapping();
+
+            $parentObject = null;
+            if (null !== $mapping) {
+                try {
+                    $value = $propertyAccessor->getValue($currentObject, $mapping);
+                    if (\is_object($value)) {
+                        $parentObject = $value;
+                    }
+                } catch (Throwable) {
+                    $parentObject = null;
+                }
+            }
+
+            if (
+                null !== $parentObject
+                && (
+                    !$request->attributes->has($parentIdParameter)
+                    || '' === (string) $request->attributes->get($parentIdParameter)
+                )
+            ) {
+                $request->attributes->set(
+                    $parentIdParameter,
+                    $parentAdmin->getUrlSafeIdentifier($parentObject)
+                );
+            }
+
+            if (null === $parentObject) {
+                break;
+            }
+
+            $currentObject = $parentObject;
+            $currentAdmin = $parentAdmin;
+        }
     }
 }

@@ -1,0 +1,10 @@
+default: По-умолчанию
+list:
+    label__actions: Действия
+move_drag: Перетащить
+move_to_top: В начало
+move_to_bottom: В конец
+move_up: Выше
+move_down: Ниже
+flash_success_position_updated: Позиция обновлена
+flash_error_no_rights_update_position: Недостаточно прав для изменения позиции

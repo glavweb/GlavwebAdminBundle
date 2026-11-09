@@ -1,0 +1,16 @@
+{% if _list_table is not empty or _list_filters is not empty %}
+    <div class="row">
+        {% if _list_filters|trim %}
+            <div class="col-md-10 col-sm-12">
+                <div class="row">
+                    {{ _list_table|raw }}
+                </div>
+            </div>
+            <div class="col-md-2 col-sm-12" style="margin-left: -15px; padding-right: 2px">
+                {{ _list_filters|raw }}
+            </div>
+        {% else %}
+            {{ _list_table|raw }}
+        {% endif %}
+    </div>
+{% endif %}

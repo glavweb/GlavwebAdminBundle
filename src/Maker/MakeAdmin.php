@@ -198,7 +198,7 @@ class MakeAdmin extends AbstractMaker
         );
 
         /**
-         * Create translation.
+         * Create translation — path mirrors Entity (User\StaffUser → translations/user/staff_user.ru.yaml).
          */
         $targetPath = sprintf(
             'translations/%s.ru.yaml',

@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace <?php echo $namespace; ?>;
 
-use App\Controller\Admin\CRUDController;
+use Glavweb\AdminBundle\Controller\CRUDController;
 
 /**
  * Class <?php echo $class_name."\n"; ?>

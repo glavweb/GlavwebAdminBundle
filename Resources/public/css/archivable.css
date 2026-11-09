@@ -1,0 +1,12 @@
+:root {
+  --archived-bg-color: hsl(45.6deg 100% 90.2%);
+  --archived-active-bg-color: hsl(45.6deg 80% 90.2%);
+}
+
+.entity-list-row.archived {
+  background-color: var(--archived-bg-color);
+}
+
+.entity-list-row.archived:hover {
+  background-color: var(--archived-active-bg-color);
+}

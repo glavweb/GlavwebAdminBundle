@@ -24,6 +24,9 @@ form:
 show:
 <?php echo $fieldsTemplate; ?>
 
+export:
+<?php echo $fieldsTemplate; ?>
+
 dashboard:
     label_<?php echo $normalizedServiceId; ?>: <?php echo $modelClass->getShortName()."\n"; ?>
 

@@ -4,3 +4,5 @@ sonata_admin:
         edit: '@GlavwebAdmin/CRUD/edit.html.twig'
         show: '@GlavwebAdmin/CRUD/show.html.twig'
         knp_menu_template: '@GlavwebAdmin/Menu/sonata_menu.html.twig'
+        outer_list_rows_list: '@GlavwebAdmin/CRUD/list_outer_rows_list.html.twig'
+        user_block: '@GlavwebAdmin/Core/user_block.html.twig'

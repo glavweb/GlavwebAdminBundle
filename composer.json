@@ -22,7 +22,8 @@
         "sonata-project/doctrine-orm-admin-bundle": "^4.0",
         "doctrine/orm": "^3.3",
         "symfony/form": "^8.0",
-        "symfony/framework-bundle": "^8.0"
+        "symfony/framework-bundle": "^8.0",
+        "symfony/property-access": "^8.0"
     },
     "suggest": {
         "glavweb/uploader-bundle": "Media list/show templates and make:admin uploadable fields",

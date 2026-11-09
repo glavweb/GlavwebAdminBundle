@@ -1,0 +1,16 @@
+{% if app.user %}
+    <li class="user-header bg-light-blue">
+        {% block user_avatar %}{% endblock %}
+        <p>{% block user_name %}{{ app.user }}{% endblock %}</p>
+    </li>
+
+    <li class="user-footer">
+        {% block user_profile_actions %}{% endblock %}
+
+        <div class="pull-right">
+            <a href="{{ logout_path() }}" class="btn btn-default btn-flat">
+                <i class="fa fa-sign-out fa-fw"></i> {{ 'user_block.logout'|trans({}, 'GlavwebAdminBundle') }}
+            </a>
+        </div>
+    </li>
+{% endif %}

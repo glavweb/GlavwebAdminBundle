@@ -7,3 +7,25 @@ advanced_filter:
     active_prefix: 'Advanced filter:'
     reset: 'Reset advanced'
     edit: 'Edit'
+
+archive:
+    action_archive: Archive
+    action_unarchive: Restore from archive
+
+image_help:
+    allowed_size: Allowed size
+    exact: '%w%*%h%px'
+    from: 'from %w%*%h%px'
+    to: 'to %w%*%h%px'
+
+user_block:
+    profile: Profile
+    logout: Logout
+
+login:
+    title_suffix: Sign in
+    box_msg: Sign in
+    username: Username
+    password: Password
+    remember_me: Remember me
+    submit: Sign in

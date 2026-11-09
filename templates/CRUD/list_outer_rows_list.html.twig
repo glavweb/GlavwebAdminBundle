@@ -1,0 +1,13 @@
+{% if admin.class is archivable %}
+    {% for object in admin.datagrid.results %}
+        <tr {% if object is archived %}class="entity-list-row archived"{% endif %}>
+            {% include get_admin_template('inner_list_row', admin.code) %}
+        </tr>
+    {% endfor %}
+{% else %}
+    {% for object in admin.datagrid.results %}
+        <tr>
+            {% include get_admin_template('inner_list_row', admin.code) %}
+        </tr>
+    {% endfor %}
+{% endif %}

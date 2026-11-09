@@ -2,15 +2,11 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>{{ sonata_config.title|default('JETCODE') }} — Вход</title>
+    <title>{{ sonata_config.title|default('Admin') }} — {{ 'login.title_suffix'|trans({}, 'GlavwebAdminBundle') }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {# Sonata 4: Bootstrap + AdminLTE are bundled in app.css (sonatacore paths are gone) #}
     <link rel="stylesheet" href="{{ asset('bundles/sonataadmin/app.css', 'sonata_admin') }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="{{ asset('build/admin/admin.css') }}" rel="stylesheet">
-    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}"/>
+    <link rel="stylesheet" href="{{ asset('bundles/glavwebadmin/css/glavweb-admin.css') }}">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}"/>
 </head>
 <body class="sonata-bc skin-black login-page hold-transition">
 {% block sonata_wrapper %}{% endblock %}

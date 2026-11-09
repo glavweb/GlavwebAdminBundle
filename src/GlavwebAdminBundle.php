@@ -39,6 +39,7 @@ class GlavwebAdminBundle extends AbstractBundle
         $builder->setParameter('glavweb_admin.sortable.position_field', $config['sortable']['position_field']);
         $builder->setParameter('glavweb_admin.sortable.groups', $config['sortable']['groups']);
         $builder->setParameter('glavweb_admin.admin_locator_services', $config['admin_locator_services']);
+        $builder->setParameter('glavweb_admin.delete_in_list', $config['delete_in_list']);
 
         $container->import('../config/services.yaml');
 
@@ -69,6 +70,11 @@ class GlavwebAdminBundle extends AbstractBundle
                     ->info('Extra service ids exposed to AbstractAdmin::getContainer() (app helpers, managers, …).')
                     ->scalarPrototype()->end()
                     ->defaultValue([])
+                ->end()
+                ->enumNode('delete_in_list')
+                    ->info('deny: delete in list/batch only for admins implementing WithDeleteActionInList. allow: no restriction.')
+                    ->values(['deny', 'allow'])
+                    ->defaultValue('deny')
                 ->end()
             ->end()
         ;

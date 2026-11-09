@@ -72,8 +72,8 @@ foreach ($fields as $fieldName => $fieldOptions) {
 }
 ?>
 <?php if ($managerClass) { ?>
-use App\Exception\InvalidEntityException;
-use App\Exception\DeleteEntityException;
+use Glavweb\FrameworkBundle\Exception\DeleteEntityException;
+use Glavweb\FrameworkBundle\Exception\InvalidEntityException;
 use <?php echo $managerClass->getFullName(); ?>;
 <?php } ?>
 use <?php echo $modelClass->getFullName(); ?>;

@@ -1,0 +1,13 @@
+label__archived: Архивная запись
+label_group_users: Пользователи
+link_action_delete: Удалить
+link_action_create: Создать
+link_action_edit: Редактировать
+link_action_show: Показать
+link_action_list: К списку
+label_export_download: Экспорт
+export_format_json: JSON
+export_format_xml: XML
+export_format_csv: CSV
+export_format_xls: Excel XLS
+export_format_xlsx: Excel XLSX

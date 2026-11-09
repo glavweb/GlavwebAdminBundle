@@ -13,6 +13,7 @@ services:
             - '../src/SonataAdmin/AdvancedFilter/AbstractAdvancedFilter.php'
             - '../src/SonataAdmin/AdvancedFilter/AdvancedDatagridMapper.php'
             - '../src/SonataAdmin/AdvancedFilter/AdvancedFilterBag.php'
+            - '../src/SonataAdmin/AdvancedFilter/AdvancedFilterBagBuilder.php'
             - '../src/SonataAdmin/AdvancedFilter/AdvancedFilterField.php'
             - '../src/SonataAdmin/AdvancedFilter/AdvancedFilterContext.php'
 
@@ -20,6 +21,10 @@ services:
         decorates: sonata.admin.builder.filter.factory
         arguments:
             $inner: '@Glavweb\AdminBundle\SonataAdmin\Filter\CaseInsensitiveStringFilterFactory.inner'
+
+    Glavweb\AdminBundle\SonataAdmin\Filter\NativeCallbackFilter:
+        tags:
+            - { name: sonata.admin.filter.type, alias: native_callback }
 
     Glavweb\AdminBundle\Sortable\PositionOrmHandler:
         calls:

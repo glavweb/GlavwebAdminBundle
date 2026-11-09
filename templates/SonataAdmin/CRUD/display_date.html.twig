@@ -1,0 +1,15 @@
+{#
+
+Override Sonata Admin date display to use d.m.Y.
+
+#}
+
+{%- apply trim|raw %}
+    {%- if value is empty -%}
+        &nbsp;
+    {%- else -%}
+        <time datetime="{{ value|date('Y-m-d', 'UTC') }}" title="{{ value|date('Y-m-d', 'UTC') }}">
+            {{ value|date(format|default('d.m.Y'), timezone|default(null)) }}
+        </time>
+    {%- endif -%}
+{% endapply -%}

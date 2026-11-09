@@ -7,3 +7,25 @@ advanced_filter:
     active_prefix: 'Расширенный фильтр:'
     reset: 'Сбросить расширенные'
     edit: 'Изменить'
+
+archive:
+    action_archive: Архивировать
+    action_unarchive: Восстановить из архива
+
+image_help:
+    allowed_size: Допустимый размер
+    exact: '%w%*%h%px'
+    from: 'от %w%*%h%px'
+    to: 'до %w%*%h%px'
+
+user_block:
+    profile: Профиль
+    logout: Выход
+
+login:
+    title_suffix: Вход
+    box_msg: Войти
+    username: Логин
+    password: Пароль
+    remember_me: Запомнить меня
+    submit: Войти
