@@ -419,8 +419,18 @@
   .sonata-ba-field-inline-table {
     margin-bottom: t.$crm-space-2;
 
+    // Same horizontal scroll as list .box-body.table-responsive
+    > .table-responsive {
+      overflow-x: auto;
+      overflow-y: hidden;
+      border: 0;
+    }
+
     .sonata-ba-inline-table {
       margin-bottom: 0;
+      // Keep columns from crushing when the wrapper scrolls
+      width: max-content;
+      min-width: 100%;
 
       > thead > tr > th,
       > tbody > tr > td {
