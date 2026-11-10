@@ -46,47 +46,118 @@
                     return defaultFieldId;
                 };
 
-                // CRM inline table: pending-delete <td> shifts .index(); count only field cells.
-                function choiceFieldMaskColumnIndex($cell) {
-                    return $cell.parent().children('td').not('.sonata-collection-item__pending').index($cell);
+                // Inline table: keep td/th; hide cell contents (incl. Select2) and show "—".
+                var $maskRow = showMaskChoiceEl.closest('tr');
+
+                function choiceFieldMaskPlaceholder($cell) {
+                    var $placeholder = $cell.children('.sonata-ba-field-mask-placeholder');
+                    if (!$placeholder.length) {
+                        $placeholder = jQuery('<span class="sonata-ba-field-mask-placeholder text-muted" aria-hidden="true">—</span>');
+                        $cell.append($placeholder);
+                    }
+
+                    return $placeholder;
+                }
+
+                function choiceFieldMaskCell(field) {
+                    if ($maskRow.length) {
+                        // Class: sonata-ba-td-{collectionId}-{fieldName}
+                        var $cell = $maskRow.children('td').filter(function () {
+                            return this.className.indexOf('sonata-ba-td-') !== -1
+                                && this.className.indexOf('-' + field) !== -1;
+                        });
+                        if ($cell.length) {
+                            return $cell.first();
+                        }
+                    }
+
+                    var $field = jQuery(controlGroupIdFunc(field));
+                    if (!$field.length) {
+                        return jQuery();
+                    }
+
+                    return $field.closest('[class*="sonata-ba-td-"]');
+                }
+
+                function choiceFieldMaskHide(field) {
+                    var $cell = choiceFieldMaskCell(field);
+                    if ($cell.length) {
+                        $cell.children().not('.sonata-ba-field-mask-placeholder').hide();
+                        choiceFieldMaskPlaceholder($cell).show();
+                        $cell.find('[required="required"]').attr('data-required', 'required').removeAttr('required');
+
+                        return;
+                    }
+
+                    var $field = jQuery(controlGroupIdFunc(field));
+                    if (!$field.length) {
+                        return;
+                    }
+
+                    $field.hide();
+                    $field.next('.select2-container').hide();
+                    $field.parent().children('.select2-container').hide();
+                    $field.find('[required="required"]').attr('data-required', 'required').removeAttr('required');
+                    if ($field.is('[required]')) {
+                        $field.attr('data-required', 'required').removeAttr('required');
+                    }
+                }
+
+                function choiceFieldMaskShow(field) {
+                    var $cell = choiceFieldMaskCell(field);
+                    if ($cell.length) {
+                        choiceFieldMaskPlaceholder($cell).hide();
+                        $cell.children().not('.sonata-ba-field-mask-placeholder').each(function () {
+                            // Keep the native <select> hidden when Select2 owns the UI.
+                            if (jQuery(this).is('select.select2-hidden-accessible')) {
+                                return;
+                            }
+                            jQuery(this).show();
+                        });
+                        $cell.children('.select2-container').show();
+                        $cell.find('[data-required="required"]').attr('required', 'required');
+
+                        return;
+                    }
+
+                    var $field = jQuery(controlGroupIdFunc(field));
+                    if (!$field.length) {
+                        return;
+                    }
+
+                    if (!$field.is('select.select2-hidden-accessible')) {
+                        $field.show();
+                    }
+                    $field.next('.select2-container').show();
+                    $field.parent().children('.select2-container').show();
+                    $field.find('[data-required="required"]').attr('required', 'required');
+                    if ($field.attr('data-required') === 'required') {
+                        $field.attr('required', 'required');
+                    }
                 }
 
                 jQuery.each(allFields, function (i, field) {
-                    var fieldContainer = controlGroupIdFunc(field);
-                    jQuery(fieldContainer).hide();
-                    var $cell = jQuery(fieldContainer).closest('[class*="sonata-ba-td-"]');
-                    if ($cell.length) {
-                        $cell.hide();
-                        var $table = $cell.closest('table');
-                        if ($table.length) {
-                            $table.find('thead tr th').eq(choiceFieldMaskColumnIndex($cell)).hide();
-                        }
-                    }
-                    jQuery(fieldContainer).find('[required="required"]').attr('data-required', 'required').removeAttr("required");
+                    choiceFieldMaskHide(field);
                 });
 
                 if (map[val]) {
                     jQuery.each(map[val], function (i, field) {
-                        var fieldContainer = controlGroupIdFunc(field);
-                        jQuery(fieldContainer).show();
-                        var $cell = jQuery(fieldContainer).closest('[class*="sonata-ba-td-"]');
-                        if ($cell.length) {
-                            $cell.show();
-                            var $table = $cell.closest('table');
-                            if ($table.length) {
-                                $table.find('thead tr th').eq(choiceFieldMaskColumnIndex($cell)).show();
-                            }
-                        }
-                        jQuery(fieldContainer).find('[data-required="required"]').attr("required", "required");
+                        choiceFieldMaskShow(field);
                     });
                 }
             }
 
-            {% if value is empty %}
-                choice_field_mask_show(showMaskChoiceEl.val());
-            {% else %}
-                choice_field_mask_show('{{ value|e('js') }}');
-            {% endif %}
+            function choice_field_mask_apply_initial() {
+                {% if value is empty %}
+                    choice_field_mask_show(showMaskChoiceEl.val());
+                {% else %}
+                    choice_field_mask_show('{{ value|e('js') }}');
+                {% endif %}
+            }
+
+            choice_field_mask_apply_initial();
+            // Select2 may initialize after this script and remount the UI — re-apply mask.
+            setTimeout(choice_field_mask_apply_initial, 0);
         });
 
     </script>

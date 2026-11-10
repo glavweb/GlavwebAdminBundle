@@ -437,6 +437,14 @@
         vertical-align: middle;
       }
 
+      // ChoiceFieldMaskType: keep column; muted dash when field is masked off
+      .sonata-ba-field-mask-placeholder {
+        display: inline-block;
+        line-height: 37px;
+        pointer-events: none;
+        user-select: none;
+      }
+
       &__actions {
         width: 48px;
         text-align: center;
