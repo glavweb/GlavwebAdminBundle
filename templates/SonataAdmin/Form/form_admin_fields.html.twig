@@ -46,6 +46,11 @@
                     return defaultFieldId;
                 };
 
+                // CRM inline table: pending-delete <td> shifts .index(); count only field cells.
+                function choiceFieldMaskColumnIndex($cell) {
+                    return $cell.parent().children('td').not('.sonata-collection-item__pending').index($cell);
+                }
+
                 jQuery.each(allFields, function (i, field) {
                     var fieldContainer = controlGroupIdFunc(field);
                     jQuery(fieldContainer).hide();
@@ -54,7 +59,7 @@
                         $cell.hide();
                         var $table = $cell.closest('table');
                         if ($table.length) {
-                            $table.find('thead tr th').eq($cell.index()).hide();
+                            $table.find('thead tr th').eq(choiceFieldMaskColumnIndex($cell)).hide();
                         }
                     }
                     jQuery(fieldContainer).find('[required="required"]').attr('data-required', 'required').removeAttr("required");
@@ -69,7 +74,7 @@
                             $cell.show();
                             var $table = $cell.closest('table');
                             if ($table.length) {
-                                $table.find('thead tr th').eq($cell.index()).show();
+                                $table.find('thead tr th').eq(choiceFieldMaskColumnIndex($cell)).show();
                             }
                         }
                         jQuery(fieldContainer).find('[data-required="required"]').attr("required", "required");
